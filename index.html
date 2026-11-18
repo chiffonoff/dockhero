@@ -12,7 +12,7 @@
 html,body{width:100%;height:100%;background:transparent;overflow:hidden;
   font-family:"SF Pro Rounded",ui-rounded,-apple-system,"Hiragino Maru Gothic ProN","Hiragino Sans",system-ui,sans-serif;
   color:var(--ink);-webkit-user-select:none;user-select:none;cursor:default}
-#card{position:absolute;left:12px;right:12px;bottom:12px;height:150px;border-radius:20px;overflow:hidden;background:#120a26;
+#card{position:absolute;left:var(--mx,12px);right:var(--mx,12px);bottom:12px;height:150px;border-radius:20px;overflow:hidden;background:#120a26;
   box-shadow:0 0 0 1px rgba(255,255,255,.10) inset,0 10px 26px rgba(10,0,30,.55),0 0 22px rgba(140,90,255,.30);
   transition:opacity .4s}
 #card::after{content:"";position:absolute;inset:0;border-radius:20px;pointer-events:none;
@@ -39,7 +39,7 @@ canvas{position:absolute;left:0;bottom:0;image-rendering:pixelated;image-renderi
 .bar{position:relative;height:9px;border-radius:5px;background:rgba(0,0,0,.45);overflow:hidden;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
 .bar i{position:absolute;left:0;top:0;bottom:0;border-radius:5px;transition:width .25s}
 .bar.hp i{background:linear-gradient(90deg,#ff5a8a,#ff8fb0);box-shadow:0 0 8px rgba(255,90,140,.7)}
-.bar.hp{display:none}.bar.hp i.low{animation:pulse .6s infinite alternate}
+.bar.hp{display:none}.bars{display:none!important}.bar.hp i.low{animation:pulse .6s infinite alternate}
 .bar em{position:absolute;inset:0;font-style:normal;font-size:8px;line-height:9px;text-align:center;font-weight:800;color:#fff;text-shadow:0 1px 1px rgba(0,0,0,.6);font-variant-numeric:tabular-nums}
 .bar.xp{height:4px}
 .bar.xp i{background:linear-gradient(90deg,#7c5cff,#c39bff);box-shadow:0 0 6px rgba(160,120,255,.8)}
@@ -122,7 +122,7 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
 body.mini #bagbtn,body.mini #quit,body.mini #partybtn,body.mini #grpchip{display:none}
 
 /* ===== panel ===== */
-#panel{position:absolute;left:12px;right:12px;bottom:170px;height:314px;border-radius:20px;display:none;z-index:9;cursor:default;
+#panel{position:absolute;left:var(--mx,12px);right:var(--mx,12px);bottom:170px;height:314px;border-radius:20px;display:none;z-index:9;cursor:default;
   background:linear-gradient(180deg,rgba(32,18,66,.92),rgba(16,8,36,.94));border:1px solid rgba(255,255,255,.12);
   box-shadow:0 12px 30px rgba(10,0,30,.6),0 0 24px rgba(140,90,255,.28),inset 0 1px 0 rgba(255,255,255,.14);
   overflow:hidden}
@@ -338,6 +338,11 @@ body.flip #card{top:12px;bottom:auto}
 body.flip #panel{top:170px;bottom:auto}
 #card{cursor:grab}
 #quit{font-size:10px}
+body{--k:1;position:fixed!important;left:50%;bottom:0;width:calc(100vw / var(--k))!important;height:calc(100vh / var(--k))!important;transform:translateX(-50%) scale(var(--k));transform-origin:50% 100%}
+body.mini #card{left:12px;right:12px}body.flip{bottom:auto;top:0;transform-origin:50% 0}
+#uipop{position:absolute;right:10px;top:44px;z-index:12;display:none;padding:10px 12px;border-radius:12px;width:210px;font-size:11px;color:#e6dcff}
+#uipop.on{display:block}#uipop label{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:4px 0;font-weight:800}
+#uipop input{width:120px;accent-color:#b48bff}#uipop small{display:block;color:#a99cc8;margin-top:4px;font-size:9px}
 </style>
 </head>
 <body>
@@ -373,6 +378,7 @@ body.flip #panel{top:170px;bottom:auto}
   <div id="prune" class="page"></div>
 </div>
 <div id="card">
+  <div id="uipop" class="glass"><label>大きさ <input id="uik" type="range" min="0.55" max="1" step="0.05"></label><label>横幅 <input id="uiw" type="range" min="0.4" max="1" step="0.05"></label><small>ダブルクリックで元に戻す</small></div>
   <canvas id="c"></canvas>
   <canvas id="fx"></canvas>
   <div id="flash"></div>
@@ -394,6 +400,7 @@ body.flip #panel{top:170px;bottom:auto}
       <button id="runebtn" class="tbtn glass" title="ルーン（ゴールドで永続強化）"><span>ᚱ</span></button>
       <button id="bagbtn" class="tbtn glass" title="装備・合成・強化"><svg viewBox="0 0 16 16"><path d="M5 5V4a3 3 0 0 1 6 0v1h2.2l.8 9.5H2L2.8 5zm1.5 0h3V4a1.5 1.5 0 0 0-3 0z"/></svg><i id="bagbadge"></i></button>
       <button id="auto" class="tbtn glass" title="ゴールドが貯まったら自動で強化" style="display:none">AUTO</button>
+      <button id="uibtn" class="tbtn glass" title="バーの大きさ"><span>⚙&#xFE0E;</span></button>
       <button id="mini" class="tbtn glass" title="小さくする">–</button>
       <button id="quit" class="tbtn glass" title="終了（進み具合は保存されます）">✕</button>
     </div>
@@ -446,7 +453,7 @@ function fmt(n) {
 function fmtPix(n) { n = Math.floor(n); if (n < 10000) return '' + n; if (n < 1e6) return Math.floor(n / 1000) + 'K'; if (n < 1e9) return Math.floor(n / 1e6) + 'M'; return Math.floor(n / 1e9) + 'B'; }
 
 /* ---------- bridge to the macOS shell ---------- */
-const GAME_VERSION = '1.11.4', GAME_BUILD = 207;
+const GAME_VERSION = '1.11.5', GAME_BUILD = 208;
 const NATIVE = !!window.__DH_NATIVE || Q.has('nativeTest');
 if (window.__DH_OS === 'win') document.addEventListener('DOMContentLoaded', () => { const g = document.getElementById('grip'); if (g) g.title = 'ドラッグで移動／ダブルクリックでタスクバーの上に戻す'; });
 // page -> mac: the shell polls document.title. Keep the title short: big payloads (saves) are cut into chunks
@@ -623,8 +630,8 @@ const affTxt = a => AFFIX[a.k].n + ' +' + (a.v * 100).toFixed(1) + '%';
 /* ---------- classes (original designs) ---------- */
 const CLASSES = {
   knight: { n: '騎士', role: '前衛・守り', desc: '硬くて頼れる剣士。いちばん前で仲間を守る。', atk: 1, hp: 1.35, aps: 1, range: 13, type: 'melee', col: '#8a4dff' },
-  archer: { n: '弓使い', role: '遠距離・会心', desc: '後ろから矢を放つ。会心が出やすい。', atk: 1.05, hp: .8, aps: 1.05, crit: .06, range: 120, type: 'arrow', col: '#4fbf7a' },
-  mage: { n: '魔導士', role: '範囲攻撃', desc: '星の魔弾で、近くの敵をまとめて攻撃。', atk: 1.25, hp: .7, aps: .7, range: 62, type: 'magic', col: '#5b6cff' },
+  archer: { n: '弓使い', role: '遠距離・会心', desc: '後ろから矢を放つ。会心が出やすい。', atk: 1.05, hp: .8, aps: 1.05, crit: .06, range: 360, type: 'arrow', col: '#4fbf7a' },
+  mage: { n: '魔導士', role: '範囲攻撃', desc: '星の魔弾で、近くの敵をまとめて攻撃。', atk: 1.25, hp: .7, aps: .7, range: 186, type: 'magic', col: '#5b6cff' },
   healer: { n: 'ヒーラー', role: '回復', desc: '傷ついた仲間を癒やす。攻撃は控えめ。', atk: .6, hp: .95, aps: .8, range: 56, type: 'heal', col: '#7fe7ff' },
   rogue: { n: '双剣士', role: '連撃', desc: '二本の短剣ですばやく斬る。会心ダメージが高い。', atk: .62, hp: .9, aps: 1.75, critd: .4, range: 13, type: 'dagger', col: '#ff5c6c' },
   smith: { n: '鉄槌士', role: '重撃・範囲', desc: '大槌の一撃で、周りの敵もまとめて叩く。', atk: 1.8, hp: 1.2, aps: .55, range: 14, type: 'hammer', col: '#ff9a3d' },
@@ -761,17 +768,29 @@ const xpOf = t => 2 * Math.pow(1.135, t);
 /* ---------- sizing ---------- */
 let goldTarget = { x: 0, y: 0 };
 function resize() {
-  const r = card.getBoundingClientRect();
+  const r = { width: card.offsetWidth, height: card.offsetHeight }, uk = (G && G.ui && G.ui.k) || 1;
   IW = Math.ceil(r.width / S); IH = Math.ceil(r.height / S); GROUND = IH - 12;
   cv.width = IW; cv.height = IH; cv.style.width = IW * S + 'px'; cv.style.height = IH * S + 'px';
   fxc.width = Math.round(r.width * DPR); fxc.height = Math.round(r.height * DPR);
   ctx.imageSmoothingEnabled = false;
   const g = $('goldbox').getBoundingClientRect();
-  goldTarget = { x: (g.left - r.left + 16) / S, y: (g.top - r.top + 15) / S - (r.height - IH * S) / S };
+  const cr = card.getBoundingClientRect(); goldTarget = { x: ((g.left - cr.left) / uk + 16) / S, y: ((g.top - cr.top) / uk + 15) / S - (r.height - IH * S) / S };
   skyCache = null;
   initAmb();
 }
-window.addEventListener('resize', resize);
+window.addEventListener('resize', () => { applyUI(true); resize(); });
+function applyUI(noResize) {
+  if (!G.ui) G.ui = { k: 1, w: 1 }; const k = G.ui.k, w = G.ui.w, bs = document.body.style;
+  bs.setProperty('--k', k); bs.setProperty('--mx', (12 + (1 - w) * (innerWidth / k - 24) / 2) + 'px');
+  if (!noResize) setTimeout(resize, 30);
+}
+$('uibtn').addEventListener('click', e => { e.stopPropagation(); const p = $('uipop'); p.classList.toggle('on'); $('uik').value = G.ui.k; $('uiw').value = G.ui.w; });
+for (const id of ['uik', 'uiw']) {
+  $(id).addEventListener('input', e => { G.ui[id === 'uik' ? 'k' : 'w'] = +e.target.value; applyUI(); });
+  $(id).addEventListener('change', () => save());
+  $(id).addEventListener('dblclick', e => { G.ui[id === 'uik' ? 'k' : 'w'] = 1; e.target.value = 1; applyUI(); save(); });
+}
+document.addEventListener('mousedown', e => { if (!e.target.closest('#uipop,#uibtn')) $('uipop').classList.remove('on'); });
 
 /* ---------- sprite pipeline (outline + flash) ---------- */
 const SPR = 72;
@@ -2494,7 +2513,8 @@ function drawHeroSprite(m, x, y, dir, downT) {
   if (downT >= 0) {
     const kk = Math.min(1, downT * 3);
     ctx.save(); ctx.translate(Math.round(x), y); ctx.rotate(-kk * Math.PI / 2 * .9 * dir); ctx.translate(-Math.round(x), -y);
-    o.alpha = m.down ? .7 : Math.max(0, 1 - Math.max(0, downT - 1.4)); o.flash = .45; o.flashCol = '#5a4a8a'; o.rim = null;
+    o.alpha = m.down ? Math.max(0, 1 - Math.max(0, downT - .6) / .5) : Math.max(0, 1 - Math.max(0, downT - 1.4));
+    if (o.alpha <= 0) { ctx.restore(); return; } o.flash = .45; o.flashCol = '#5a4a8a'; o.rim = null;
     blit((c2, ox, oy) => dHero(c2, ox, oy, m), x, y, o); ctx.restore(); return;
   }
   blit((c2, ox, oy) => dHero(c2, ox, oy, m), x + lunge, y, o);
@@ -2783,7 +2803,7 @@ function showBubble(who, e, name) {
   $('bubbles').appendChild(el); bubbles.push({ el, who, t: 0 });
 }
 function updBubbles(dt) {
-  const r = card.getBoundingClientRect();
+  const r = { height: card.offsetHeight };
   for (const b of bubbles) {
     b.t += dt;
     const m = b.who === 'L' ? party.find(x => x.local) : party.find(x => x.remote && x.key.split(':')[1] === b.who);
@@ -3011,7 +3031,7 @@ function frame(now) {
   update(step); render(); updHud();
   saveT += step; if (saveT > 15) { saveT = 0; save(); }
 }
-load(); resize(); updGear(); updHud(true);
+load(); G.ui = Object.assign({ k: 1, w: 1 }, G.ui || {}); applyUI(true); resize(); updGear(); updHud(true);
 if (!G.name) G.name = window.__DH_USER || '';
 if (G._refund) { const b = G._refund; delete G._refund; setTimeout(() => toast('強化ボタン廃止のため <b style="color:#ffe08a">' + fmtG(b) + ' G</b> を返却しました。ルーン（ᚱ）に使えます', '#ffd25e'), 2500); }
 if (G.grp && G.grp.code) setTimeout(() => grpJoin(G.grp.code, false), 1200);
