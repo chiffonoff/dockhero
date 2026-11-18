@@ -392,9 +392,6 @@ body.flip #panel{top:170px;bottom:auto}
     <div id="mid"><div id="stagebox" class="glass" title="ステージ選択"><svg class="mapic" viewBox="0 0 16 16"><path d="M1 3.5 5.5 2l5 1.5L15 2v10.5L10.5 14l-5-1.5L1 14zM5.5 3.6v8.9l5 1.5V5.1z"/></svg><span id="region"></span><span id="stage"></span><span id="pips"></span></div></div>
     <div id="right">
       <div id="goldbox" class="glass"><span class="coin"></span><b id="gold">0</b></div>
-      <div class="up glass" data-k="atk" title="パーティの攻撃力（合計）"><span class="ic">⚔︎</span><span class="tx"><small>攻撃</small><b>0</b></span></div>
-      <div class="up glass" data-k="hp" title="パーティの最大HP（合計）"><span class="ic">♥︎</span><span class="tx"><small>体力</small><b>0</b></span></div>
-      <div class="up glass" data-k="spd" title="パーティの攻撃回数（1秒あたり合計）"><span class="ic">≫</span><span class="tx"><small>速さ</small><b>0</b></span></div>
       <button id="rankbtn" class="tbtn glass" title="フレンドランキング"><svg viewBox="0 0 16 16"><path d="M4 1h8v2h3v2.5A3.5 3.5 0 0 1 11.7 9 4 4 0 0 1 9 11.2V13h2.5v2h-7v-2H7v-1.8A4 4 0 0 1 4.3 9 3.5 3.5 0 0 1 1 5.5V3h3zm8 3.5v3a2 2 0 0 0 1.5-2V4.5zM4 4.5H2.5v1a2 2 0 0 0 1.5 2z"/></svg></button>
       <button id="partybtn" class="tbtn glass" title="キャラクター・グループ"><svg viewBox="0 0 16 16"><path d="M5.5 7.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5zm6 .5a2 2 0 1 1 0-4 2 2 0 0 1 0 4zM1 13c0-2.5 2-4 4.5-4S10 10.5 10 13v1H1zm10 1v-1c0-1.3-.4-2.4-1.1-3.2.5-.2 1-.3 1.6-.3 2 0 3.5 1.2 3.5 3.3V14z"/></svg></button>
       <button id="runebtn" class="tbtn glass" title="ルーン（ゴールドで永続強化）"><span>ᚱ</span></button>
@@ -441,6 +438,7 @@ function shade(h, k) { return k < 0 ? mix(h, '#0a0418', -k) : mix(h, '#ffffff', 
 function rgba(h, a) { const c = hex(h); return 'rgba(' + c[0] + ',' + c[1] + ',' + c[2] + ',' + a + ')'; }
 function R(c, x, y, w, h, col) { c.fillStyle = col; c.fillRect(Math.round(x), Math.round(y), w, h); }
 const ease = t => 1 - Math.pow(1 - t, 3);
+const fmtG = n => Math.floor(n).toLocaleString('en-US');   // money: always every digit
 function fmt(n) {
   n = Math.floor(n);
   if (n < 1000) return '' + n;
@@ -451,7 +449,7 @@ function fmt(n) {
 function fmtPix(n) { n = Math.floor(n); if (n < 10000) return '' + n; if (n < 1e6) return Math.floor(n / 1000) + 'K'; if (n < 1e9) return Math.floor(n / 1e6) + 'M'; return Math.floor(n / 1e9) + 'B'; }
 
 /* ---------- bridge to the macOS shell ---------- */
-const GAME_VERSION = '1.6.0', GAME_BUILD = 160;
+const GAME_VERSION = '1.7.0', GAME_BUILD = 170;
 const NATIVE = !!window.__DH_NATIVE || Q.has('nativeTest');
 // page -> mac: the shell polls document.title. Keep the title short: big payloads (saves) are cut into chunks
 // and sent one at a time; each title carries a session id so a reload never confuses the shell.
@@ -616,7 +614,7 @@ const MELEE = { melee: 1, dagger: 1, hammer: 1 };
 const SLOT_UNLOCK = [0, 10, 20]; // progress index needed: start, after 1-10 boss, after 2-10 boss
 
 /* ---------- state ---------- */
-const SAVE_EPOCH = 2;   // bump this and publish an update to restart everyone from Lv1
+const SAVE_EPOCH = 3;   // bump this and publish an update to restart everyone from Lv1
 const DEF = { epoch: SAVE_EPOCH, pvp: { rate: 1000, w: 0, l: 0 }, v: 4, uid: '', friends: [], gifted: {}, lv: 1, xp: 0, gold: 0, upg: { atk: 0, hp: 0, spd: 0 }, heroes: { knight: { gear: {} } }, party: ['knight'], main: 'knight', name: '', grp: null, bag: [], shards: 0, fl: { equip: true, merge: false, salv: false }, runes: {}, region: 0, stage: 1, loop: 0, auto: false, ts: Date.now(), kills: 0 };
 let G = JSON.parse(JSON.stringify(DEF));
 let REG = REGIONS[0];
@@ -725,7 +723,7 @@ function load() {
     const sec = Math.min(away, 8 * 3600), t = Math.max(0, tier() - 1);
     const kills = sec * 0.22, gold = kills * goldOf(t) * ST.gm * 0.6, xp = kills * xpOf(t) * 0.5;
     G.gold += gold; addXp(xp, true);
-    setTimeout(() => toast('おかえり！ 離れていた' + fmtTime(sec) + 'で <b style="color:#ffe08a">+' + fmt(gold) + ' G</b>', '#ffd25e'), 900);
+    setTimeout(() => toast('おかえり！ 離れていた' + fmtTime(sec) + 'で <b style="color:#ffe08a">+' + fmtG(gold) + ' G</b>', '#ffd25e'), 900);
   }
 }
 function fmtTime(s) { const h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60); return h ? h + '時間' + (m ? m + '分' : '') : Math.max(1, m) + '分'; }
@@ -2023,9 +2021,8 @@ function updHud(force) {
   const bz = enemies.find(e => e.boss && !e.dying);
   if (isBoss()) h = bz ? '<i class="bossbar"><i style="width:' + (Math.max(0, bz.hp / bz.max) * 100).toFixed(1) + '%"></i></i>' : '<b class="boss' + (killed ? ' on' : '') + '"></b>'; else for (let i = 0; i < stageCount(); i++) h += '<b class="' + (i < killed ? 'on' : '') + '"></b>';
   if (pips._h !== h) { pips.innerHTML = h; pips._h = h; }
-  if (Math.floor(G.gold) !== shownGold) { shownGold = Math.floor(G.gold); $('gold').textContent = fmt(G.gold); }
-  { const ps = party.filter(m => m.st), v = { atk: ps.reduce((a, m) => a + m.st.atk, 0), hp: ps.reduce((a, m) => a + m.st.maxHp, 0), spd: ps.reduce((a, m) => a + m.st.aps, 0) };
-    document.querySelectorAll('.up').forEach(b => { const k = b.dataset.k; b.querySelector('b').textContent = k === 'spd' ? v.spd.toFixed(1) : fmt(v[k]); }); }
+  if (Math.floor(G.gold) !== shownGold) { shownGold = Math.floor(G.gold); $('gold').textContent = fmtG(G.gold); }
+
   $('auto').classList.toggle('on', !!G.auto);
 }
 let bumpT = 0;
@@ -2179,7 +2176,7 @@ function renderForge() {
       h += '<div class="fhint"><b style="color:#fff">' + it.n + '</b><br>' + mainTxt(it) + (max ? '' : '<br>➜ <b style="color:#7dffa8">' + mainTxt(nx) + '</b>') + '</div>';
       if (!max) {
         h += '<div class="rate" style="color:' + (rate >= 1 ? '#7dffa8' : rate > .5 ? '#ffe08a' : '#ff8fa8') + '">成功率 ' + Math.round(rate * 100) + '%</div>';
-        h += '<div class="cost"><span><span class="shard"></span>' + fmt(cs) + ' <small style="color:var(--sub)">/ ' + fmt(G.shards) + '</small></span><span><span class="coin" style="width:10px;height:10px"></span>' + fmt(cg) + '</span></div>';
+        h += '<div class="cost"><span><span class="shard"></span>' + fmt(cs) + ' <small style="color:var(--sub)">/ ' + fmt(G.shards) + '</small></span><span><span class="coin" style="width:10px;height:10px"></span>' + fmtG(cg) + '</span></div>';
         h += '<button class="btn" data-act="enh"' + (G.shards >= cs && G.gold >= cg ? '' : ' disabled') + '>強化する</button>';
       }
     }
@@ -2187,7 +2184,7 @@ function renderForge() {
   } else {
     const it = sel && findItem(sel);
     h += '<div class="fhint">いらない装備を分解して<b style="color:#bff6ff">結晶片</b>とゴールドに。<br>結晶片は強化に使います。</div>';
-    if (it && !isEquipped(it)) { const y = salvageYield(it); h += '<div class="altar" id="altar">' + cellHtml(it) + '<span class="arrow">➜</span><div class="cost" style="flex-direction:column;gap:3px"><span><span class="shard"></span>+' + y.sh + '</span><span><span class="coin" style="width:10px;height:10px"></span>+' + fmt(y.g) + '</span></div></div><button class="btn warn" data-act="salv1">選んだ装備を分解</button>'; }
+    if (it && !isEquipped(it)) { const y = salvageYield(it); h += '<div class="altar" id="altar">' + cellHtml(it) + '<span class="arrow">➜</span><div class="cost" style="flex-direction:column;gap:3px"><span><span class="shard"></span>+' + y.sh + '</span><span><span class="coin" style="width:10px;height:10px"></span>+' + fmtG(y.g) + '</span></div></div><button class="btn warn" data-act="salv1">選んだ装備を分解</button>'; }
     else h += '<div class="fhint" style="margin:8px 0">バッグのアイテムを選ぶと分解できます</div>';
     const n0 = G.bag.filter(i => i.r === 0).length, n1 = G.bag.filter(i => i.r <= 1).length;
     h += '<div class="salvrow"><button class="btn sub" data-act="salv0"' + (n0 ? '' : ' disabled') + '>コモンを全部（' + n0 + '）</button><button class="btn sub" data-act="salv01"' + (n1 ? '' : ' disabled') + '>レア以下を全部（' + n1 + '）</button></div>';
@@ -2275,7 +2272,7 @@ $('panel').addEventListener('click', e => {
   else if (a === 'mauto') { autoPick(); renderPanel(); }
   else if (a === 'merge') doMerge();
   else if (a === 'enh') doEnh();
-  else if (a === 'salv1' && it) { const y = salvage(it); if (y) toast('分解 <span class="shard"></span> +' + y.sh + ' <b style="color:#ffe08a">+' + fmt(y.g) + ' G</b>', '#6be8ff'); renderPanel(); save(); }
+  else if (a === 'salv1' && it) { const y = salvage(it); if (y) toast('分解 <span class="shard"></span> +' + y.sh + ' <b style="color:#ffe08a">+' + fmtG(y.g) + ' G</b>', '#6be8ff'); renderPanel(); save(); }
   else if (a === 'salv0') salvMany(0);
   else if (a === 'salv01') salvMany(1);
 });
@@ -2494,10 +2491,10 @@ function renderRunes() {
     const lv = runeLv(r.id), open = runeOpen(r.id), max = lv >= r.max, c = runeCost(r.id), can = open && !max && G.gold >= c;
     h += '<div class="rune' + (open ? '' : ' lock') + (max ? ' max' : can ? '' : ' no') + '" data-rune="' + r.id + '" style="--rc:' + r.col + '" title="' + r.d + ' ' + runeTxt(r, 1) + '／Lv">' +
       '<span class="rg">' + r.g + '</span><b>' + r.n + '<i>Lv' + lv + '/' + r.max + '</i></b><small>' + r.d + ' ' + runeTxt(r, lv) + (max ? '' : ' → ' + runeTxt(r, lv + 1)) + '</small>' +
-      '<span class="rc">' + (!open ? '🔒 ' + RUNE[r.req].n + ' Lv2' : max ? 'MAX' : '<span class="coin" style="width:10px;height:10px"></span>' + fmt(c)) + '</span></div>';
+      '<span class="rc">' + (!open ? '🔒 ' + RUNE[r.req].n + ' Lv2' : max ? 'MAX' : '<span class="coin" style="width:10px;height:10px"></span>' + fmtG(c)) + '</span></div>';
   }
   h += '</div></div><div class="pcol"><div class="ph"><b>効果の合計</b><span>全キャラに効きます</span></div><div class="rsum">';
-  h += '<div>所持ゴールド<b style="color:#ffe08a">' + fmt(G.gold) + '</b></div>';
+  h += '<div>所持ゴールド<b style="color:#ffe08a">' + fmtG(G.gold) + '</b></div>';
   for (const r of RUNES) if (runeLv(r.id)) h += '<div>' + r.d + '<b style="color:' + r.col + '">' + runeTxt(r, runeLv(r.id)) + '</b></div>';
   if (!RUNES.some(r => runeLv(r.id))) h += '<div style="justify-content:center;margin-top:20px">まだルーンがありません。<br>まずは「力のルーン」から。</div>';
   h += '</div></div>';
@@ -2506,7 +2503,7 @@ function renderRunes() {
 $('prune').addEventListener('click', e => {
   const el = e.target.closest('[data-rune]'); if (!el) return; const id = el.dataset.rune, r = RUNE[id];
   if (!runeOpen(id) || runeLv(id) >= r.max) return;
-  const c = runeCost(id); if (G.gold < c) { toast('ゴールドが足りません（' + fmt(c) + ' 必要）', '#9b8cff'); return; }
+  const c = runeCost(id); if (G.gold < c) { toast('ゴールドが足りません（' + fmtG(c) + ' 必要）', '#9b8cff'); return; }
   G.gold -= c; G.runes[id] = runeLv(id) + 1; rebuildParty(); hero.aura = Math.max(hero.aura, .5);
   toast('<b style="color:' + r.col + '">' + r.n + '</b> Lv' + G.runes[id] + '  ' + r.d + ' ' + runeTxt(r, G.runes[id]), r.col);
   renderRunes(); const n = $('prune').querySelector('[data-rune=' + id + ']'); if (n) n.classList.add('pop'); updHud(true); save();
@@ -2789,7 +2786,7 @@ function frame(now) {
 }
 load(); resize(); updGear(); updHud(true);
 if (!G.name) G.name = window.__DH_USER || '';
-if (G._refund) { const b = G._refund; delete G._refund; setTimeout(() => toast('強化ボタン廃止のため <b style="color:#ffe08a">' + fmt(b) + ' G</b> を返却しました。ルーン（ᚱ）に使えます', '#ffd25e'), 2500); }
+if (G._refund) { const b = G._refund; delete G._refund; setTimeout(() => toast('強化ボタン廃止のため <b style="color:#ffe08a">' + fmtG(b) + ' G</b> を返却しました。ルーン（ᚱ）に使えます', '#ffd25e'), 2500); }
 if (G.grp && G.grp.code) setTimeout(() => grpJoin(G.grp.code, false), 1200);
 setTimeout(socStart, 2000);
 hero.x = 0; camX = hero.x - IW * .3;

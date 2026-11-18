@@ -1,1 +1,1 @@
-{"version": "1.6.0", "build": 160, "minShell": 3, "sha256": "821bce4feeb19d9c94c0aebe004f0592c2fc8b9bba520dbc395a720a8420b476", "notes": "ルーン追加（ゴールドで永続強化）、自然回復を廃止、装備合成を同じレア度9個に"}
+{"version": "1.7.0", "build": 170, "minShell": 3, "sha256": "e135bfb4726836ed5982c3384688a57f82db95f2abf7fc7f82c385fc2e766b3b", "notes": "お金を全桁表示に、攻撃・体力・速さの表示を削除、全員Lv1からリスタート"}
