@@ -132,7 +132,8 @@ body.mini #bagbtn,body.mini #quit,body.mini #partybtn,body.mini #grpchip{display
 .page{position:absolute;inset:12px 14px;display:none;gap:14px}
 #pgear{grid-template-columns:230px minmax(0,1fr) 270px}
 #pparty{grid-template-columns:minmax(0,1fr) 300px}
-body.pg-gear #pgear,body.pg-party #pparty,body.pg-map #pmap{display:grid}
+body.pg-gear #pgear,body.pg-party #pparty,body.pg-map #pmap,body.pg-rank #prank{display:grid}
+#prank{grid-template-columns:minmax(0,1fr) 270px}
 #pmap{grid-template-rows:auto 1fr auto;gap:10px}
 body.panel #panel{display:block;animation:pin .28s cubic-bezier(.2,1.2,.4,1)}
 @keyframes pin{from{opacity:0;transform:translateY(10px) scale(.985)}}
@@ -282,6 +283,32 @@ body.panel #panel{display:block;animation:pin .28s cubic-bezier(.2,1.2,.4,1)}
 .stg:disabled{opacity:.3;cursor:default}
 .maprow{display:flex;align-items:center;gap:12px}
 
+
+#rankbtn{display:grid;place-items:center;width:34px;padding:0}
+#rankbtn svg{width:15px;height:15px;fill:#ffe08a}
+#rankbtn.on{background:linear-gradient(#fff2c0,#ffcf5e)}#rankbtn.on svg{fill:#3a2400}
+body.mini #rankbtn{display:none}
+.rtabs{display:flex;gap:4px;margin-bottom:8px}
+.rtabs button{font-size:10.5px;font-weight:900;padding:5px 10px;border-radius:8px;color:var(--sub);background:rgba(255,255,255,.06)}
+.rtabs button.on{color:#3a2400;background:linear-gradient(#fff2c0,#ffcf5e)}
+.rlist{display:flex;flex-direction:column;gap:4px;overflow:auto;max-height:226px;padding-right:4px}
+.rrow{display:grid;grid-template-columns:30px 1fr auto;align-items:center;gap:8px;padding:6px 10px;border-radius:10px;background:rgba(255,255,255,.05);font-size:11.5px;font-weight:800}
+.rrow.me{background:linear-gradient(90deg,rgba(184,146,255,.28),rgba(184,146,255,.08));box-shadow:inset 0 0 0 1px rgba(184,146,255,.5)}
+.rrow .no{font-size:13px;font-weight:900;text-align:center;color:var(--sub)}
+.rrow .no.g1{color:#ffd25e;text-shadow:0 0 8px #ffd25e}.rrow .no.g2{color:#dfe6f5}.rrow .no.g3{color:#e0a070}
+.rrow small{display:block;font-size:9px;color:var(--sub);font-weight:700}
+.rrow .val{font-variant-numeric:tabular-nums;color:#ffe9a8}
+.fcode{font-size:20px;letter-spacing:.14em;font-weight:900;background:linear-gradient(#fff,#cbb3ff);-webkit-background-clip:text;color:transparent}
+.emobar{display:flex;gap:4px;flex-wrap:wrap;margin-top:8px}
+.emobar button{font-size:15px;min-width:34px;padding:0 6px;white-space:nowrap;height:30px;border-radius:9px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.12)}
+.emobar button:hover{background:rgba(255,255,255,.18);transform:translateY(-1px)}
+.bubble{position:absolute;z-index:4;pointer-events:none;transform:translate(-50%,-100%);padding:3px 7px;border-radius:10px;background:#fff;color:#1b0f33;font-size:13px;font-weight:900;white-space:nowrap;box-shadow:0 2px 8px rgba(0,0,0,.4);animation:bub .25s cubic-bezier(.2,1.6,.4,1)}
+.bubble::after{content:"";position:absolute;left:50%;bottom:-4px;margin-left:-4px;border:4px solid transparent;border-top-color:#fff;border-bottom:0}
+.bubble small{font-size:8.5px;color:#6a5a90;margin-left:3px}
+@keyframes bub{from{transform:translate(-50%,-70%) scale(.5);opacity:0}}
+#chain{position:absolute;right:16px;top:46px;z-index:5;font-size:12px;font-weight:900;color:#7dffa8;text-shadow:0 0 8px rgba(125,255,168,.8),0 1px 2px #000;display:none;letter-spacing:.04em}
+#chain b{font-size:17px}
+
 /* mini mode */
 body.mini #mid,body.mini .up,body.mini #auto,body.mini #gear,body.mini .bars{display:none}
 body.mini #goldbox{min-width:0}
@@ -322,6 +349,7 @@ body.flip #panel{top:170px;bottom:auto}
   </div>
   <div id="pparty" class="page"></div>
   <div id="pmap" class="page"></div>
+  <div id="prank" class="page"></div>
 </div>
 <div id="card">
   <canvas id="c"></canvas>
@@ -343,6 +371,7 @@ body.flip #panel{top:170px;bottom:auto}
       <button class="up glass" data-k="atk" title="攻撃力 +10%"><span class="ic">⚔︎</span><span class="tx"><small>攻撃</small><b>0</b></span></button>
       <button class="up glass" data-k="hp" title="最大HP +10%"><span class="ic">♥︎</span><span class="tx"><small>体力</small><b>0</b></span></button>
       <button class="up glass" data-k="spd" title="攻撃速度 +7%"><span class="ic">≫</span><span class="tx"><small>速さ</small><b>0</b></span></button>
+      <button id="rankbtn" class="tbtn glass" title="フレンドランキング"><svg viewBox="0 0 16 16"><path d="M4 1h8v2h3v2.5A3.5 3.5 0 0 1 11.7 9 4 4 0 0 1 9 11.2V13h2.5v2h-7v-2H7v-1.8A4 4 0 0 1 4.3 9 3.5 3.5 0 0 1 1 5.5V3h3zm8 3.5v3a2 2 0 0 0 1.5-2V4.5zM4 4.5H2.5v1a2 2 0 0 0 1.5 2z"/></svg></button>
       <button id="partybtn" class="tbtn glass" title="キャラクター・グループ"><svg viewBox="0 0 16 16"><path d="M5.5 7.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5zm6 .5a2 2 0 1 1 0-4 2 2 0 0 1 0 4zM1 13c0-2.5 2-4 4.5-4S10 10.5 10 13v1H1zm10 1v-1c0-1.3-.4-2.4-1.1-3.2.5-.2 1-.3 1.6-.3 2 0 3.5 1.2 3.5 3.3V14z"/></svg></button>
       <button id="bagbtn" class="tbtn glass" title="装備・合成・強化"><svg viewBox="0 0 16 16"><path d="M5 5V4a3 3 0 0 1 6 0v1h2.2l.8 9.5H2L2.8 5zm1.5 0h3V4a1.5 1.5 0 0 0-3 0z"/></svg><i id="bagbadge"></i></button>
       <button id="auto" class="tbtn glass" title="ゴールドが貯まったら自動で強化">AUTO</button>
@@ -352,6 +381,8 @@ body.flip #panel{top:170px;bottom:auto}
   </div>
   <div id="gear"></div>
   <div id="toasts"></div>
+  <div id="bubbles"></div>
+  <div id="chain"></div>
   <div id="title"><small id="tsub">CHAPTER I</small><h1 id="tmain"></h1><div class="rule"></div></div>
 </div>
 
@@ -392,7 +423,7 @@ function fmt(n) {
 function fmtPix(n) { n = Math.floor(n); if (n < 10000) return '' + n; if (n < 1e6) return Math.floor(n / 1000) + 'K'; if (n < 1e9) return Math.floor(n / 1e6) + 'M'; return Math.floor(n / 1e9) + 'B'; }
 
 /* ---------- bridge to the macOS shell ---------- */
-const GAME_VERSION = '1.0.1', GAME_BUILD = 101;
+const GAME_VERSION = '1.1.0', GAME_BUILD = 110;
 const NATIVE = !!window.__DH_NATIVE || Q.has('nativeTest');
 // page -> mac: the shell polls document.title. Keep the title short: big payloads (saves) are cut into chunks
 // and sent one at a time; each title carries a session id so a reload never confuses the shell.
@@ -534,10 +565,10 @@ const CLASSES = {
 };
 const CLS_ORDER = Object.keys(CLASSES);
 const MELEE = { melee: 1, dagger: 1, hammer: 1 };
-const SLOT_UNLOCK = [1, 8, 20];
+const SLOT_UNLOCK = [0, 10, 20]; // progress index needed: start, after 1-10 boss, after 2-10 boss
 
 /* ---------- state ---------- */
-const DEF = { v: 3, lv: 1, xp: 0, gold: 0, upg: { atk: 0, hp: 0, spd: 0 }, heroes: { knight: { gear: {} } }, party: ['knight'], main: 'knight', name: '', grp: null, bag: [], shards: 0, fl: { equip: true, merge: false, salv: false }, region: 0, stage: 1, loop: 0, auto: false, ts: Date.now(), kills: 0 };
+const DEF = { v: 4, uid: '', friends: [], gifted: {}, lv: 1, xp: 0, gold: 0, upg: { atk: 0, hp: 0, spd: 0 }, heroes: { knight: { gear: {} } }, party: ['knight'], main: 'knight', name: '', grp: null, bag: [], shards: 0, fl: { equip: true, merge: false, salv: false }, region: 0, stage: 1, loop: 0, auto: false, ts: Date.now(), kills: 0 };
 let G = JSON.parse(JSON.stringify(DEF));
 let REG = REGIONS[0];
 const hero = { x: 0, phase: 0, walking: true, dead: false, deadT: 0, aura: 0 }; // party anchor (front)
@@ -546,17 +577,19 @@ let enemies = [], chests = [], coins = [], parts = [], pops = [], amb = [], arcs
 let camX = 0, spawned = 0, killed = 0, shake = 0, fade = 0, fadeTo = -1, flashT = 0;
 const grp = { active: false, code: '', peers: {}, status: 'off', pid: Math.random().toString(36).slice(2, 10) };
 
-function heroData(cls) { if (!G.heroes[cls]) G.heroes[cls] = { gear: {} }; return G.heroes[cls]; }
+function heroData(cls) { const h = G.heroes[cls] || (G.heroes[cls] = { gear: {} }); if (!h.lv) { h.lv = 1; h.xp = 0; } return h; }
+const heroLv = cls => heroData(cls).lv;
+const topLv = () => Math.max(1, ...Object.keys(G.heroes).map(heroLv));
 function statsFor(cls, gear) {
-  const C = CLASSES[cls], g = gear || heroData(cls).gear, u = G.upg, A = {};
+  const C = CLASSES[cls], hd = heroData(cls), g = gear || hd.gear, u = G.upg, A = {}, LV = hd.lv;
   let wAtk = 0, gHp = 0, bAs = 0, cCr = 0, cG = 0;
   for (const k of SLOTS) {
     const it = g[k]; if (!it) continue;
     const m = mainStat(it); wAtk += m.atk || 0; gHp += m.hp || 0; bAs += m.aspd || 0; cCr += m.crit || 0; cG += m.gold || 0;
     for (const a of it.a) A[a.k] = (A[a.k] || 0) + a.v;
   }
-  const atk = ((2 + G.lv * .7) * Math.pow(1.1, u.atk) + wAtk) * (1 + (A.atkp || 0)) * C.atk;
-  const maxHp = ((22 + G.lv * 4) * Math.pow(1.1, u.hp) + gHp) * (1 + (A.hpp || 0)) * C.hp;
+  const atk = ((2 + LV * .7) * Math.pow(1.1, u.atk) + wAtk) * (1 + (A.atkp || 0)) * C.atk;
+  const maxHp = ((22 + LV * 4) * Math.pow(1.1, u.hp) + gHp) * (1 + (A.hpp || 0)) * C.hp;
   const aps = Math.min(4.5, 0.85 * Math.pow(1.07, u.spd) * (1 + bAs + (A.aspd || 0)) * C.aps);
   const crit = Math.min(.8, 0.06 + (C.crit || 0) + cCr + (A.crit || 0));
   const critMul = 2.2 + (C.critd || 0) + (A.critd || 0);
@@ -566,7 +599,7 @@ function statsFor(cls, gear) {
   return { atk, maxHp, aps, crit, critMul, gm, regen, ls, power };
 }
 function powerWith(it, cls) { const g = Object.assign({}, heroData(cls).gear); g[it.s] = it; return statsFor(cls, g).power; }
-const slotsUnlocked = () => SLOT_UNLOCK.filter(l => G.lv >= l).length;
+const slotsUnlocked = () => SLOT_UNLOCK.filter(l => (G.best || 0) >= l).length;
 const groupSize = () => grp.active ? 1 + Object.keys(grp.peers).length : 1;
 const perPlayer = () => Math.max(1, Math.min(3, Math.floor(6 / groupSize())));
 function localClasses() { return G.party.slice(0, Math.min(slotsUnlocked(), perPlayer())); }
@@ -602,14 +635,15 @@ function migrate() {
     for (const k of ['weapon', 'armor', 'charm']) { const o = old[k]; if (o && o.name) { const it = makeItem(k, Math.min(4, o.rar || 0), o.t || 0, o.name); it.nw = 0; G.gear[k] = it; } }
   }
   if ((G.v || 1) < 3) { G.heroes = { knight: { gear: G.gear || {} } }; delete G.gear; G.party = ['knight']; G.main = 'knight'; }
-  G.v = 3;
+  if ((G.v || 1) < 4) { for (const c in G.heroes) { const h = G.heroes[c]; h.lv = Math.max(1, G.lv || 1); h.xp = 0; } }
+  G.v = 4;
 }
 const tier = () => G.loop * REGIONS.length * 10 + G.region * 10 + (G.stage - 1);
 const isBoss = () => G.stage === 10;
 const idxOf = (lp, r, st) => (lp * REGIONS.length + r) * 10 + st - 1;
 const curIdx = () => idxOf(G.loop, G.region, G.stage);
 const unlockedAt = (r, st) => idxOf(G.loop, r, st) <= (G.best || 0);
-const stageCount = () => isBoss() ? 1 : 4 + Math.min(4, Math.floor(G.stage / 3));
+const stageCount = () => isBoss() ? 1 : 5 + Math.min(5, Math.floor(G.stage / 2));
 const xpNeed = l => Math.floor(12 * Math.pow(1.19, l - 1));
 const upCost = k => Math.floor(5 * Math.pow(1.17, G.upg[k]) * (k === 'spd' ? 1.6 : 1));
 let ST = { maxHp: 1, power: 1, gm: 1, xm: 1 };
@@ -620,9 +654,10 @@ function load() {
   let s = window.__DH_SAVE || ''; if (!s) { try { s = localStorage.getItem('dockhero') || ''; } catch (e) { } }
   if (s) { try { const d = JSON.parse(s); G = Object.assign(JSON.parse(JSON.stringify(DEF)), d); G.upg = Object.assign({ atk: 0, hp: 0, spd: 0 }, d.upg || {}); G.gear = d.gear; G.heroes = d.heroes || G.heroes; G.bag = d.bag || []; G.fl = Object.assign({ equip: true, merge: false, salv: false }, d.fl || {}); migrate(); } catch (e) { } }
   if (Q.get('region')) { G.region = +Q.get('region'); G.stage = +(Q.get('stage') || 1); }
-  if (Q.get('lv')) G.lv = +Q.get('lv');
+  if (Q.get('lv')) { G.lv = +Q.get('lv'); for (const c in G.heroes) heroData(c).lv = G.lv; G.best = Math.max(G.best || 0, 25); }
   REG = REGIONS[G.region];
   G.best = Math.max(G.best || 0, curIdx()); G.fl.stay = !!G.fl.stay;
+  if (!G.uid) G.uid = newCode() + newCode().slice(0, 2); G.friends = G.friends || []; G.gifted = G.gifted || {};
   for (const c of G.party) heroData(c); if (!CLASSES[G.main]) G.main = 'knight';
   rebuildParty();
   const away = (Date.now() - (G.ts || Date.now())) / 1000;
@@ -690,114 +725,164 @@ const rarMetal = (r, d) => r >= 0 ? RARITY[r].metal : d;
 const rarCol = (r, d) => r >= 0 ? RARITY[r].c : d;
 
 // m = party member { cls, swing, gr, ... }. draws facing right, (ox, oy) = feet center
+// ---- original chibi heroes (2.5 heads): big face, readable silhouettes, 3-tone shading ----
+const HERO_LOOK = {
+  knight: { hair: '#b9a6ff', iris: '#6a3fd8', skin: '#ffd9b8', style: 'short' },
+  archer: { hair: '#e0703a', iris: '#2f9a5e', skin: '#f6cfa6', style: 'pony' },
+  mage:   { hair: '#dfe6ff', iris: '#4a6cff', skin: '#ffe2c8', style: 'long' },
+  healer: { hair: '#ffc8d8', iris: '#2ec4c4', skin: '#ffe2cc', style: 'veil' },
+  rogue:  { hair: '#2a2238', iris: '#ff4d6a', skin: '#f2c8a0', style: 'spiky' },
+  smith:  { hair: '#ff9a3d', iris: '#7a4a2a', skin: '#e8b48a', style: 'bandana' },
+  bard:   { hair: '#3fd6c8', iris: '#ff6bd0', skin: '#ffd9b8', style: 'bob' },
+};
 function dHero(c, ox, oy, m) {
   m = m || { cls: 'knight', swing: -1, gr: {} };
+  const k = m.cls, L = HERO_LOOK[k] || HERO_LOOK.knight, gr = m.gr || {};
   const run = hero.walking && !m.down, ph = hero.phase + (m.ph || 0) * .2;
-  const gr = m.gr || {};
   const l1 = run ? Math.round(Math.sin(ph) * 1.6) : 0, l2 = -l1;
   const bob = run ? (Math.cos(ph * 2) > .3 ? -1 : 0) : (Math.sin(T * 2.6 + (m.ph || 0)) > .55 ? -1 : 0);
   const blink = ((T + (m.ph || 0) * 1.7) % 3.4) < .13;
-  const ty = oy - 8 + bob, hy = oy - 14 + bob;
-  const k = m.cls;
-  const legs = (col, colD, boot) => { R(c, ox - 2 + l2, oy - 3, 2, 2, colD); R(c, ox - 2 + l2, oy - 1, 3, 1, shade(boot, -.25)); R(c, ox + l1, oy - 3, 2, 2, col); R(c, ox + l1, oy - 1, 3, 1, boot); };
-  const cape = (col, colD, len, n) => { for (let i = 0; i < n; i++) { const x = ox - 3 - i, top = ty - 2 + Math.floor(i / 2); const wave = Math.round(Math.sin(T * 9 - i * .9 + (m.ph || 0)) * (run ? 1.3 : .6)); const bot = oy - len + wave - (i > 3 ? 2 : 0); R(c, x, top, 1, Math.max(1, bot - top), i < 2 ? col : colD); } };
-  const face = (y) => { R(c, ox, y, 3, 2, P.skin); R(c, ox + 1, y, 1, 1, blink ? shade(P.skin, -.25) : P.eye); R(c, ox + 2, y + 1, 1, 1, '#f3a98f'); };
-  const bootC = rarCol(gr.boots, '#5b3a2a') === '#5b3a2a' ? '#5b3a2a' : shade(rarCol(gr.boots), -.35);
-  const metal = rarMetal(gr.armor, '#d7d2f0'), hm = rarMetal(gr.helm, '#c8c2e8'), wc = rarMetal(gr.weapon, '#e8f4ff');
+  const ty = oy - 8 + bob, hy = ty - 7;                 // torso top, head top
+  const P2 = (x, y, w, h, col) => R(c, x, y, w, h, col);
+  const sh = (col, a) => shade(col, a);
+  const metal = rarMetal(gr.armor, '#dcd6f2'), hm = rarMetal(gr.helm, '#d8d2f0'), wc = rarMetal(gr.weapon, '#eef6ff');
   const trim = rarCol(gr.armor, '#ffcc4d');
+  const bootC = gr.boots >= 0 ? sh(rarCol(gr.boots), -.35) : '#5b3a2a';
+  const swayS = Math.sin(T * 7 + (m.ph || 0));
 
-  if (k === 'knight') {
-    cape(P.cape, P.capeD, 2, 6); R(c, ox - 3, ty - 2, 1, 2, P.capeL);
-    legs(P.leg, P.legD, bootC);
-    R(c, ox - 3, ty, 6, 5, metal); R(c, ox - 3, ty, 1, 5, shade(metal, -.38)); R(c, ox + 2, ty, 1, 3, '#fff');
-    R(c, ox - 1, ty + 1, 2, 2, P.cape); R(c, ox - 1, ty + 1, 1, 1, P.capeL); R(c, ox - 3, ty + 4, 6, 1, P.belt); R(c, ox, ty + 4, 1, 1, P.buckle);
-    R(c, ox - 2, hy, 5, 1, hm); R(c, ox - 3, hy + 1, 6, 4, hm); R(c, ox - 3, hy + 1, 1, 4, shade(hm, -.38)); face(hy + 2); R(c, ox - 1, hy + 1, 2, 1, '#fff'); R(c, ox - 3, hy + 4, 6, 1, shade(hm, -.38));
-    const pw = Math.round(Math.sin(T * 7) * 1); R(c, ox - 1, hy - 1, 2, 1, P.plume); R(c, ox - 3 + pw, hy - 2, 3, 1, P.plume); R(c, ox - 4 + pw, hy - 1, 1, 1, P.plumeD);
-    const ang = swingAngle(m), hx = ox + 3, hy2 = ty + 2; dBlade(c, hx, hy2, ang, wc, 8); R(c, hx - 1, hy2, 2, 2, metal);
-  } else if (k === 'archer') {
-    // quiver
-    R(c, ox - 4, ty - 2, 2, 6, '#7a4a2a'); R(c, ox - 4, ty - 3, 1, 1, '#fff'); R(c, ox - 3, ty - 4, 1, 1, '#fff');
-    cape('#3f9a5e', '#2b6e43', 4, 3);
-    legs('#4a3a2a', '#33281c', bootC);
-    R(c, ox - 3, ty, 6, 5, '#4fbf7a'); R(c, ox - 3, ty, 1, 5, '#2f8a52'); R(c, ox - 3, ty + 4, 6, 1, '#7a4a2a'); R(c, ox + 1, ty, 1, 4, trim);
-    // hood
-    const hc = rarCol(gr.helm, '#3f9a5e') === '#3f9a5e' ? '#3f9a5e' : mix(rarCol(gr.helm), '#3f9a5e', .4);
-    R(c, ox - 3, hy, 5, 1, hc); R(c, ox - 4, hy + 1, 7, 4, hc); R(c, ox - 5, hy + 2, 1, 2, shade(hc, -.3)); face(hy + 2); R(c, ox - 4, hy + 1, 1, 4, shade(hc, -.3));
-    // bow
-    const draw = m.swing >= 0 && m.swing < .55 ? Math.round(ease(Math.min(1, m.swing / .45)) * 2) : 0;
-    const bx = ox + 4, by = ty + 1;
-    const arc = [[0, -5], [1, -4], [1, -3], [2, -2], [2, -1], [2, 0], [2, 1], [1, 2], [1, 3], [0, 4]];
-    arc.forEach(([dx, dy]) => R(c, bx + dx, by + dy, 1, 1, dx === 2 ? wc : shade(wc, -.35)));
-    R(c, bx - draw, by - 4, 1, 4 + 0, 'rgba(255,255,255,.75)'); R(c, bx - draw, by, 1, 4, 'rgba(255,255,255,.75)');
-    if (m.swing >= 0 && m.swing < .55) { for (let i = 0; i < 6; i++) R(c, bx - draw + i, by, 1, 1, i > 4 ? '#fff' : '#c9a07a'); }
-    R(c, ox + 2, ty + 1, 2, 2, P.skin);
+  // ---------- layers behind the body ----------
+  const cape = (col, len, n) => { for (let i = 0; i < n; i++) { const x = ox - 3 - i, top = ty + Math.floor(i / 2); const wave = Math.round(Math.sin(T * 9 - i * .9 + (m.ph || 0)) * (run ? 1.3 : .6)); const bot = oy - len + wave - (i > 3 ? 1 : 0); P2(x, top, 1, Math.max(1, bot - top), i === 0 ? sh(col, .2) : i < 3 ? col : sh(col, -.25)); } };
+  const backHair = (len) => { for (let y = 0; y < len; y++) P2(ox - 5 + (y > len - 3 ? 1 : 0), hy + 2 + y, 3 - (y > len - 3 ? 1 : 0), 1, y % 3 === 1 ? L.hair : sh(L.hair, -.25)); };
+  if (k === 'knight') cape('#8a4dff', 2, 6);
+  if (k === 'archer') { cape('#3f9a5e', 4, 3); P2(ox - 5, ty - 1, 2, 7, '#7a4a2a'); P2(ox - 5, ty - 1, 2, 1, '#a8703a'); P2(ox - 5, ty - 3, 1, 2, '#fff'); P2(ox - 4, ty - 4, 1, 3, '#ffe8c0'); }
+  if (k === 'mage' || k === 'healer') backHair(9);
+  if (k === 'rogue') for (let i = 0; i < 8; i++) { const w = Math.round(Math.sin(T * 10 - i * .8 + (m.ph || 0)) * (run ? 1.5 : .8)); P2(ox - 3 - i, ty + 1 + w + Math.floor(i / 3), 1, i < 2 ? 2 : 1, i < 4 ? '#ff4d6a' : '#c22a48'); }
+  if (k === 'bard') cape('#a8327a', 3, 4);
+  // back arm
+  const armC = { knight: metal, archer: '#4fbf7a', mage: '#3b4fd8', healer: '#f4f2ff', rogue: '#3a2c5a', smith: L.skin, bard: '#d94fb0' }[k];
+  const swingArm = run ? Math.round(Math.sin(ph) * 1) : 0;
+  P2(ox - 3, ty + 1 + swingArm, 1, 3, sh(armC, -.35));
+
+  // ---------- legs ----------
+  const robe = k === 'mage' || k === 'healer';
+  if (!robe) {
+    const legC = { knight: '#3c2f63', archer: '#4a3a2a', rogue: '#2b2140', smith: '#4a5a8a', bard: '#2f2a4a' }[k];
+    P2(ox - 2 + l2, oy - 3, 2, 2, sh(legC, -.3)); P2(ox - 2 + l2, oy - 1, 3, 1, sh(bootC, -.3));
+    P2(ox + l1, oy - 3, 2, 2, legC); P2(ox + l1, oy - 1, 3, 1, bootC); P2(ox + 2 + l1, oy - 1, 1, 1, sh(bootC, .25));
+  } else { P2(ox - 1 + l2, oy - 1, 2, 1, '#2a2048'); P2(ox + 1 + l1, oy - 1, 2, 1, '#3a2c68'); }
+
+  // ---------- torso ----------
+  const torso = (base, w) => { w = w || 6; const x0 = ox - 3; P2(x0, ty, w, 5, base); P2(x0, ty, 1, 5, sh(base, -.35)); P2(x0 + w - 1, ty, 1, 4, sh(base, .25)); };
+  if (k === 'knight') { torso(metal); P2(ox - 1, ty + 1, 2, 2, '#8a4dff'); P2(ox - 1, ty + 1, 1, 1, '#c9a8ff'); P2(ox - 3, ty + 4, 6, 1, '#ffcc4d'); P2(ox, ty + 4, 1, 1, '#fff2b8'); P2(ox - 3, ty, 6, 1, sh(metal, .35)); }
+  else if (k === 'archer') { torso('#4fbf7a'); P2(ox - 3, ty + 4, 6, 1, '#7a4a2a'); P2(ox + 1, ty, 1, 4, trim); P2(ox - 2, ty, 3, 1, '#e8d8b0'); }
+  else if (k === 'mage' || k === 'healer') {
+    const rc = k === 'mage' ? (gr.armor >= 0 ? mix(rarCol(gr.armor), '#3b4fd8', .5) : '#3b4fd8') : '#f4f2ff';
+    for (let i = 0; i < 8; i++) { const w = 6 + Math.floor(i / 3), x = ox - 3 - Math.floor(i / 4); P2(x, ty + i, w, 1, i === 7 ? sh(rc, -.3) : rc); P2(x, ty + i, 1, 1, sh(rc, -.3)); P2(x + w - 1, ty + i, 1, 1, sh(rc, .2)); }
+    P2(ox - 4, ty + 7, 8, 1, trim);
+    if (k === 'mage') { P2(ox - 1, ty, 2, 1, '#ffcc4d'); P2(ox, ty + 3, 1, 1, '#ffe08a'); P2(ox - 2, ty + 5, 1, 1, '#ffe08a'); }
+    else { P2(ox - 1, ty + 1, 1, 4, '#4fe0d0'); P2(ox - 2, ty + 2, 3, 1, '#4fe0d0'); }
+  }
+  else if (k === 'rogue') { const cl = gr.armor >= 0 ? mix(rarCol(gr.armor), '#3a2c5a', .55) : '#3a2c5a'; torso(cl, 5); P2(ox - 3, ty + 4, 5, 1, '#7a4a2a'); P2(ox - 1, ty, 2, 2, '#ff4d6a'); }
+  else if (k === 'smith') { torso('#4a5a8a', 7); P2(ox - 2, ty + 1, 4, 4, '#8a5a3a'); P2(ox - 2, ty + 1, 4, 1, '#a8703a'); P2(ox - 1, ty + 2, 1, 1, '#ffcc4d'); P2(ox - 3, ty, 7, 1, sh('#4a5a8a', .3)); }
+  else if (k === 'bard') { const jk = gr.armor >= 0 ? mix(rarCol(gr.armor), '#d94fb0', .5) : '#d94fb0'; torso(jk); P2(ox, ty, 1, 4, '#fff'); P2(ox - 1, ty, 1, 2, '#ffe08a'); P2(ox - 3, ty + 4, 6, 1, '#2f2a4a'); }
+
+  // ---------- head (8x7, facing right) ----------
+  const hx0 = ox - 4, skin = L.skin, skD = sh(skin, -.18);
+  P2(hx0 + 1, hy, 6, 1, skin); P2(hx0, hy + 1, 8, 5, skin); P2(hx0 + 1, hy + 6, 6, 1, skin);
+  P2(hx0, hy + 1, 1, 5, skD); P2(hx0 + 1, hy + 6, 6, 1, skD);
+  // eyes
+  const ey = hy + 3;
+  if (blink || m.down) { P2(ox - 2, ey + 1, 1, 1, '#2a1830'); P2(ox + 1, ey + 1, 2, 1, '#2a1830'); }
+  else {
+    P2(ox - 2, ey, 1, 1, '#2a1830'); P2(ox - 2, ey + 1, 1, 1, L.iris);
+    P2(ox + 1, ey, 2, 1, '#2a1830'); P2(ox + 1, ey + 1, 1, 1, L.iris); P2(ox + 2, ey + 1, 1, 1, sh(L.iris, .6));
+  }
+  P2(ox + 3, ey + 2, 1, 1, '#ff9ab0'); P2(ox - 3, ey + 2, 1, 1, sh('#ff9ab0', .2));
+  P2(ox + 1, ey + 3, 1, 1, m.hurt > 0 ? '#2a1830' : '#d0607a');
+
+  // ---------- hair / headwear ----------
+  const H = L.hair, HL = sh(H, .35), HD = sh(H, -.28);
+  const capHair = () => {
+    P2(hx0 + 1, hy - 1, 6, 1, H); P2(hx0, hy, 8, 2, H); P2(hx0 - 1, hy + 1, 2, 4, HD);
+    P2(hx0 + 2, hy - 1, 3, 1, HL); P2(hx0 + 3, hy, 2, 1, HL);
+    // bangs (gaps let the forehead show)
+    P2(hx0 + 1, hy + 2, 2, 1, H); P2(hx0 + 4, hy + 2, 1, 1, H); P2(hx0 + 6, hy + 2, 2, 2, H); P2(hx0 + 7, hy + 4, 1, 1, HD);
+  };
+  if (L.style === 'short') {
+    capHair();
+    // circlet / helm piece
+    P2(hx0, hy, 8, 1, hm); P2(hx0 + 4, hy, 1, 1, '#8a4dff'); P2(hx0 + 1, hy - 1, 2, 1, sh(hm, .3));
+    const pw = Math.round(swayS); P2(hx0 - 1 + pw, hy - 2, 3, 1, '#c58bff'); P2(hx0 - 2 + pw, hy - 1, 2, 1, '#9a5cff');
+  } else if (L.style === 'pony') {
+    // hood with pointed tip
+    const hc = gr.helm >= 0 ? mix(rarCol(gr.helm), '#3f9a5e', .4) : '#3f9a5e';
+    capHair();
+    P2(hx0 - 1, hy - 1, 6, 1, hc); P2(hx0 - 2, hy, 6, 3, hc); P2(hx0 - 2, hy + 3, 2, 3, sh(hc, -.25)); P2(hx0 - 3, hy - 2 + Math.round(swayS), 2, 2, hc); P2(hx0 + 1, hy - 1, 3, 1, sh(hc, .25));
+    const sw = Math.round(Math.sin(T * 5 + (m.ph || 0)) * 1); P2(hx0 - 4, hy + 3 + sw, 2, 3, H); P2(hx0 - 4, hy + 5 + sw, 1, 2, HD);
+  } else if (L.style === 'long') {
+    capHair();
+    const hat = gr.helm >= 0 ? mix(rarCol(gr.helm), '#28308a', .5) : '#28308a';
+    P2(hx0 - 2, hy + 1, 12, 1, hat); P2(hx0 - 2, hy + 1, 12, 1, hat); P2(hx0 - 1, hy + 2, 10, 1, sh(hat, -.3));
+    P2(hx0, hy - 1, 7, 2, hat); P2(hx0 + 1, hy - 3, 5, 2, hat); P2(hx0 + 1, hy - 5, 3, 2, hat); P2(hx0 - 1, hy - 6, 3, 1, hat); P2(hx0 - 2, hy - 6, 1, 1, '#ffe08a');
+    P2(hx0, hy, 7, 1, '#ffcc4d'); P2(hx0 + 4, hy - 2, 1, 1, '#ffe08a'); P2(hx0 + 2, hy - 3, 2, 1, sh(hat, .25));
+  } else if (L.style === 'veil') {
+    const hood = gr.helm >= 0 ? mix(rarCol(gr.helm), '#ffffff', .55) : '#f8f6ff';
+    capHair();
+    P2(hx0 - 1, hy - 1, 8, 2, hood); P2(hx0 - 2, hy + 1, 3, 7, hood); P2(hx0 - 2, hy + 1, 1, 7, '#c9c3ea'); P2(hx0, hy + 1, 7, 1, '#7fe7ff'); P2(hx0 + 2, hy - 1, 3, 1, '#ffffff');
+    P2(hx0 + 1, hy - 3, 6, 1, 'rgba(255,240,170,.95)'); P2(hx0, hy - 2, 1, 1, 'rgba(255,240,170,.8)'); P2(hx0 + 7, hy - 2, 1, 1, 'rgba(255,240,170,.8)');
+  } else if (L.style === 'spiky') {
+    capHair();
+    P2(hx0, hy - 2, 1, 2, H); P2(hx0 + 2, hy - 3, 1, 2, H); P2(hx0 + 4, hy - 2, 2, 1, H); P2(hx0 + 6, hy - 1, 2, 1, H); P2(hx0 - 1, hy - 1, 1, 1, HD);
+    P2(hx0 + 5, hy + 1, 1, 1, '#ff4d6a'); P2(hx0 + 2, hy - 2, 1, 1, sh(H, .5));
+    P2(hx0 + 5, hy + 2, 3, 2, H);  // fringe over the near eye side
+  } else if (L.style === 'bandana') {
+    capHair();
+    P2(hx0, hy - 1, 8, 2, '#d83a3a'); P2(hx0 + 1, hy - 1, 3, 1, '#ff6a5a'); P2(hx0 - 2, hy + 1 + Math.round(swayS), 2, 2, '#b82a2a');
+    P2(hx0 + 2, hy - 3, 4, 2, hm); P2(hx0 + 3, hy - 3, 1, 1, '#9fe8ff'); P2(hx0 + 5, hy - 3, 1, 1, '#9fe8ff');
+    P2(hx0 + 1, hy + 5, 6, 2, sh(H, -.1)); P2(hx0 + 4, hy + 6, 2, 1, H);   // short beard
+  } else if (L.style === 'bob') {
+    capHair(); P2(hx0 - 1, hy + 2, 2, 4, H); P2(hx0 - 1, hy + 5, 2, 1, HD);
+    const hat = gr.helm >= 0 ? mix(rarCol(gr.helm), '#7a2560', .5) : '#7a2560';
+    P2(hx0 - 1, hy, 10, 1, hat); P2(hx0 + 1, hy - 2, 6, 2, hat); P2(hx0 + 1, hy - 1, 6, 1, '#ffcc4d');
+    const fw = Math.round(swayS); P2(hx0 - 2, hy - 3 + fw, 3, 1, '#ffe08a'); P2(hx0 - 4, hy - 4 + fw, 2, 1, '#ffe08a'); P2(hx0 - 5, hy - 5 + fw, 1, 1, '#fff6c4');
+  }
+
+  // ---------- weapons + front arm ----------
+  const hand = (x, y) => { P2(x, y, 2, 2, sh(armC, 0)); P2(x, y + 1, 1, 1, sh(armC, -.3)); P2(x + 1, y + 1, 1, 1, skin); };
+  if (k === 'knight') { const ang = swingAngle(m), hx = ox + 3, hy2 = ty + 2; dBlade(c, hx, hy2, ang, wc, 9); hand(hx - 1, hy2); }
+  else if (k === 'archer') {
+    const draw = m.swing >= 0 && m.swing < .55 ? Math.round(ease(Math.min(1, m.swing / .45)) * 2) : 0, bx = ox + 4, by = ty + 1;
+    [[0, -5], [1, -4], [1, -3], [2, -2], [2, -1], [2, 0], [2, 1], [1, 2], [1, 3], [0, 4]].forEach(([dx, dy]) => P2(bx + dx, by + dy, 1, 1, dx === 2 ? wc : sh(wc, -.35)));
+    P2(bx - draw, by - 4, 1, 4, 'rgba(255,255,255,.8)'); P2(bx - draw, by, 1, 4, 'rgba(255,255,255,.8)');
+    if (m.swing >= 0 && m.swing < .55) for (let i = 0; i < 6; i++) P2(bx - draw + i, by, 1, 1, i > 4 ? '#fff' : '#c9a07a');
+    hand(ox + 2, ty + 1);
   } else if (k === 'mage') {
-    const robe = rarCol(gr.armor, '#3b4fd8') === '#3b4fd8' ? '#3b4fd8' : mix(rarCol(gr.armor), '#3b4fd8', .45);
-    R(c, ox - 1 + l2, oy - 1, 2, 1, '#1b1440'); R(c, ox + 1 + l1, oy - 1, 2, 1, '#1b1440');
-    for (let i = 0; i < 7; i++) { const w = 6 + Math.floor(i / 3); R(c, ox - 3 - Math.floor(i / 4), ty + i, w, 1, i === 6 ? shade(robe, -.3) : robe); }
-    R(c, ox - 3, ty, 1, 6, shade(robe, -.35)); R(c, ox, ty + 2, 1, 1, '#ffe08a'); R(c, ox - 2, ty + 4, 1, 1, '#ffe08a'); R(c, ox - 3, ty + 6, 7, 1, trim);
-    R(c, ox - 3, hy + 2, 2, 3, '#e8e4ff'); face(hy + 2);
-    const hat = rarCol(gr.helm, '#2b2f8f') === '#2b2f8f' ? '#2b2f8f' : mix(rarCol(gr.helm), '#2b2f8f', .5);
-    R(c, ox - 4, hy + 1, 9, 1, hat); R(c, ox - 3, hy, 6, 1, hat); R(c, ox - 2, hy - 1, 4, 1, hat); R(c, ox - 2, hy - 2, 3, 1, hat); R(c, ox - 2, hy - 3, 2, 1, hat); R(c, ox - 3, hy - 4, 2, 1, hat); R(c, ox - 4, hy - 4, 1, 1, '#ffe08a');
-    R(c, ox - 3, hy, 6, 1, '#ffcc4d');
-    const lift = m.swing >= 0 ? Math.round(Math.sin(Math.min(1, m.swing) * Math.PI) * 2) : 0;
-    const sx = ox + 4 + lift;
-    for (let y = ty - 6; y < oy; y++) R(c, sx, y, 1, 1, '#8a5a3a');
-    R(c, sx - 1, ty - 8, 3, 2, wc); R(c, sx, ty - 9, 1, 1, '#fff'); R(c, ox + 2, ty + 2, 2, 2, P.skin);
+    const lift = m.swing >= 0 ? Math.round(Math.sin(Math.min(1, m.swing) * Math.PI) * 2) : 0, sx = ox + 4 + lift;
+    for (let y = ty - 5; y < oy; y++) P2(sx, y, 1, 1, '#8a5a3a');
+    P2(sx - 1, ty - 8, 3, 3, wc); P2(sx, ty - 9, 1, 1, '#fff'); P2(sx - 2, ty - 7, 1, 1, '#ffcc4d'); P2(sx + 2, ty - 7, 1, 1, '#ffcc4d');
+    hand(ox + 2, ty + 2);
   } else if (k === 'healer') {
-    const robe = '#eef0ff';
-    R(c, ox - 1 + l2, oy - 1, 2, 1, '#8a7ab0'); R(c, ox + 1 + l1, oy - 1, 2, 1, '#8a7ab0');
-    for (let i = 0; i < 7; i++) { const w = 6 + Math.floor(i / 3); R(c, ox - 3 - Math.floor(i / 4), ty + i, w, 1, robe); }
-    R(c, ox - 3, ty, 1, 6, '#b9bfe6'); R(c, ox - 4, ty + 6, 8, 1, trim); R(c, ox - 1, ty + 1, 1, 4, '#7fe7ff'); R(c, ox - 2, ty + 2, 3, 1, '#7fe7ff');
-    const hood = rarCol(gr.helm, '#ffffff') === '#ffffff' ? '#f4f2ff' : mix(rarCol(gr.helm), '#ffffff', .55);
-    R(c, ox - 3, hy, 5, 1, hood); R(c, ox - 4, hy + 1, 7, 4, hood); R(c, ox - 4, hy + 1, 1, 4, '#c9c3ea'); face(hy + 2); R(c, ox - 1, hy + 1, 3, 1, '#7fe7ff');
-    // halo
-    R(c, ox - 2, hy - 2, 4, 1, 'rgba(255,240,170,.9)');
-    const sx = ox + 4; for (let y = ty - 5; y < oy; y++) R(c, sx, y, 1, 1, '#d9c7a0');
-    R(c, sx - 1, ty - 8, 3, 1, wc); R(c, sx - 1, ty - 6, 3, 1, wc); R(c, sx - 1, ty - 7, 1, 1, wc); R(c, sx + 1, ty - 7, 1, 1, wc); R(c, sx, ty - 7, 1, 1, '#fff');
-    R(c, ox + 2, ty + 2, 2, 2, P.skin);
+    const sx = ox + 4; for (let y = ty - 5; y < oy; y++) P2(sx, y, 1, 1, '#e8d8b0');
+    P2(sx - 1, ty - 8, 3, 1, wc); P2(sx - 1, ty - 6, 3, 1, wc); P2(sx - 1, ty - 7, 1, 1, wc); P2(sx + 1, ty - 7, 1, 1, wc); P2(sx, ty - 7, 1, 1, '#9fffe8');
+    hand(ox + 2, ty + 2);
   } else if (k === 'rogue') {
-    // long scarf
-    for (let i = 0; i < 7; i++) { const w = Math.round(Math.sin(T * 10 - i * .8 + (m.ph || 0)) * (run ? 1.4 : .7)); R(c, ox - 3 - i, hy + 5 + w + Math.floor(i / 3), 1, 1, i < 3 ? '#ff5c6c' : '#c23b4e'); }
-    legs('#2b2140', '#1c1630', bootC);
-    const cl = rarCol(gr.armor, '#3a2c5a') === '#3a2c5a' ? '#3a2c5a' : mix(rarCol(gr.armor), '#3a2c5a', .55);
-    R(c, ox - 2, ty, 5, 5, cl); R(c, ox - 2, ty, 1, 5, shade(cl, -.35)); R(c, ox - 2, ty + 4, 5, 1, '#7a4a2a');
-    R(c, ox - 2, hy + 1, 5, 4, P.skin); R(c, ox + 1, hy + 2, 1, 1, P.eye); R(c, ox - 3, hy, 5, 2, '#8a2f3c'); R(c, ox - 3, hy + 2, 2, 2, '#8a2f3c'); R(c, ox - 4, hy - 1, 2, 1, '#8a2f3c'); R(c, ox, hy - 1, 2, 1, '#8a2f3c');
-    R(c, ox - 2, hy + 4, 5, 1, '#ff5c6c');
-    const p = m.swing, alt = (m.hits || 0) % 2;
-    const thrust = p >= .3 && p < .7 ? Math.round(Math.sin((p - .3) / .4 * Math.PI) * 3) : 0;
+    const p = m.swing, alt = (m.hits || 0) % 2, thrust = p >= .3 && p < .7 ? Math.round(Math.sin((p - .3) / .4 * Math.PI) * 3) : 0;
     const fx = ox + 3 + (alt ? 0 : thrust), bx2 = ox + 1 + (alt ? thrust : 0);
-    R(c, fx, ty + 2, 1, 1, P.skin); R(c, fx + 1, ty + 2, 3, 1, wc); R(c, fx + 4, ty + 2, 1, 1, '#fff');
-    R(c, bx2, ty + 3, 1, 1, P.skin); R(c, bx2 + 1, ty + 3, 2, 1, shade(wc, -.2)); R(c, bx2 + 3, ty + 3, 1, 1, '#fff');
+    P2(bx2 + 1, ty + 3, 3, 1, sh(wc, -.2)); P2(bx2 + 4, ty + 3, 1, 1, '#fff'); P2(bx2, ty + 3, 1, 1, skin);
+    P2(fx + 1, ty + 2, 3, 1, wc); P2(fx + 4, ty + 2, 1, 1, '#fff'); P2(fx + 1, ty + 1, 1, 1, '#ff4d6a'); hand(fx - 1, ty + 1);
   } else if (k === 'smith') {
-    legs('#4a3a3a', '#332626', bootC);
-    R(c, ox - 4, ty, 8, 5, metal); R(c, ox - 4, ty, 1, 5, shade(metal, -.38)); R(c, ox - 4, ty + 4, 8, 1, '#7a4a2a'); R(c, ox - 1, ty + 1, 2, 2, '#ff9a3d');
-    R(c, ox - 3, hy + 1, 6, 4, P.skin); R(c, ox + 1, hy + 2, 1, 1, P.eye);
-    R(c, ox - 2, hy + 3, 6, 3, '#e07a2a'); R(c, ox - 1, hy + 6, 3, 1, '#c25f1c');
-    R(c, ox - 3, hy - 1, 6, 3, hm); R(c, ox - 3, hy - 1, 1, 3, shade(hm, -.38)); R(c, ox - 4, hy + 1, 8, 1, shade(hm, -.2));
-    // hammer
-    const p = m.swing;
-    let a = 1.9; if (p >= 0) { if (p < .45) a = lerp(1.9, 2.6, ease(p / .45)); else if (p < .65) a = lerp(2.6, -.2, (p - .45) / .2); else a = lerp(-.2, 1.9, (p - .65) / .35); }
-    const hx = ox + 2, hy2 = ty + 2, ca = Math.cos(a), sa = Math.sin(a);
-    for (let i = 1; i <= 7; i++) R(c, hx + Math.round(ca * i), hy2 - Math.round(sa * i), 1, 1, '#8a5a3a');
+    const p = m.swing; let a = 1.9; if (p >= 0) { if (p < .45) a = lerp(1.9, 2.6, ease(p / .45)); else if (p < .65) a = lerp(2.6, -.2, (p - .45) / .2); else a = lerp(-.2, 1.9, (p - .65) / .35); }
+    const hx = ox + 3, hy2 = ty + 2, ca = Math.cos(a), sa = Math.sin(a);
+    for (let i = 1; i <= 7; i++) P2(hx + Math.round(ca * i), hy2 - Math.round(sa * i), 1, 1, '#8a5a3a');
     const tx = hx + Math.round(ca * 8), tyy = hy2 - Math.round(sa * 8);
-    R(c, tx - 2, tyy - 1, 4, 3, wc); R(c, tx - 2, tyy - 1, 4, 1, '#fff'); R(c, tx - 2, tyy + 1, 4, 1, shade(wc, -.4));
-    R(c, hx - 1, hy2, 2, 2, P.skin);
+    P2(tx - 2, tyy - 2, 5, 4, wc); P2(tx - 2, tyy - 2, 5, 1, '#fff'); P2(tx - 2, tyy + 1, 5, 1, sh(wc, -.4)); P2(tx, tyy - 1, 1, 2, '#ff9a3d');
+    hand(hx - 1, hy2);
   } else if (k === 'bard') {
-    cape('#b03a8a', '#7a2560', 3, 4);
-    legs('#2f2a4a', '#211d36', bootC);
-    const jk = rarCol(gr.armor, '#ff6bd0') === '#ff6bd0' ? '#d94fb0' : mix(rarCol(gr.armor), '#d94fb0', .5);
-    R(c, ox - 3, ty, 6, 5, jk); R(c, ox - 3, ty, 1, 5, shade(jk, -.35)); R(c, ox, ty, 1, 4, '#fff'); R(c, ox - 3, ty + 4, 6, 1, '#2f2a4a');
-    R(c, ox - 2, hy + 1, 5, 4, P.skin); R(c, ox + 1, hy + 2, 1, 1, P.eye); R(c, ox - 3, hy + 1, 2, 3, '#6a3a2a');
-    const hat = rarCol(gr.helm, '#7a2560') === '#7a2560' ? '#7a2560' : mix(rarCol(gr.helm), '#7a2560', .5);
-    R(c, ox - 4, hy + 1, 9, 1, hat); R(c, ox - 2, hy - 1, 5, 2, hat); R(c, ox - 2, hy, 5, 1, '#ffcc4d');
-    const fw = Math.round(Math.sin(T * 6) * 1); R(c, ox - 4, hy - 2 + fw, 3, 1, '#ffe08a'); R(c, ox - 6, hy - 3 + fw, 2, 1, '#ffe08a'); R(c, ox - 7, hy - 4 + fw, 1, 1, '#fff6c4');
-    // guitar
     const strum = m.swing >= 0 && m.swing < .6 ? (Math.floor(m.swing * 12) % 2) : 0;
-    R(c, ox - 1, ty + 2, 4, 3, wc); R(c, ox - 2, ty + 3, 1, 2, wc); R(c, ox, ty + 3, 1, 1, '#2a1840');
-    for (let i = 0; i < 5; i++) R(c, ox + 3 + i, ty + 2 - Math.floor(i * .6), 1, 1, '#5a3a2a');
-    R(c, ox + 7, ty - 1, 2, 1, '#ffcc4d');
-    R(c, ox + 1, ty + 1 + strum, 2, 1, P.skin);
+    P2(ox - 1, ty + 2, 4, 3, wc); P2(ox - 2, ty + 3, 1, 2, wc); P2(ox, ty + 3, 1, 1, '#2a1840'); P2(ox - 1, ty + 4, 4, 1, sh(wc, -.3));
+    for (let i = 0; i < 5; i++) P2(ox + 3 + i, ty + 2 - Math.floor(i * .6), 1, 1, '#5a3a2a');
+    P2(ox + 7, ty - 1, 2, 1, '#ffcc4d');
+    hand(ox + 1, ty + 1 + strum);
   }
 }
 function swingAngle(m) {
@@ -1093,21 +1178,24 @@ function drawGlows() {
 function spawnEnemy() {
   const t = tier(), boss = isBoss();
   const def = boss ? REG.boss : REG.foes[Math.floor(rnd(REG.foes.length))];
-  const elite = !boss && Math.random() < .12, nP = Math.max(1, party.length);
-  const hpM = (boss ? 12 : elite ? 2.6 : 1) * (1 + .45 * (nP - 1)), atkM = (boss ? 2.2 : elite ? 1.5 : 1) * (1 + .1 * (nP - 1));
+  const elite = !boss && Math.random() < .15, nP = Math.max(1, party.length);
+  const hpM = (boss ? 15 : elite ? 2.6 : 1) * (1 + .45 * (nP - 1)), atkM = (boss ? 2.2 : elite ? 1.5 : 1) * (1 + .1 * (nP - 1));
   const last = enemies.length ? enemies[enemies.length - 1].x : 0;
   enemies.push({
     k: def.k, c: def.c, boss, name: def.name, x: Math.max(camX + IW + 8, last + 16 + rnd(12)), y: GROUND,
-    elite, slamT: 4, max: 6 * Math.pow(1.13, t) * hpM * (def.k === 'golem' ? 1.3 : def.k === 'bat' ? .8 : 1), hp: 0,
-    atk: 1.4 * Math.pow(1.11, t) * atkM, spd: def.k === 'bat' ? 13 : def.k === 'golem' ? 6 : 9,
+    elite, slamT: 3.5, max: 6 * Math.pow(1.145, t) * hpM * (def.k === 'golem' ? 1.3 : def.k === 'bat' ? .8 : 1), hp: 0,
+    atk: 1.5 * Math.pow(1.122, t) * atkM, spd: def.k === 'bat' ? 13 : def.k === 'golem' ? 6 : 9,
     cd: 1, lunge: 0, flash: 0, dying: 0, kb: 0, seed: rnd(10), walk: 0, hopT: 0, hb: 0
   });
   const e = enemies[enemies.length - 1]; e.hp = e.max; spawned++;
   if (boss) { toast('<b style="color:#ff7a95">BOSS</b> ' + def.name + ' があらわれた！', '#ff5c7f'); }
 }
+const chain = { n: 0, t: -9, o: '' };
 function damageEnemy(e, m, mult, opt = {}) {
   if (!e || e.dying) return;
-  const st = m.st, crit = Math.random() < st.crit, dmg = st.atk * atkBuff() * mult * rnd(.9, 1.1) * (crit ? st.critMul : 1);
+  const owner = m.remote ? m.key.split(':')[1] : 'me';
+  if (grp.active && Object.keys(grp.peers).length) { if (T - chain.t < 1.3) { if (owner !== chain.o) chain.n++; } else chain.n = 0; chain.t = T; chain.o = owner; }
+  const st = m.st, crit = Math.random() < st.crit, dmg = st.atk * atkBuff() * mult * rnd(.9, 1.1) * (crit ? st.critMul : 1) * (1 + Math.min(.5, chain.n * .025));
   if (st.ls && !m.down) m.hp = Math.min(st.maxHp, m.hp + dmg * st.ls);
   e.hp -= dmg; e.flash = 1; e.kb = opt.kb !== undefined ? opt.kb : (crit ? 4 : 2);
   const top = e.boss ? 26 : 14;
@@ -1152,13 +1240,19 @@ function respawn() {
   save(); updHud(true);
 }
 function addXp(x, silent) {
-  G.xp += x; let up = 0; const before = slotsUnlocked();
-  while (G.xp >= xpNeed(G.lv)) { G.xp -= xpNeed(G.lv); G.lv++; up++; }
-  if (up) {
-    rebuildParty(); party.forEach(m => { if (!m.down) m.hp = m.st.maxHp; });
-    if (!silent) { for (const m of party) { ring(hero.x - m.off, GROUND, 14, '#ffe08a', .7, true); for (let i = 0; i < 8; i++) parts.push({ x: hero.x - m.off + rnd(-4, 4), y: GROUND - rnd(0, 6), vx: 0, vy: -rnd(18, 34), life: .9, max: .9, col: '#ffe8a8', g: 0 }); } hero.aura = 1.2; burst(hero.x - camX, GROUND - 7, 26, '#ffd25e', 45); toast('<b style="color:#ffe08a">LEVEL UP!</b>  Lv ' + G.lv, '#ffd25e'); }
-    if (slotsUnlocked() > before) setTimeout(() => toast('<b style="color:#ffe08a">パーティ枠 +1</b>  仲間を選べるようになりました', '#ffd25e'), 600);
+  const locs = party.filter(m => m.local), top = Math.max(1, ...locs.map(m => heroLv(m.cls)));
+  let any = false;
+  for (const m of locs) {
+    const h = heroData(m.cls), bonus = h.lv < top - 2 ? 1.6 : 1;   // newcomers catch up a little faster
+    h.xp += x * bonus; let up = 0;
+    while (h.xp >= xpNeed(h.lv)) { h.xp -= xpNeed(h.lv); h.lv++; up++; }
+    if (up) {
+      any = true;
+      if (!silent) { ring(hero.x - m.off, GROUND, 14, '#ffe08a', .7, true); for (let i = 0; i < 8; i++) parts.push({ x: hero.x - m.off + rnd(-4, 4), y: GROUND - rnd(0, 6), vx: 0, vy: -rnd(18, 34), life: .9, max: .9, col: '#ffe8a8', g: 0 }); toast('<b style="color:#ffe08a">LEVEL UP!</b>  ' + CLASSES[m.cls].n + ' Lv ' + h.lv, '#ffd25e'); }
+    }
   }
+  G.lv = topLv();
+  if (any) { rebuildParty(); party.forEach(m => { if (!m.down && m.local) m.hp = m.st.maxHp; }); if (!silent) hero.aura = 1.2; if (grp.active) grpPublish(); }
 }
 function stageClear() {
   const wasBoss = isBoss();
@@ -1170,7 +1264,8 @@ function stageClear() {
     if (G.region >= REGIONS.length) { G.region = 0; G.loop++; toast('<b style="color:#ffe08a">周回 ' + (G.loop + 1) + '</b> 魔物がさらに強くなった', '#ffd25e'); }
     fadeTo = G.region; fade = 0.001;
   }
-  G.best = Math.max(G.best || 0, curIdx());
+  const sb = slotsUnlocked(); G.best = Math.max(G.best || 0, curIdx());
+  if (slotsUnlocked() > sb) { setTimeout(() => toast('<b style="color:#ffe08a">パーティ枠 +1</b>  キャラ画面で仲間を追加できます', '#ffd25e'), 900); }
   save(); updHud(true);
 }
 function chapterTitle() {
@@ -1385,7 +1480,7 @@ function update(dt) {
     if (e.boss && !hero.dead && dist <= reachE + 2) {
       e.slamT -= dt;
       if (e.slamT <= 0) {
-        e.slamT = 5.5; shake = .45; flashT = .15;
+        e.slamT = 4.5; shake = .45; flashT = .15;
         for (const m of party) if (!m.down) hurtMember(m, e.atk * .55);
         for (let i = 0; i < 26; i++) parts.push({ x: e.x - rnd(60), y: GROUND - 1, vx: rnd(-30, 10), vy: -rnd(15, 45), life: .6, max: .6, col: e.c, g: 90 });
         toast('<b style="color:#ff7a95">' + e.name + '</b> の全体攻撃！', '#ff5c7f');
@@ -1416,7 +1511,7 @@ function update(dt) {
   const want = hero.x - Math.max(IW * (document.body.classList.contains('mini') ? .35 : .3), back + 16);
   camX = lerp(camX, want, Math.min(1, dt * 6));
   shake = Math.max(0, shake - dt); flashT = Math.max(0, flashT - dt);
-  updAmb(dt); updFx(dt);
+  updAmb(dt); updFx(dt); updBubbles(dt);
 }
 
 function render() {
@@ -1459,7 +1554,7 @@ function render() {
       const k = Math.min(1, (hero.dead ? hero.deadT : m.downT) * 3);
       ctx.save(); ctx.translate(Math.round(hx), GROUND - Math.round(k * 4)); ctx.rotate(-k * Math.PI / 2 * .95); ctx.globalAlpha = hero.dead ? 1 - Math.max(0, hero.deadT - 1.4) : .7;
       blit((c2, ox, oy) => dHero(c2, ox, oy, m), 0, 0, { flash: .4, flashCol: '#7d5cc4' }); ctx.restore(); ctx.globalAlpha = 1;
-    } else blit((c2, ox, oy) => dHero(c2, ox, oy, m), hx, GROUND, { flash: m.hurt > 0 ? m.hurt * 3 : 0, flashCol: '#ff4d6d', rim: REG.rim, rimA: .5 });
+    } else blit((c2, ox, oy) => dHero(c2, ox, oy, m), hx, GROUND, { flash: m.hurt > 0 ? m.hurt * 3 : 0, flashCol: '#ff4d6d', rim: REG.rim, rimA: .5, outline: mix(CLASSES[m.cls].col, '#0a0418', .82) });
     if (!m.down && m.swing >= 0 && m.swing < .5) {
       const k = m.swing / .5, C = CLASSES[m.cls];
       if (C.type === 'magic') { const cx = hx + 4, cy = GROUND - 17; glow(cx, cy, 4 + k * 6, '#8fa0ff', .4 + k * .5); for (let i = 0; i < 4; i++) { const a = T * 6 + i * 1.57, rr = (1 - k) * 7 + 1; R(ctx, cx + Math.cos(a) * rr, cy + Math.sin(a) * rr, 1, 1, '#d8deff'); } }
@@ -1517,12 +1612,13 @@ function render() {
 let lastHud = 0, shownGold = -1;
 function updHud(force) {
   const now = performance.now(); if (!force && now - lastHud < 120) return; lastHud = now;
-  $('lv').textContent = G.lv;
+  const lead = localClasses()[0] || 'knight', lh = heroData(lead);
+  $('lv').textContent = lh.lv;
   const php = partyHp(), hp = php / Math.max(1, ST.maxHp);
   $('hpb').style.width = (hp * 100).toFixed(1) + '%'; $('hpb').classList.toggle('low', hp < .3);
   $('hpt').textContent = fmt(php) + ' / ' + fmt(ST.maxHp);
   const gc = $('grpchip'); if (gc) { gc.style.display = grp.active ? '' : 'none'; gc.innerHTML = grp.active ? '<i class="gdot ' + grp.status + '"></i>' + (Object.keys(grp.peers).length + 1) + '人' : ''; }
-  $('xpb').style.width = (G.xp / xpNeed(G.lv) * 100).toFixed(1) + '%';
+  $('xpb').style.width = (lh.xp / xpNeed(lh.lv) * 100).toFixed(1) + '%';
   $('region').textContent = REG.name;
   $('stage').textContent = (G.loop ? '★' + (G.loop + 1) + ' ' : '') + (G.region + 1) + '-' + G.stage;
   const pips = $('pips'); let h = '';
@@ -1618,9 +1714,11 @@ function setPanel(on, page) {
   document.body.classList.toggle('pg-gear', on && panelPage === 'gear');
   document.body.classList.toggle('pg-party', on && panelPage === 'party');
   document.body.classList.toggle('pg-map', on && panelPage === 'map');
+  document.body.classList.toggle('pg-rank', on && panelPage === 'rank');
+  $('rankbtn').classList.toggle('on', on && panelPage === 'rank');
   $('bagbtn').classList.toggle('on', on && panelPage === 'gear'); $('partybtn').classList.toggle('on', on && panelPage === 'party');
   if (on !== was) native({ t: 'panel', on });
-  if (on) { renderPanel(); renderParty(); renderMap(); } else { G.bag.forEach(i => i.nw = 0); updGear(); save(); }
+  if (on) { renderPanel(); renderParty(); renderMap(); renderRank(); } else { G.bag.forEach(i => i.nw = 0); updGear(); save(); }
 }
 function renderPanel() {
   updGear();
@@ -1635,7 +1733,7 @@ function renderPanel() {
   });
   const H = statsFor(curHero());
   $('power').textContent = '総合力 ' + fmt(H.power);
-  $('herotabs').innerHTML = localClasses().map(c => '<button class="htab' + (c === curHero() ? ' on' : '') + '" data-hero="' + c + '" style="--cc:' + CLASSES[c].col + '">' + CLASSES[c].n + '</button>').join('');
+  $('herotabs').innerHTML = localClasses().map(c => '<button class="htab' + (c === curHero() ? ' on' : '') + '" data-hero="' + c + '" style="--cc:' + CLASSES[c].col + '">' + CLASSES[c].n + ' Lv' + heroLv(c) + '</button>').join('');
   const sl = [['攻撃', fmt(H.atk)], ['最大HP', fmt(H.maxHp)], ['攻撃速度', H.aps.toFixed(2) + '/秒'], ['会心率', (H.crit * 100).toFixed(1) + '%'], ['会心ダメ', '×' + H.critMul.toFixed(2)], ['ゴールド', '+' + Math.round((H.gm - 1) * 100) + '%'], ['HP回復', (H.regen * 100).toFixed(1) + '%/秒'], ['吸血', (H.ls * 100).toFixed(1) + '%']];
   $('statlist').innerHTML = sl.map(([a, b]) => '<div>' + a + '<b>' + b + '</b></div>').join('');
   // bag
@@ -1656,7 +1754,7 @@ function renderDetail() {
   d.innerHTML = '<div style="min-width:0"><div class="dn">' + itemHtml(it) + '</div><div class="dm">' + SLOTNAME[it.s] + ' · ' + mainTxt(it) + '</div>' +
     (it.a.length ? '<div class="da">' + it.a.map(a => '<span>◆ ' + affTxt(a) + '</span>').join('') + '</div>' : '<div class="da"><span style="color:var(--sub)">追加効果なし</span></div>') + cmp + '</div>' +
     '<div class="acts">' + (eq ? '<button class="btn sub" data-act="unequip">外す</button>' : '<button class="btn" data-act="equip">装備する</button>') +
-    '<button class="btn sub" data-act="toenh">強化へ</button>' + (eq ? '' : '<button class="btn sub" data-act="tomerge">合成へ</button>') + '</div>';
+    '<button class="btn sub" data-act="toenh">強化へ</button>' + (eq ? '' : '<button class="btn sub" data-act="tomerge">合成へ</button>') + (eq || !G.friends.length ? '' : '<select class="btn sub" id="giftsel" style="padding:5px 6px"><option value="">🎁 フレンドに贈る</option>' + G.friends.map(f => '<option value="' + f.uid + '">' + String(f.name || f.uid).replace(/</g, '') + '</option>').join('') + '</select>') + '</div>';
 }
 function renderForge() {
   document.querySelectorAll('.tabs button').forEach(b => b.classList.toggle('on', b.dataset.tab === tab));
@@ -1813,7 +1911,7 @@ function renderParty() {
   for (const c of CLS_ORDER) {
     const C = CLASSES[c], on = mine.includes(c);
     const badge = on ? '<span class="badge">' + (G.party.indexOf(c) + 1) + '</span>' : '';
-    h += '<div class="ccard' + (on ? ' on' : '') + '" data-cls="' + c + '" style="--cc:' + C.col + '" title="' + C.desc + '"><canvas width="32" height="32" data-cls="' + c + '"></canvas><div style="min-width:0"><div class="cn">' + C.n + '</div><div class="cr">' + C.role + '</div><div class="cd">' + C.desc + '</div></div>' + badge + '</div>';
+    h += '<div class="ccard' + (on ? ' on' : '') + '" data-cls="' + c + '" style="--cc:' + C.col + '" title="' + C.desc + '"><canvas width="32" height="32" data-cls="' + c + '"></canvas><div style="min-width:0"><div class="cn">' + C.n + ' <span style="font-size:9.5px;color:var(--sub)">Lv' + heroLv(c) + '</span></div><div class="cr">' + C.role + '</div><div class="cd">' + C.desc + '</div></div>' + badge + '</div>';
   }
   h += '</div></div><div class="pcol" style="padding-left:12px;border-left:1px solid rgba(255,255,255,.07)">';
   h += '<div style="position:absolute;right:14px;bottom:4px;font-size:9px;color:var(--sub);font-weight:700">DockHero v' + GAME_VERSION + '</div>';
@@ -1822,8 +1920,8 @@ function renderParty() {
     h += '<div class="lbl">パーティ（前から順に並びます）</div><div class="pslots">';
     for (let i = 0; i < 3; i++) {
       const c = i < slots ? G.party[i] : null;
-      if (i >= slots) h += '<div class="pslot">🔒<small>Lv' + SLOT_UNLOCK[i] + 'で解放</small></div>';
-      else if (c) h += '<div class="pslot f" style="--cc:' + CLASSES[c].col + '">' + CLASSES[c].n + '<small>' + CLASSES[c].role + '</small></div>';
+      if (i >= slots) h += '<div class="pslot">🔒<small>' + i + '章のボスを倒すと解放</small></div>';
+      else if (c) h += '<div class="pslot f" style="--cc:' + CLASSES[c].col + '">' + CLASSES[c].n + ' Lv' + heroLv(c) + '<small>' + CLASSES[c].role + '</small></div>';
       else h += '<div class="pslot">空き<small>左から選ぶ</small></div>';
     }
     h += '</div><div class="fhint" style="text-align:left">・キャラを押すと出し入れできます<br>・近接職（騎士・双剣士・鉄槌士）が自動で前に出ます<br>・装備はキャラごとに別々です（バッグ画面で切り替え）</div>';
@@ -1839,7 +1937,7 @@ function renderParty() {
       const st = { on: '<span style="color:#7dffa8">● つながっています</span>', wait: '<span style="color:#ffd25e">● 接続中…</span>', err: '<span style="color:#ff8fa8">● つながりません（再接続中）</span>' }[grp.status] || '';
       h += '<div class="lbl">グループコード　' + st + '</div><div class="gcode"><b>' + grp.code + '</b><button class="mini-btn" data-g="copy">コピー</button></div>';
       const pn = cs => cs.map(c => (CLASSES[c] || CLASSES.knight).n).join('・');
-      h += '<div class="mlist"><div class="mrow" style="--cc:' + CLASSES[localClasses()[0]].col + '"><i></i>' + (G.name || 'あなた') + '（あなた）<small>' + pn(localClasses()) + ' Lv' + G.lv + '</small></div>';
+      h += '<div class="mlist"><div class="mrow" style="--cc:' + CLASSES[localClasses()[0]].col + '"><i></i>' + (G.name || 'あなた') + '（あなた）<small>' + pn(localClasses()) + ' Lv' + topLv() + '</small></div>';
       for (const pr of Object.values(grp.peers)) h += '<div class="mrow" style="--cc:' + (CLASSES[pr.cls] || CLASSES.knight).col + '"><i></i>' + String(pr.name || 'なかま').replace(/</g, '') + '<small>' + pn((pr.heroes || []).map(x => x.cls)) + ' Lv' + (pr.lv | 0) + ' · ' + (pr.at || '') + '</small></div>';
       h += '</div><div class="fld" style="margin-top:8px"><button class="btn warn" data-g="leave">グループを抜ける</button><span class="fhint" style="text-align:left">ボーナス +' + Math.round((groupBonus() - 1) * 100) + '%</span></div>';
     }
@@ -1850,6 +1948,7 @@ function renderParty() {
 }
 function setName(v) { v = (v || '').trim().slice(0, 12); if (v && v !== G.name) { G.name = v; rebuildParty(); save(); if (grp.active) grpPublish(); } }
 $('pparty').addEventListener('change', e => { if (e.target.id === 'gname') setName(e.target.value); });
+$('panel').addEventListener('change', e => { if (e.target.id === 'giftsel' && e.target.value) { const it = sel && findItem(sel); if (it && !isEquipped(it)) giftTo(it, e.target.value); } });
 $('pparty').addEventListener('mousedown', e => { if (NATIVE && e.target.tagName === 'INPUT') { e.preventDefault(); const k = e.target.id === 'gname' ? 'name' : 'code'; native({ t: 'prompt', kind: k, label: k === 'name' ? 'あなたの名前（12文字まで）' : '友達のグループコード（6文字）', value: e.target.value }); } });
 $('pparty').addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.id === 'gcode') { const b = document.querySelector('[data-g=join]'); if (b) b.click(); } });
 $('pparty').addEventListener('click', e => {
@@ -1910,6 +2009,125 @@ $('pmap').addEventListener('click', e => {
 });
 $('stagebox').addEventListener('click', () => { mapSel = G.region; setPanel(!(panelOpen && panelPage === 'map'), 'map'); });
 
+
+/* ===================== friends: ranking, gifts, emotes ===================== */
+const UTOPIC = id => 'dockhero-mac/v1/u/' + id, GTOPIC = id => 'dockhero-mac/v1/g/' + id;
+let soc = null, socStatus = 'off', rankTab = 'power';
+const profiles = {};
+function myProfile() {
+  return { uid: G.uid, name: G.name || 'プレイヤー', b: GAME_BUILD, best: G.best || 0, loop: G.loop, power: Math.round(ST.power), top: topLv(), kills: G.kills || 0, party: localClasses(), ts: Date.now() };
+}
+function socPublish() { if (soc) soc.publish(UTOPIC(G.uid), JSON.stringify(myProfile()), true); }
+function socStart() {
+  if (soc || !NATIVE && !Q.has('social')) return;
+  soc = new MiniMQTT((topic, txt) => {
+    if (topic.startsWith(GTOPIC(G.uid) + '/')) return onGift(topic, txt);
+    let d; try { d = JSON.parse(txt); } catch (e) { return; }
+    if (d && d.uid) { profiles[d.uid] = d; const f = G.friends.find(x => x.uid === d.uid); if (f && d.name) f.name = d.name; renderRank(); }
+  }, st => { socStatus = st; renderRank(); });
+  soc.onReady = () => { socPublish(); };
+  soc.subscribe(GTOPIC(G.uid) + '/+');
+  for (const f of G.friends) soc.subscribe(UTOPIC(f.uid));
+  soc.connect();
+  setInterval(socPublish, 5 * 60 * 1000);
+}
+function addFriend(code, name, quiet) {
+  code = String(code || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+  if (code.length !== 8) { if (!quiet) toast('フレンドコードは8文字です', '#ff8fa8'); return; }
+  if (code === G.uid) { if (!quiet) toast('それは自分のコードです', '#ff8fa8'); return; }
+  if (G.friends.some(f => f.uid === code)) { if (!quiet) toast('もうフレンドです', '#9b8cff'); return; }
+  G.friends.push({ uid: code, name: name || '' }); save();
+  if (soc) soc.subscribe(UTOPIC(code));
+  if (!quiet) toast('フレンドを追加しました', '#7dffa8'); else toast('<b>' + String(name || '').replace(/</g, '') + '</b> とフレンドになりました', '#7dffa8');
+  renderRank();
+}
+function rankValue(p, k) { return k === 'power' ? p.power || 0 : k === 'stage' ? (p.loop || 0) * 1000 + (p.best || 0) : k === 'kills' ? p.kills || 0 : p.top || 0; }
+function rankLabel(p, k) {
+  if (k === 'power') return fmt(p.power || 0);
+  if (k === 'stage') { const b = p.best || 0, R0 = REGIONS.length * 10; return (p.loop ? '★' + (p.loop + 1) + ' ' : '') + (Math.floor((b % R0) / 10) + 1) + '-' + (b % 10 + 1); }
+  if (k === 'kills') return fmt(p.kills || 0) + '体';
+  return 'Lv' + (p.top || 1);
+}
+function ago(ts) { const m = Math.floor((Date.now() - (ts || 0)) / 60000); return m < 2 ? 'いま' : m < 60 ? m + '分前' : m < 1440 ? Math.floor(m / 60) + '時間前' : Math.floor(m / 1440) + '日前'; }
+function renderRank() {
+  if (!panelOpen || panelPage !== 'rank') return;
+  const me = myProfile(), list = [me, ...G.friends.map(f => profiles[f.uid] || { uid: f.uid, name: f.name || '（読み込み中）', ts: 0 })];
+  list.sort((a, b) => rankValue(b, rankTab) - rankValue(a, rankTab));
+  const tabs = [['power', '総合力'], ['stage', '到達ステージ'], ['kills', '討伐数'], ['lv', '最高Lv']];
+  let h = '<div class="pcol"><div class="ph"><b>フレンドランキング</b><span>' + (G.friends.length ? G.friends.length + '人のフレンド' : 'フレンドを追加すると順位が出ます') + '</span></div>';
+  h += '<div class="rtabs">' + tabs.map(([k, n]) => '<button data-rt="' + k + '" class="' + (rankTab === k ? 'on' : '') + '">' + n + '</button>').join('') + '</div><div class="rlist">';
+  list.forEach((p, i) => {
+    const isMe = p.uid === G.uid, cls = (p.party || [])[0];
+    h += '<div class="rrow' + (isMe ? ' me' : '') + '"><span class="no' + (i < 3 ? ' g' + (i + 1) : '') + '">' + (i + 1) + '</span><span>' + String(p.name || '').replace(/</g, '') + (isMe ? '（あなた）' : '') +
+      '<small>' + (p.party || []).map(c => (CLASSES[c] || {}).n || '').join('・') + (isMe ? '' : ' · ' + (p.ts ? ago(p.ts) : '未取得')) + '</small></span><span class="val">' + rankLabel(p, rankTab) + '</span></div>';
+  });
+  h += '</div></div><div class="pcol" style="padding-left:12px;border-left:1px solid rgba(255,255,255,.07)">';
+  h += '<div class="lbl" style="margin-top:0">あなたのフレンドコード</div><div class="gcode"><span class="fcode">' + G.uid + '</span><button class="mini-btn" data-r="copy">コピー</button></div>';
+  h += '<div class="lbl">フレンドを追加</div><div class="fld"><input id="fcode" maxlength="8" placeholder="8文字のコード" style="text-transform:uppercase"><button class="btn" data-r="add">追加</button></div>';
+  h += '<div class="fhint" style="text-align:left;margin-top:8px">グループで一緒に遊んだ人は自動でフレンドになります。<br>' + ({ on: '<span style="color:#7dffa8">● ランキングにつながっています</span>', wait: '<span style="color:#ffd25e">● 接続中…</span>', err: '<span style="color:#ff8fa8">● つながりません</span>' }[socStatus] || '') + '</div>';
+  if (grp.active) h += '<div class="lbl">グループにスタンプを送る</div><div class="emobar">' + EMOTES.map(e => '<button data-emo="' + e + '">' + e + '</button>').join('') + '</div>';
+  h += '</div>';
+  $('prank').innerHTML = h;
+}
+$('rankbtn').addEventListener('click', () => setPanel(!(panelOpen && panelPage === 'rank'), 'rank'));
+$('prank').addEventListener('click', e => {
+  const t = e.target.closest('[data-rt],[data-r],[data-emo]'); if (!t) return;
+  if (t.dataset.rt) { rankTab = t.dataset.rt; renderRank(); }
+  else if (t.dataset.r === 'copy') { if (!native({ t: 'copy', text: G.uid })) { try { navigator.clipboard.writeText(G.uid); } catch (e2) { } } toast('フレンドコード <b>' + G.uid + '</b> をコピーしました', '#7dffa8'); }
+  else if (t.dataset.r === 'add') addFriend($('fcode').value);
+  else if (t.dataset.emo) sendEmote(t.dataset.emo);
+});
+$('prank').addEventListener('mousedown', e => { if (NATIVE && e.target.id === 'fcode') { e.preventDefault(); native({ t: 'prompt', kind: 'friend', label: 'フレンドコード（8文字）', value: '' }); } });
+
+// --- gifts: send a bag item to a friend (kept on the broker until they pick it up)
+function giftTo(it, uid) {
+  if (!soc || socStatus !== 'on') return toast('つながっていないので送れません', '#ff8fa8');
+  const i = G.bag.indexOf(it); if (i < 0) return;
+  const id = Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
+  const pay = { id, from: G.name || 'フレンド', fromUid: G.uid, item: Object.assign({}, it, { nw: 1 }) };
+  soc.publish(GTOPIC(uid) + '/' + id, JSON.stringify(pay), true);
+  G.bag.splice(i, 1); sel = null; save(); renderPanel();
+  const f = G.friends.find(x => x.uid === uid);
+  toast(itemHtml(it) + ' を <b>' + String((f && f.name) || uid).replace(/</g, '') + '</b> に贈りました', '#ff9ad8');
+}
+function onGift(topic, txt) {
+  if (!txt) return;
+  let d; try { d = JSON.parse(txt); } catch (e) { return; }
+  if (!d || !d.item || G.gifted[d.id]) { if (d && G.gifted[d.id]) soc.publish(topic, '', true); return; }
+  if (G.bag.length >= BAG_MAX) { toast('<b>' + String(d.from).replace(/</g, '') + '</b> から贈り物が届いています。バッグを空けてください', '#ff9ad8'); return; }
+  G.gifted[d.id] = 1; const it = d.item; it.u = Date.now().toString(36) + (UID++);
+  if (!(it.r >= 0 && it.r <= 4) || !SLOTS.includes(it.s)) return;
+  G.bag.push(it); soc.publish(topic, '', true); save(); renderPanel();
+  toast('🎁 <b>' + String(d.from).replace(/</g, '') + '</b> から ' + itemHtml(it) + ' が届いた！', '#ff9ad8');
+  if (d.fromUid && !G.friends.some(f => f.uid === d.fromUid)) addFriend(d.fromUid, d.from, true);
+}
+
+// --- emotes in a group
+const EMOTES = ['👍', '🔥', '🎉', '😂', '💪', '🙏', 'GG', 'ナイス！'];
+function sendEmote(e) {
+  if (!grp.active || !mq) return;
+  mq.publish(TOPIC(grp.code) + '/e', JSON.stringify({ pid: grp.pid, name: G.name || 'あなた', e }));
+  showBubble('L', e, G.name || 'あなた');
+}
+const bubbles = [];
+function showBubble(who, e, name) {
+  const el = document.createElement('div'); el.className = 'bubble'; el.innerHTML = String(e).replace(/</g, '') + '<small>' + String(name || '').replace(/</g, '') + '</small>';
+  $('bubbles').appendChild(el); bubbles.push({ el, who, t: 0 });
+}
+function updBubbles(dt) {
+  const r = card.getBoundingClientRect();
+  for (const b of bubbles) {
+    b.t += dt;
+    const m = b.who === 'L' ? party.find(x => x.local) : party.find(x => x.remote && x.key.split(':')[1] === b.who);
+    if (m) { b.el.style.left = ((hero.x - m.off - camX) * S) + 'px'; b.el.style.top = (r.height - (IH - GROUND + 22) * S) + 'px'; }
+    if (b.t > 2.6) b.el.remove();
+  }
+  for (let i = bubbles.length - 1; i >= 0; i--) if (bubbles[i].t > 2.6) bubbles.splice(i, 1);
+  const c = $('chain');
+  if (grp.active && chain.n >= 3 && T - chain.t < 1.3) { c.style.display = 'block'; c.innerHTML = '連携 <b>×' + chain.n + '</b>  +' + Math.round(Math.min(.5, chain.n * .025) * 100) + '%'; }
+  else c.style.display = 'none';
+}
+
 /* ===================== group networking (MQTT over WebSocket, no server of our own) ===================== */
 const BROKERS = Q.get('broker') ? [Q.get('broker')] : ['wss://broker.hivemq.com:8884/mqtt', 'wss://broker.emqx.io:8084/mqtt', 'wss://test.mosquitto.org:8081/mqtt'];
 const TOPIC = c => 'dockhero-mac/v1/' + c;
@@ -1943,14 +2161,14 @@ class MiniMQTT {
     }
   }
   subscribe(t, re) { if (!re) this.subs.push(t); if (!this.ok) return; const id = this.pid++; this.ws.send(this.pkt(0x82, [id >> 8, id & 255, ...MiniMQTT.str(t), 0])); }
-  publish(t, msg) { if (!this.ok) return false; const p = new TextEncoder().encode(msg); this.ws.send(this.pkt(0x30, [...MiniMQTT.str(t), ...p])); return true; }
+  publish(t, msg, retain) { if (!this.ok) return false; const p = new TextEncoder().encode(msg); this.ws.send(this.pkt(retain ? 0x31 : 0x30, [...MiniMQTT.str(t), ...p])); return true; }
   close() { this.alive = false; clearInterval(this.ping); try { if (this.ok) this.ws.send(new Uint8Array([0xE0, 0])); this.ws.close(); } catch (e) { } }
 }
 let mq = null, pubT = 0;
 function grpState() {
   const r2 = v => Math.round(v * 1000) / 1000;
-  const heroes = localClasses().map(c => { const st = statsFor(c); return { cls: c, gr: gearRar(heroData(c).gear), st: { atk: r2(st.atk), maxHp: r2(st.maxHp), aps: r2(st.aps), crit: r2(st.crit), critMul: r2(st.critMul), gm: 1, regen: r2(st.regen), ls: r2(st.ls), power: 0 } }; });
-  return JSON.stringify({ pid: grp.pid, b: GAME_BUILD, name: G.name || 'プレイヤー', cls: heroes[0].cls, heroes, lv: G.lv, at: (G.region + 1) + '-' + G.stage });
+  const heroes = localClasses().map(c => { const st = statsFor(c); return { cls: c, lv: heroLv(c), gr: gearRar(heroData(c).gear), st: { atk: r2(st.atk), maxHp: r2(st.maxHp), aps: r2(st.aps), crit: r2(st.crit), critMul: r2(st.critMul), gm: 1, regen: r2(st.regen), ls: r2(st.ls), power: 0 } }; });
+  return JSON.stringify({ pid: grp.pid, b: GAME_BUILD, name: G.name || 'プレイヤー', cls: heroes[0].cls, heroes, lv: topLv(), uid: G.uid, at: (G.region + 1) + '-' + G.stage });
 }
 function grpPublish() { if (mq && grp.active) mq.publish(TOPIC(grp.code) + '/p/' + grp.pid, grpState()); }
 function grpJoin(code, created) {
@@ -1959,16 +2177,18 @@ function grpJoin(code, created) {
   mq = new MiniMQTT((topic, txt) => {
     let d; try { d = JSON.parse(txt); } catch (e) { return; }
     if (!d || d.pid === grp.pid) return;
+    if (topic.endsWith('/e')) { if (grp.peers[d.pid]) showBubble(d.pid, d.e, d.name); return; }
     if (d.leave) { if (grp.peers[d.pid]) { toast((grp.peers[d.pid].name || 'なかま') + ' が抜けました', '#9b8cff'); delete grp.peers[d.pid]; rebuildParty(); renderParty(); } return; }
     if (!d.heroes || !d.heroes.length) return;
     const isNew = !grp.peers[d.pid];
     grp.peers[d.pid] = Object.assign(d, { seen: Date.now() });
     if (isNew && d.b !== GAME_BUILD) setTimeout(() => toast('<b>' + String(d.name).replace(/</g, '') + '</b> とバージョンが違います。' + ((d.b || 0) < GAME_BUILD ? '相手に再起動してもらうと最新になります' : 'DockHeroを再起動すると最新になります'), '#ffd25e'), 1500);
+    if (isNew && d.uid && d.uid !== G.uid && !G.friends.some(f => f.uid === d.uid)) addFriend(d.uid, d.name, true);
     if (isNew) { toast('<b>' + String(d.name).replace(/</g, '') + '</b> のパーティが仲間になった！', '#7dffa8'); grpPublish(); }
     rebuildParty(); renderParty();
   }, st => { grp.status = st; renderParty(); updHud(true); });
   mq.onReady = () => { grpPublish(); };
-  mq.subscribe(TOPIC(code) + '/p/+');
+  mq.subscribe(TOPIC(code) + '/p/+'); mq.subscribe(TOPIC(code) + '/e');
   mq.connect();
   rebuildParty(); save(); renderParty(); updHud(true);
   toast(created ? 'グループ <b>' + code + '</b> を作りました。コードを友達に送ってね' : 'グループ <b>' + code + '</b> に参加中…', '#7dffa8');
@@ -2007,7 +2227,7 @@ $('mini').addEventListener('click', () => setMini(!mini));
 $('quit').addEventListener('click', () => { save(); native({ t: 'quit' }); toast('保存して終了します…', '#9b8cff'); });
 if (!NATIVE) $('quit').style.display = 'none';
 native({ t: 'hello' });
-window.DH = { saveNow: save, setMini, layout: f => { document.body.classList.toggle('flip', !!f); setTimeout(resize, 50); }, onPrompt: (k, v) => { if (k === 'name') { setName(v); renderParty(); } else if (k === 'code') { DH.onPaste(v); const b = document.querySelector('[data-g=join]'); if (b && ($('gcode').value || '').length === 6) b.click(); } }, onPaste: t => { const el = $('gcode'); if (el && t) { el.value = String(t).toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 6); } } };
+window.DH = { saveNow: save, setMini, layout: f => { document.body.classList.toggle('flip', !!f); setTimeout(resize, 50); }, onPrompt: (k, v) => { if (k === 'name') { setName(v); renderParty(); } else if (k === 'friend') { addFriend(v); } else if (k === 'code') { DH.onPaste(v); const b = document.querySelector('[data-g=join]'); if (b && ($('gcode').value || '').length === 6) b.click(); } }, onPaste: t => { const el = $('gcode'); if (el && t) { el.value = String(t).toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 6); } } };
 window.addEventListener('beforeunload', save);
 window.addEventListener('hashchange', () => {
   const q = new URLSearchParams(location.hash.slice(1));
@@ -2030,6 +2250,7 @@ function frame(now) {
 load(); resize(); updGear(); updHud(true);
 if (!G.name) G.name = window.__DH_USER || '';
 if (G.grp && G.grp.code) setTimeout(() => grpJoin(G.grp.code, false), 1200);
+setTimeout(socStart, 2000);
 hero.x = 0; camX = hero.x - IW * .3;
 setTimeout(chapterTitle, 250);
 requestAnimationFrame(frame);
