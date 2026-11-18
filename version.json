@@ -1,1 +1,1 @@
-{"version": "1.8.0", "build": 180, "minShell": 3, "sha256": "bdf3c1869760ed30e859bc1a8040a731840ef8401837e49c42b73f04bb18d1e7", "notes": "ステージをWAVE制に（後半ほどWAVEが増える）、新しい敵9種類を追加"}
+{"version": "1.8.1", "build": 181, "minShell": 3, "sha256": "a5dc6c5010cdd0d3f09f4b863dda4be30b97e5bfea8dbc68394b3b7bd4184daf", "notes": "レベルアップでの最大HPの伸びを半分に"}

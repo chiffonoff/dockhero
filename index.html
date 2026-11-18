@@ -451,7 +451,7 @@ function fmt(n) {
 function fmtPix(n) { n = Math.floor(n); if (n < 10000) return '' + n; if (n < 1e6) return Math.floor(n / 1000) + 'K'; if (n < 1e9) return Math.floor(n / 1e6) + 'M'; return Math.floor(n / 1e9) + 'B'; }
 
 /* ---------- bridge to the macOS shell ---------- */
-const GAME_VERSION = '1.8.0', GAME_BUILD = 180;
+const GAME_VERSION = '1.8.1', GAME_BUILD = 181;
 const NATIVE = !!window.__DH_NATIVE || Q.has('nativeTest');
 // page -> mac: the shell polls document.title. Keep the title short: big payloads (saves) are cut into chunks
 // and sent one at a time; each title carries a session id so a reload never confuses the shell.
@@ -640,7 +640,7 @@ function statsFor(cls, gear) {
   }
   if (!gear || gear !== FAIR) for (const k of ['atkp', 'hpp', 'aspd', 'crit', 'critd', 'gold']) { const id = k === 'atkp' ? 'atk' : k === 'hpp' ? 'hp' : k; A[k] = (A[k] || 0) + runeVal(id); }
   const atk = ((1.5 + LV * .5) + wAtk) * (1 + (A.atkp || 0)) * C.atk;
-  const maxHp = ((18 + LV * 3) + gHp) * (1 + (A.hpp || 0)) * C.hp;
+  const maxHp = ((20 + LV * 1.5) + gHp) * (1 + (A.hpp || 0)) * C.hp;
   const aps = Math.min(4.5, 0.85 * (1 + bAs + (A.aspd || 0)) * C.aps);
   const crit = Math.min(.8, 0.06 + (C.crit || 0) + cCr + (A.crit || 0));
   const critMul = 2.2 + (C.critd || 0) + (A.critd || 0);
