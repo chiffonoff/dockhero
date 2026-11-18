@@ -1,1 +1,1 @@
-{"version": "1.3.0", "build": 130, "minShell": 3, "sha256": "3f12b622f9eb2e28061d7c70956d718e928b1d00a9b479cfab91eb1e0d319ce0", "notes": "ドット絵を全面描き直し：8コースの背景を多層スクロール＋アニメ、7キャラを細密ドット絵に"}
+{"version": "1.4.0", "build": 140, "minShell": 3, "sha256": "2bbd7f6ef4eec31797bb5c0696cd409fcb41ab4097a124817d8e8dbdd0f52e0c", "notes": "背景をGPT版の細かいドット絵に、キャラはちびキャラに戻す"}
