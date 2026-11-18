@@ -1,1 +1,1 @@
-{"version": "1.10.0", "build": 200, "minShell": 3, "sha256": "d8f038dc3bfcf5ffc61f89a6cbbc9e9e5bb264c794e8c2ce38623087fd3c98dd", "notes": "ルーンにページⅡ〜Ⅴを追加、全員ランキングとプレイヤー数表示、フレンドの最終ログイン表示を削除"}
+{"version": "1.10.1", "build": 201, "minShell": 3, "sha256": "deacba2715f0283245ca4476963b5759c50c97af1feb591bd307b9cd7e1babdb", "notes": "全員Lv1からリスタート、遊んでいる人数の表示を削除"}

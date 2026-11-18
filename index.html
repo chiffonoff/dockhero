@@ -452,7 +452,7 @@ function fmt(n) {
 function fmtPix(n) { n = Math.floor(n); if (n < 10000) return '' + n; if (n < 1e6) return Math.floor(n / 1000) + 'K'; if (n < 1e9) return Math.floor(n / 1e6) + 'M'; return Math.floor(n / 1e9) + 'B'; }
 
 /* ---------- bridge to the macOS shell ---------- */
-const GAME_VERSION = '1.10.0', GAME_BUILD = 200;
+const GAME_VERSION = '1.10.1', GAME_BUILD = 201;
 const NATIVE = !!window.__DH_NATIVE || Q.has('nativeTest');
 if (window.__DH_OS === 'win') document.addEventListener('DOMContentLoaded', () => { const g = document.getElementById('grip'); if (g) g.title = 'ドラッグで移動／ダブルクリックでタスクバーの上に戻す'; });
 // page -> mac: the shell polls document.title. Keep the title short: big payloads (saves) are cut into chunks
@@ -624,7 +624,7 @@ const MELEE = { melee: 1, dagger: 1, hammer: 1 };
 const SLOT_UNLOCK = [0, 10, 20]; // progress index needed: start, after 1-10 boss, after 2-10 boss
 
 /* ---------- state ---------- */
-const SAVE_EPOCH = 3;   // bump this and publish an update to restart everyone from Lv1
+const SAVE_EPOCH = 4;   // bump this and publish an update to restart everyone from Lv1
 const DEF = { epoch: SAVE_EPOCH, pvp: { rate: 1000, w: 0, l: 0 }, v: 4, uid: '', friends: [], gifted: {}, lv: 1, xp: 0, gold: 0, upg: { atk: 0, hp: 0, spd: 0 }, heroes: { knight: { gear: {} } }, party: ['knight'], main: 'knight', name: '', grp: null, bag: [], shards: 0, fl: { equip: true, merge: false, salv: false }, runes: {}, region: 0, stage: 1, loop: 0, auto: false, ts: Date.now(), kills: 0 };
 let G = JSON.parse(JSON.stringify(DEF));
 let REG = REGIONS[0];
@@ -2596,7 +2596,7 @@ $('stagebox').addEventListener('click', () => { mapSel = G.region; setPanel(!(pa
 /* ===================== friends: ranking, gifts, emotes ===================== */
 const UTOPIC = id => 'dockhero-mac/v1/u/' + id, GTOPIC = id => 'dockhero-mac/v1/g/' + id;
 let soc = null, socStatus = 'off', rankTab = 'power', rankScope = 'all';
-const MIN_BUILD = 170;   // profiles from before the last season reset are ignored
+const MIN_BUILD = 201;   // profiles from before the last season reset are ignored
 const profiles = {};
 function myProfile() {
   return { uid: G.uid, name: G.name || 'プレイヤー', b: GAME_BUILD, best: G.best || 0, loop: G.loop, power: Math.round(ST.power), top: topLv(), kills: G.kills || 0, party: G.party.slice(0, slotsUnlocked()), team: G.party.slice(0, slotsUnlocked()).map(c => { const st = statsFor(c), r2 = v => Math.round(v * 100) / 100; return { cls: c, lv: heroLv(c), st: { atk: r2(st.atk), maxHp: r2(st.maxHp), aps: r2(st.aps), crit: r2(st.crit), critMul: r2(st.critMul), ls: r2(st.ls), power: Math.round(st.power) } }; }), rate: Math.round(G.pvp.rate), pw: G.pvp.w, pl: G.pvp.l, ts: Date.now() };
@@ -2638,13 +2638,13 @@ function ago(ts) { const m = Math.floor((Date.now() - (ts || 0)) / 60000); retur
 function renderRank() {
   if (!panelOpen || panelPage !== 'rank') return;
   const me = myProfile(), everyone = Object.values(profiles).filter(p => p.uid !== G.uid && (p.b || 0) >= MIN_BUILD);
-  const pop = everyone.length + 1, online = everyone.filter(p => Date.now() - (p.ts || 0) < 12 * 60 * 1000).length + 1;
+  const pop = everyone.length + 1;
   let list = rankScope === 'all' ? [me, ...everyone] : [me, ...G.friends.map(f => profiles[f.uid] || { uid: f.uid, name: f.name || '（読み込み中）', ts: 0 })];
   list.sort((a, b) => rankValue(b, rankTab) - rankValue(a, rankTab));
   const myRank = list.findIndex(p => p.uid === G.uid) + 1;
   if (list.length > 50) { list = list.slice(0, 50); if (myRank > 50) list.push(me); }
   const tabs = [['rate', 'バトル'], ['power', '総合力'], ['stage', '到達ステージ'], ['kills', '討伐数'], ['lv', '最高Lv']];
-  let h = '<div class="pcol"><div class="ph"><b>ランキング</b><span>プレイヤー <b style="color:#fff">' + pop + '人</b>（いま遊んでいる <b style="color:#7dffa8">' + online + '人</b>）　あなたは ' + myRank + '位</span></div>';
+  let h = '<div class="pcol"><div class="ph"><b>ランキング</b><span>プレイヤー <b style="color:#fff">' + pop + '人</b>　あなたは ' + myRank + '位</span></div>';
   h += '<div class="rtabs" style="margin-bottom:4px"><button data-rs="all" class="' + (rankScope === 'all' ? 'on' : '') + '">全員</button><button data-rs="friends" class="' + (rankScope === 'friends' ? 'on' : '') + '">フレンド（' + G.friends.length + '人）</button></div>';
   h += '<div class="rtabs">' + tabs.map(([k, n]) => '<button data-rt="' + k + '" class="' + (rankTab === k ? 'on' : '') + '">' + n + '</button>').join('') + '</div><div class="rlist">';
   list.forEach((p, i) => {
