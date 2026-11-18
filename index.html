@@ -446,7 +446,7 @@ function fmt(n) {
 function fmtPix(n) { n = Math.floor(n); if (n < 10000) return '' + n; if (n < 1e6) return Math.floor(n / 1000) + 'K'; if (n < 1e9) return Math.floor(n / 1e6) + 'M'; return Math.floor(n / 1e9) + 'B'; }
 
 /* ---------- bridge to the macOS shell ---------- */
-const GAME_VERSION = '1.11.1', GAME_BUILD = 204;
+const GAME_VERSION = '1.11.2', GAME_BUILD = 205;
 const NATIVE = !!window.__DH_NATIVE || Q.has('nativeTest');
 if (window.__DH_OS === 'win') document.addEventListener('DOMContentLoaded', () => { const g = document.getElementById('grip'); if (g) g.title = 'ドラッグで移動／ダブルクリックでタスクバーの上に戻す'; });
 // page -> mac: the shell polls document.title. Keep the title short: big payloads (saves) are cut into chunks
@@ -1743,12 +1743,12 @@ function spawnEnemy() {
   const elite = !boss && Math.random() < .15, nP = Math.max(1, party.length);
   // each new chapter is a wall: enemies jump well above the previous chapter's boss, so you level up before pushing on
   const ch = G.region + G.loop * REGIONS.length, chH = Math.pow(1.45, Math.min(ch, 3)) * Math.pow(1.3, Math.max(0, ch - 3)), chA = Math.pow(1.3, Math.min(ch, 3)) * Math.pow(1.2, Math.max(0, ch - 3));
-  const hpM = (boss ? 18 : elite ? 2.6 : 1) * (1 + .45 * (nP - 1)) * chH, atkM = (boss ? 2.4 : elite ? 1.5 : 1) * (1 + .1 * (nP - 1)) * chA;
+  const hpM = (boss ? 14 : elite ? 2.6 : 1) * (1 + .45 * (nP - 1)) * chH, atkM = (boss ? 2.4 : elite ? 1.5 : 1) * (1 + .1 * (nP - 1)) * chA;
   const last = enemies.length ? enemies[enemies.length - 1].x : 0;
   enemies.push({
     k: def.k, c: def.c, boss, name: def.name, x: Math.max(camX + IW + 8, last + 16 + rnd(12)), y: GROUND,
     elite, slamT: 3.5, max: 7 * Math.pow(1.145, t) * hpM * (FOE[def.k] || [1])[0], hp: 0,
-    atk: 1.6 * Math.pow(1.122, t) * atkM * Math.min(1, .6 + t * .06), spd: (FOE[def.k] || [1, 9])[1],
+    atk: 1.45 * Math.pow(1.122, t) * atkM * Math.min(1, .6 + t * .06), spd: (FOE[def.k] || [1, 9])[1],
     cd: 1, lunge: 0, flash: 0, dying: 0, kb: 0, seed: rnd(10), walk: 0, hopT: 0, hb: 0
   });
   const e = enemies[enemies.length - 1]; e.hp = e.max; spawned++;
@@ -1778,7 +1778,7 @@ function killEnemy(e) {
   parts.push({ x: e.x, y: GROUND - 8, vx: 0, vy: -10, life: 1.2, max: 1.2, col: '#e6dcff', soul: 1, g: 0 });
   addXp(xp);
   if (runeLv('kheal')) for (const m of party) if (!m.down) m.hp = Math.min(m.st.maxHp, m.hp + m.st.maxHp * runeVal('kheal'));
-  if (e.boss || Math.random() < (e.elite ? .6 : .2) + runeVal('chest')) chests.push({ x: e.x + 6, y: GROUND - 20, vy: -20, land: 0, openT: 0, rar: rollRarity(e.boss), opened: false, done: 0 });
+  if (e.boss || Math.random() < (e.elite ? .45 : .14) + runeVal('chest')) chests.push({ x: e.x + 6, y: GROUND - 20, vy: -20, land: 0, openT: 0, rar: rollRarity(e.boss), opened: false, done: 0 });
   if (e.boss) { shake = .5; flashT = .25; }
 }
 function rollRarity(boss) { const rb = runeVal('rare'); if (boss) { const x = Math.random() + rb * 3; return x > .95 ? 5 : x > .5 ? 4 : 3; } const r = Math.random() + Math.min(.08, G.loop * .03 + G.region * .01) + rb; return r > .997 ? 3 : r > .965 ? 2 : r > .8 ? 1 : 0; }

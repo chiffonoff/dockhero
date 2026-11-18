@@ -1,1 +1,1 @@
-{"version": "1.11.1", "build": 204, "minShell": 3, "sha256": "968f0d27610dd2b570f308983fc9888775b724fe130438b4ddca5cbbb8ea9d17", "notes": "力・守り・富のルーンを下方修正"}
+{"version": "1.11.2", "build": 205, "minShell": 3, "sha256": "b665eaa7e909e4a708a8bbcd862e0b64e0abe6dbad4d19b5c077c6dc4287fd10", "notes": "宝箱のドロップ率を下げた（敵の攻撃とボスHPを少し調整）"}
