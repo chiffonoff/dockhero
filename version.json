@@ -1,1 +1,1 @@
-{"version": "1.8.2", "build": 182, "minShell": 3, "sha256": "8deb456a76eb9741fb57e718cc61619b2dd651d47ba3b3491e7660e00cbcf9bc", "notes": "獲得経験値を半分に（序盤の敵は少しやさしく）"}
+{"version": "1.8.3", "build": 183, "minShell": 3, "sha256": "13b6d0fdf8e2ea7bb8d1cc384d6300d046fc27f60a28d9db25d94713e7877459", "notes": "Windows版に対応"}

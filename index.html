@@ -451,8 +451,9 @@ function fmt(n) {
 function fmtPix(n) { n = Math.floor(n); if (n < 10000) return '' + n; if (n < 1e6) return Math.floor(n / 1000) + 'K'; if (n < 1e9) return Math.floor(n / 1e6) + 'M'; return Math.floor(n / 1e9) + 'B'; }
 
 /* ---------- bridge to the macOS shell ---------- */
-const GAME_VERSION = '1.8.2', GAME_BUILD = 182;
+const GAME_VERSION = '1.8.3', GAME_BUILD = 183;
 const NATIVE = !!window.__DH_NATIVE || Q.has('nativeTest');
+if (window.__DH_OS === 'win') document.addEventListener('DOMContentLoaded', () => { const g = document.getElementById('grip'); if (g) g.title = 'ドラッグで移動／ダブルクリックでタスクバーの上に戻す'; });
 // page -> mac: the shell polls document.title. Keep the title short: big payloads (saves) are cut into chunks
 // and sent one at a time; each title carries a session id so a reload never confuses the shell.
 const chan = { s: Math.random().toString(36).slice(2, 8), mv: [0, 0], c: [], id: Date.now() % 1e9 * 10 };
