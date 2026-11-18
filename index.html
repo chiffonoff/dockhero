@@ -446,7 +446,7 @@ function fmt(n) {
 function fmtPix(n) { n = Math.floor(n); if (n < 10000) return '' + n; if (n < 1e6) return Math.floor(n / 1000) + 'K'; if (n < 1e9) return Math.floor(n / 1e6) + 'M'; return Math.floor(n / 1e9) + 'B'; }
 
 /* ---------- bridge to the macOS shell ---------- */
-const GAME_VERSION = '1.11.2', GAME_BUILD = 205;
+const GAME_VERSION = '1.11.3', GAME_BUILD = 206;
 const NATIVE = !!window.__DH_NATIVE || Q.has('nativeTest');
 if (window.__DH_OS === 'win') document.addEventListener('DOMContentLoaded', () => { const g = document.getElementById('grip'); if (g) g.title = 'ドラッグで移動／ダブルクリックでタスクバーの上に戻す'; });
 // page -> mac: the shell polls document.title. Keep the title short: big payloads (saves) are cut into chunks
@@ -554,7 +554,8 @@ const AFFIX = {
   crit: { n: '会心率', b: .02, pct: 1 }, critd: { n: '会心ダメージ', b: .15, pct: 1 }, aspd: { n: '攻撃速度', b: .04, pct: 1 },
   gold: { n: '獲得ゴールド', b: .08, pct: 1 }, atkp: { n: '攻撃力', b: .05, pct: 1 },
   hpp: { n: '最大HP', b: .06, pct: 1 }, ls: { n: '吸血', b: .02, pct: 1 } };
-const AFFIXKEYS = Object.keys(AFFIX);
+const AFFIXKEYS = Object.keys(AFFIX), LS_MIN_R = 5;   // 吸血はミシック以上のみ
+function fixLs(it) { if (!it || it.r >= LS_MIN_R || !it.a) return; for (const x of it.a) if (x.k === 'ls') { const free = AFFIXKEYS.filter(k => k !== 'ls' && !it.a.some(y => y.k === k)); const k = free[Math.floor(Math.random() * free.length)]; x.k = k; x.v = +(AFFIX[k].b * .8 * (1 + .15 * it.r)).toFixed(4); } }
 /* ---------- runes: permanent account-wide boosts bought with gold, unlocked along a path ---------- */
 const RUNES = [
   { id: 'atk',   n: '力のルーン',     g: 'ᚠ', col: '#ff7a6a', d: '攻撃力',           v: .012, pct: 1, max: 15, base: 40,  req: null },
@@ -587,7 +588,7 @@ let UID = 1;
 function makeItem(slot, r, t, name) {
   const it = { u: Date.now().toString(36) + (UID++), s: slot, r, t, lv: 0, a: [], nw: 1 };
   it.n = name || PRE[r][Math.floor(rnd(4))] + NOUN[slot][Math.floor(rnd(4))];
-  const pool = AFFIXKEYS.slice();
+  const pool = AFFIXKEYS.filter(k => k !== 'ls' || r >= LS_MIN_R);
   for (let i = 0; i < Math.min(5, r); i++) { const k = pool.splice(Math.floor(rnd(pool.length)), 1)[0]; it.a.push({ k, v: +(AFFIX[k].b * (.6 + rnd(.4)) * (1 + .15 * r) * (r > 5 ? 1 + .3 * (r - 5) : 1)).toFixed(4) }); }
   it.q = +(rnd(.85, 1.15)).toFixed(3);
   return it;
@@ -735,7 +736,7 @@ function load() {
   if (!G.uid) G.uid = newCode() + newCode().slice(0, 2); G.friends = G.friends || []; G.gifted = G.gifted || {};
   for (const c of G.party) heroData(c); if (!CLASSES[G.main]) G.main = 'knight';
   rebuildParty();
-  G.rv = 2; G.epoch = SAVE_EPOCH; G.pvp = G.pvp || { rate: 1000, w: 0, l: 0 };
+  G.rv = 2; G.bag.forEach(fixLs); for (const c in (G.heroes || {})) for (const k in ((G.heroes[c] || {}).gear || {})) fixLs(G.heroes[c].gear[k]); G.epoch = SAVE_EPOCH; G.pvp = G.pvp || { rate: 1000, w: 0, l: 0 };
   if (reset) setTimeout(() => toast('<b style="color:#ffe08a">新シーズン開始！</b> 全員 Lv1 からのスタートです', '#ffd25e'), 900);
   const away = (Date.now() - (G.ts || Date.now())) / 1000;
   if (s && !reset && away > 90) {
@@ -2735,7 +2736,7 @@ function onGift(topic, txt) {
   if (G.bag.length >= BAG_MAX) { toast('<b>' + String(d.from).replace(/</g, '') + '</b> から贈り物が届いています。バッグを空けてください', '#ff9ad8'); return; }
   G.gifted[d.id] = 1; const it = d.item; it.u = Date.now().toString(36) + (UID++);
   if (!d.rv && it.r >= 1) it.r++;
-  if (!(it.r >= 0 && it.r <= RMAX) || !SLOTS.includes(it.s)) return;
+  if (!(it.r >= 0 && it.r <= RMAX) || !SLOTS.includes(it.s)) return; fixLs(it);
   G.bag.push(it); soc.publish(topic, '', true); save(); renderPanel();
   toast('🎁 <b>' + String(d.from).replace(/</g, '') + '</b> から ' + itemHtml(it) + ' が届いた！', '#ff9ad8');
   if (d.fromUid && !G.friends.some(f => f.uid === d.fromUid)) addFriend(d.fromUid, d.from, true);

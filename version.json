@@ -1,1 +1,1 @@
-{"version": "1.11.2", "build": 205, "minShell": 3, "sha256": "b665eaa7e909e4a708a8bbcd862e0b64e0abe6dbad4d19b5c077c6dc4287fd10", "notes": "宝箱のドロップ率を下げた（敵の攻撃とボスHPを少し調整）"}
+{"version": "1.11.3", "build": 206, "minShell": 3, "sha256": "9699c01f5d962de43f85b39c6d1852f3df311c6c231ee9f2afcff692ab13cc23", "notes": "吸血はミシック以上の装備だけに付くように"}
