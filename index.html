@@ -451,7 +451,7 @@ function fmt(n) {
 function fmtPix(n) { n = Math.floor(n); if (n < 10000) return '' + n; if (n < 1e6) return Math.floor(n / 1000) + 'K'; if (n < 1e9) return Math.floor(n / 1e6) + 'M'; return Math.floor(n / 1e9) + 'B'; }
 
 /* ---------- bridge to the macOS shell ---------- */
-const GAME_VERSION = '1.9.1', GAME_BUILD = 191;
+const GAME_VERSION = '1.9.2', GAME_BUILD = 192;
 const NATIVE = !!window.__DH_NATIVE || Q.has('nativeTest');
 if (window.__DH_OS === 'win') document.addEventListener('DOMContentLoaded', () => { const g = document.getElementById('grip'); if (g) g.title = 'ドラッグで移動／ダブルクリックでタスクバーの上に戻す'; });
 // page -> mac: the shell polls document.title. Keep the title short: big payloads (saves) are cut into chunks
@@ -1159,6 +1159,35 @@ function dWisp(c, ox, oy, col, t, e) {
   return cy - 6;
 }
 const DRAW = { slime: dSlime, bat: dBat, mush: dMush, golem: dGolem, ghost: dGhost, wolf: dWolf, skel: dSkel, imp: dImp, eye: dEye, crab: dCrab, scorp: dScorp, yeti: dYeti, stump: dStump, wisp: dWisp };
+
+/* ---------- monsters: hand-placed pixel maps, recoloured per chapter (O outline, D/M/L/H ramp) ---------- */
+const FOE_MAPS = {"slime": ["........OOOOOO........", "......OOLLHHLLOO......", "....OOLHHHLLMMMMOO....", "...OLLHHLMMMMMMMMDO...", "..OLLHLMMMMMMMMMMMDO..", "..OLLMMMMMMMMMMMMMDO..", ".OLMMMEEMMMMEEMMMMMDO.", ".OLMMEWEMMMEWEMMMMMDO.", ".OMMMEEEMMMEEEMMMMMDO.", ".OMMPMMMMEMMMMPMMMDDO.", ".OMMMMMMMMMMMMMMMMDDO.", ".ODMMMMMMMMMMMMMMDDDO.", "..ODDMMMMMMMMMMMDDDO..", "...OODDDDDDDDDDDDOO...", ".....OOOOOOOOOOOO....."], "mush": ["......OOOOOOOO......", "....OOLLHHLLMMOO....", "...OLLHWWHLMMMMMO...", "..OLLHWWWLMMWWMMDO..", ".OLLMMMMMMMMWWMMMDO.", ".OLWWMMMMMMMMMMWWDO.", "OLLWWMMMMWWMMMMWWMDO", "OMMMMMMMWWWMMMMMMDDO", "ODDMMMMMMMMMMMMMDDDO", ".OODDDDDDDDDDDDDDOO.", "...OOCCCCCCCCCCOO...", "....OCEECCCEECCO....", "....OCEWCCCEWCCO....", "....OCCCCPCCCCbO....", "....OCCCCCCCCCbO....", ".....OCCCCCCCbO.....", "....OOkkO..OkkOO....", "....OkkkO..OkkkO....", ".....OOO....OOO....."], "bat": ["OO......................OO", "OMO....................OMO", "OMMO.......O..O.......OMMO", "ODMMO.....OMOOMO.....OMMDO", "ODMMMO...OMMMMMMO...OMMMDO", ".ODMMMOOOMLLLLLLMOOOMMMDO.", ".ODDMMMMLLLLLLLLLLMMMMDDO.", "..ODDMMMMEYLLLLYEMMMMDDO..", "..ODDDMMMEELLLLEEMMMDDDO..", "...OODDDMMLLTTLLMMDDDOO...", ".....OODDMMMMMMMMDDOO.....", ".......ODO.MMMM.ODO.......", "........O..ODDO..O........", "............OO............"], "golem": [".......OOOOOOOO.......", "......OLLHHLLMMO......", ".....OLHHLLMMMMDO.....", ".....OLLYYMMMMMDO.....", ".....OMMYYMMMMDDO.....", ".....ODMMMMMMMDDO.....", "..OOOODDMMMMMDDDOOOO..", ".OLLLOODDDDDDDDOOMMMO.", "OLHHLMOLLLLMMMMOMMMDDO", "OLLLMMOLHHLMMMMOMMDDDO", "OMMMMMOLLMMMYMMOMDDDDO", "OMMMMDOMMMMMMMMODDDDDO", "ODMMDDOMMMMMMMDODDDDDO", ".OODDOOMMMMMMMDOODDDO.", "..OOOOODDMMMMDDOOOOOO.", "......ODDDDDDDDO......", ".....OLLMO..OLLMO.....", ".....OMMDO..OMMDO.....", ".....ODDDO..ODDDO.....", ".....OOOOO..OOOOO....."], "ghost": ["......OOOOOOO.......", "....OOLHHHHLLOO.....", "...OLHHHHHLLLMMO....", "..OLHHHLLLLLMMMMO...", "..OLHLLLLLLLMMMMDO..", ".OLLEELLLEELLMMMDO..", ".OLEEELLEEELLMMMDO..", ".OLLEELLLEELMMMMDO..", ".OLLLLLEELLLMMMMDO..", ".OMLLLLLLLLMMMMDDO..", "OMMLMLLLLLMMMMMDDO..", "OLOMMMMMMMMMMMDDDO..", ".O.ODMMMMMMMMDDDDO..", "...ODDMMMMMDDDDDO...", "...ODDDMMDDDDDDO....", "....ODDOODDDOODO....", ".....OO..OOO..O....."], "wolf": ["..OO..OO....................", "..OMO.OMO...................", "..OMMOOMMO..................", ".OLLMMMMMMO.................", "OLLHLMMMMMDO......OOOOOOO...", "OLEYLLMMMMDOOOOOOOLLLLLMMOO.", "OLEELLMMMMMMLLLLLLHHLLLMMMDO", "OEELLLMMMMMLLHHHLLLLLMMMMMDO", "OTOOLLMMMMMMMLLLLLLMMMMMMDDO", ".OWOMMMMMMMMMMMMMMMMMMMMDDDO", "..OODMMMMMMMMMMMMMMMMMMDDDO.", "....ODDDMMMMMMMMMMMMMMDDDO..", "....ODDMDDOOODDDDDOOOODDO...", "....ODMMDO..ODMDO...ODMDO...", "....ODMDO...ODMO....ODMO....", "....OkkO....OkkO....OkkO....", "....OOO.....OOO.....OOO....."], "skel": ["......OOOOOO......", ".....OBBBBBbO.....", "....OBBWBBBBbO....", "....OBEEBBEEbO....", "....OBEEBBEEbO....", "....OBBBEBBBbO....", ".....OBTTTTbO.....", "......OOBbOO......", "..OO.OBBBBBbO.....", ".OSSOOBOBOBOBO....", "OSsSOOBBBBBBbO....", "OSSSOOBOBOBObO.OO.", "OSsSOOBBBBBBbOOMMO", ".OSOO.OBBBBbO.OMDO", "..O...OBOObO..OMDO", "......OBO.ObO.OMMO", "......OBO.ObO.ODDO", ".....OBBO.ObbO.OO.", ".....OOOO.OOOO...."], "imp": ["....OO......OO......", "....OMO....OMO......", "....OkO....OkO..OOO.", "...OOMMOOOOMMOOODDO.", "..OLLLMMMMMMMMMODO..", ".OLHLMMMMMMMMMMDO...", ".OLEYLMMEYLMMMMDO...", ".OLEELMMEELMMMDDO...", ".OMMMMMMMMMMMMDDO...", "..OMMTTTTMMMMDDO....", "...OOMMMMMMMDDOO....", "..OLLMMMMMMMMMDDO...", "OOLMMMMMMMMMMMMDOO..", "OSOMMMMMMMMMMMDDOMO.", "OSOOMMMMMMMMMDDOOMMO", "OSO.OODMMMMDDOO.OMO.", "OSO...ODO.ODO....R..", ".O....OO..OO........"], "eye": [".......OOOOOO.......", ".....OOWWWWWWOO.....", "....OWWWWWWWWWWO....", "...OWWRWWWWWWWCWO...", "..OWWWWWMMMMWWWCCO..", "..OWWWWMLLMMMWWWCO..", ".OWWWWMLEEEMMWWWCCO.", ".OWWRWMLEWEMMWWWCCO.", ".OWWWWMMEEEMMWWRCCO.", ".OCWWWWMMMMMWWWWCCO.", "..OCWWWWMMMWWWWCCO..", "..OCCWWWWWWWWWCCCO..", "...OCCWWWRWWWCCCO...", "....OOCCCCCCCCOO....", ".....ODOODOODOO.....", "....ODO.ODO.ODO.....", "....OO..ODO..OO.....", "..........O........."], "crab": ["OOO.........................", "OLMO.......OO..OO...........", "OHLMO.....OWO.OWO...........", "OLMMO.....OEO.OEO...........", ".OOMMO.....OO.OO............", "OLLMMO..OOOODDOOOOOO........", "OMMMDO.OLLHHLLMMMMMMOO......", ".OODOOOLHHLLMMMMMMMMMDO.....", "...OMMLLLMMMMMMMMMMMMMDO..OO", "...OOMLMMMMMMMMMMMMMMMDOOMMO", ".....OMMMMMMMMMMMMMMMDDOODO.", ".....ODMMTMMMMMMMMMMDDDO.O..", "......ODDMMMMMMMMMMDDDO.....", ".....ODOODDDDDDDDDDDOODO....", "....ODO.ODO.ODO.ODO..ODO....", "....OO..OO..OO..OO....OO...."], "scorp": ["................OOO.....", "...............OYYO.....", "..............OYOO......", "..............OMDO......", ".............OMMO.......", "......OOO...OMMDO.......", ".....OMMMOOOMMDO........", "..OO.OMDDMMMMDDO........", ".OMMOOMMMMMMMDDO........", "OMLMMOLLLLLLLMDDO.......", ".OOMMLHLLHLLLLMMDO......", "..OMLEYLLLLLLLLMMDO.....", ".OMMLEELLLLLLLLMMDDO....", "OMMMMMMMMMMMMMMMMDDO....", ".OOOMMMMMMMMMMMMDDO.....", "...ODOODOODOODOODO......", "..ODO.ODO.ODO.ODO.......", "..OO..OO..OO..OO........"], "yeti": ["......OOOOOOOO.......", ".....OLHHHHHLLO......", "....OLHHLLLLLLLO.....", "...OLHLCCCCCCLLMO....", "...OLLCEECCEECLMO....", "...OLLCEWCCEWCLMO....", "...OLLCCCCCCCCLMO....", "...OLLCOTTTTOCLMO....", "..OOLLLCCCCCCLLMOO...", ".OLLOLLLLLLLLLLMOMMO.", "OLHLLOLLHLLLLLMOMMMDO", "OLLLLOLLLLLLLLMOMMMDO", "OCCLLOLLLLLLLMMOMMDDO", "OCCCOOLLLLLLLMMOODDCO", ".OOO.OMLLLLLMMDO.OCCO", ".....OMMMMMMMDDO..OO.", "....OLLMO..OLLMO.....", "....OMMDO..OMMDO.....", "....OCCCO..OCCCO.....", "....OOOOO..OOOOO....."], "stump": ["..........OO.........", ".........OGGO........", "........OGGgO........", "...OOOOOOOkOOOOO.....", "..OCCCCCCCCCCCCKO....", "..OCKKKKKKKKKKCKO....", "..OCKCCCCCCCCKCKO....", "..OLCCCCCCCCCCCkO....", "..OLMMMMMMMMMMMDO....", "..OLMEEMMMEEMMMDO....", ".OOLMEYMMMEYMMMDO....", "OMOLMMMMMMMMMMMDO....", "OMMLMMMOOOOMMMDDO....", ".OOLMMMOEEOMMMDDO....", "...OLMMMOOMMMMDDO....", "...OLMMMMMMMMMDDDO...", "..OLLMMMMMMMMDDDDDO..", ".OLMMODDMMDDODDDMMDO.", ".OOOO.OOOOOO.OOOOOO.."], "wisp": [".......O.........", "......OHO........", ".....OHLO...O....", ".....OHLMO.OLO...", "....OHLLMOOLMO...", "...OHHLLLMLLMO...", "..OHHLLLLLLLMDO..", "..OHLWWLLLWWLMDO.", ".OHLLWELLLWELLMDO", ".OHLLLLLLLLLLLMDO", ".OLLLLLTTTLLLLMDO", "..OLLLLLLLLLLMDO.", "..OMLLLLLLLLMMDO.", "...OMMLLLLMMDDO..", "....OODMMMDDOO...", "......OOOOOO....."]};
+const FOE_FIX = { E: [26, 16, 40], W: [255, 255, 255], R: [232, 64, 80], Y: [255, 224, 102], T: [244, 239, 230], P: [255, 143, 176], B: [236, 228, 212], b: [184, 171, 152], S: [200, 204, 216], s: [140, 146, 168], K: [122, 80, 48], k: [70, 44, 26], G: [98, 176, 96], g: [58, 120, 66], C: [246, 240, 226] };
+const FOE_CACHE = {};
+function foeSprite(k, col) {
+  const key = k + col; if (FOE_CACHE[key]) return FOE_CACHE[key];
+  const rows = FOE_MAPS[k], c0 = hex(col), mx = (a, b, t) => [0, 1, 2].map(i => Math.round(a[i] + (b[i] - a[i]) * t));
+  const P = { O: mx(c0, [20, 10, 34], .78), D: mx(mx(c0, [40, 20, 90], .45), [0, 0, 0], .15), M: c0, L: mx(mx(c0, [255, 250, 220], .3), c0, .1), H: mx(c0, [255, 255, 240], .62) };
+  const cv2 = document.createElement('canvas'); cv2.width = rows[0].length; cv2.height = rows.length;
+  const x2 = cv2.getContext('2d'), id = x2.createImageData(cv2.width, cv2.height);
+  rows.forEach((r, y) => { for (let x = 0; x < r.length; x++) { const c = P[r[x]] || FOE_FIX[r[x]]; if (!c) continue; const i = (y * cv2.width + x) * 4; id.data[i] = c[0]; id.data[i + 1] = c[1]; id.data[i + 2] = c[2]; id.data[i + 3] = 255; } });
+  x2.putImageData(id, 0, 0);
+  return FOE_CACHE[key] = cv2;
+}
+const FOE_FLOAT = { bat: 7, imp: 6, eye: 6, ghost: 3, wisp: 4 };
+function dFoe(k) {
+  return (c, ox, oy, col, t, e) => {
+    const s = foeSprite(k, col), w = s.width, h = s.height, fl = FOE_FLOAT[k];
+    let dy = 0, sq = 0;
+    if (fl) dy = -fl + Math.round(Math.sin(t * (k === 'bat' || k === 'imp' ? 5 : 2.5) + e.seed) * 1.5);
+    else if (k === 'slime') { const p = Math.sin(e.hopT || 0); dy = -Math.max(0, Math.round(p * 3)); sq = p < -.4 ? 1 : 0; }
+    else dy = Math.sin(e.walk || t * 3) > .2 ? -1 : 0;
+    const x = Math.round(ox - w / 2), y = Math.round(oy - h + dy + sq);
+    if (sq) c.drawImage(s, x - 1, y, w + 2, h - sq); else c.drawImage(s, x, y);
+    return y;
+  };
+}
+for (const k in FOE_MAPS) DRAW[k] = dFoe(k);
 const FLY = { bat: 1, imp: 1, eye: 1 };
 // per-monster temperament: hp multiplier, walk speed
 const FOE = { slime: [1, 9], mush: [1, 9], bat: [.8, 13], golem: [1.3, 6], ghost: [1, 9], wolf: [.85, 15], skel: [1.05, 9], imp: [.8, 13], eye: [.9, 8], crab: [1.25, 7], scorp: [1.05, 10], yeti: [1.45, 6], stump: [1.35, 6], wisp: [.85, 11] };
@@ -1940,7 +1969,7 @@ function update(dt) {
   hero.walking = false;
   if (hero.dead) { hero.deadT += dt; if (hero.deadT > 2.4) respawn(); }
   else {
-    const block = front && lead && front.x - (hero.x - lead.off) < (front.boss ? 19 : 13);
+    const block = front && lead && front.x - (hero.x - lead.off) < (front.boss ? 28 : 17);
     if (!block && ch && ch.x - hero.x < 7) openChest(ch);
     else if (!block && (fade === 0 || fade > 1.2)) {
       hero.walking = true; hero.x += 34 * dt; hero.phase += dt * 19;
@@ -1957,7 +1986,7 @@ function update(dt) {
       if (C.type === 'heal') {
         const hurt = party.filter(x => !x.down && x.hp < x.st.maxHp * .92).sort((a, b) => a.hp / a.st.maxHp - b.hp / b.st.maxHp)[0];
         if (hurt) target = { heal: hurt }; else if (front && front.x - mx < C.range && front.x - camX < IW + 4) target = front;
-      } else if (front && front.x - mx < C.range + (MELEE[C.type] ? m.off + (front.boss ? 8 : 0) : 0) && front.x - camX < IW + 4) target = front;
+      } else if (front && front.x - mx < C.range + (MELEE[C.type] ? m.off + (front.boss ? 16 : 5) : 0) && front.x - camX < IW + 4) target = front;
       if (target && m.swing < 0 && m.cd <= 0) { m.swing = 0; m.hit = false; m.tgt = target; m.swingDur = Math.max(.14, .36 / Math.max(1, m.st.aps / 1.1)); m.cd = 1 / m.st.aps; }
       if (m.swing >= 0) {
         m.swing += dt / m.swingDur;
@@ -1965,7 +1994,7 @@ function update(dt) {
           m.hit = true;
           // the original target may have died or been knocked back mid-swing: hit whoever is in front instead, or retry right away
           let tg = m.tgt && m.tgt.heal ? m.tgt : (m.tgt && !m.tgt.dying ? m.tgt : front);
-          if (tg && !tg.heal && MELEE[C.type] && tg.x - mx > C.range + m.off + 6 + (tg.boss ? 8 : 0)) tg = front && front.x - mx <= C.range + m.off + 6 + (front.boss ? 8 : 0) ? front : null;
+          if (tg && !tg.heal && MELEE[C.type] && tg.x - mx > C.range + m.off + 6 + (tg.boss ? 16 : 5)) tg = front && front.x - mx <= C.range + m.off + 6 + (front.boss ? 16 : 5) ? front : null;
           if (tg) { memberAct(m, tg); m.hits = (m.hits || 0) + 1; } else m.cd = Math.min(m.cd, .05);
         }
         if (m.swing >= 1) m.swing = -1;
@@ -2003,9 +2032,9 @@ function update(dt) {
     if (e.dying) { e.dying += dt; continue; }
     const tx = tgtM ? hero.x - tgtM.off : hero.x;
     const dist = e.x - tx;
-    const reachE = e.boss ? 17 : 11;
+    const reachE = e.boss ? 26 : 15;
     let blocked = false;
-    for (const o of enemies) if (o !== e && !o.dying && o.x < e.x && e.x - o.x < (o.boss || e.boss ? 15 : FLY[e.k] !== FLY[o.k] ? 6 : 10)) { blocked = true; break; }
+    for (const o of enemies) if (o !== e && !o.dying && o.x < e.x && e.x - o.x < (o.boss || e.boss ? 26 : FLY[e.k] !== FLY[o.k] ? 8 : 17)) { blocked = true; break; }
     if (dist > reachE && !blocked) { e.x -= e.spd * dt * (e.x - camX > IW * .72 ? 3.2 : 1); e.walk += dt * 10; if (e.k === 'slime') e.hopT += dt * 9; }
     else if (!hero.dead) {
       if (e.k === 'slime') e.hopT += dt * 4;
@@ -2021,7 +2050,7 @@ function update(dt) {
         toast('<b style="color:#ff7a95">' + e.name + '</b> の全体攻撃！', '#ff5c7f');
       }
     }
-    if (e.lunge > 0) { e.lunge -= dt; if (!e.hb && e.lunge < .15) { e.hb = 1; const t2 = party.find(m => !m.down); if (t2 && e.x - (hero.x - t2.off) < (e.boss ? 20 : 14)) hurtMember(t2, e.atk * rnd(.85, 1.15)); } }
+    if (e.lunge > 0) { e.lunge -= dt; if (!e.hb && e.lunge < .15) { e.hb = 1; const t2 = party.find(m => !m.down); if (t2 && e.x - (hero.x - t2.off) < (e.boss ? 30 : 19)) hurtMember(t2, e.atk * rnd(.85, 1.15)); } }
   }
   enemies = enemies.filter(e => !(e.dying > .45));
   // chests

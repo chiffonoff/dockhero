@@ -1,1 +1,1 @@
-{"version": "1.9.1", "build": 191, "minShell": 3, "sha256": "75a7e74c178a338a85db24bafa9d9abfc62a15b2ad4346e398c41417c881b247", "notes": "全キャラをGeminiで作ったドット絵スプライトに"}
+{"version": "1.9.2", "build": 192, "minShell": 3, "sha256": "6a9a7c3184ef28d47c5ff30a04e48a68473f02b1f2c5f5771e9e1e65d536e1fc", "notes": "敵14種類をドット絵で描き直し（キャラと同じくらいの大きさに）"}
