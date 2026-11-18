@@ -453,7 +453,7 @@ function fmt(n) {
 function fmtPix(n) { n = Math.floor(n); if (n < 10000) return '' + n; if (n < 1e6) return Math.floor(n / 1000) + 'K'; if (n < 1e9) return Math.floor(n / 1e6) + 'M'; return Math.floor(n / 1e9) + 'B'; }
 
 /* ---------- bridge to the macOS shell ---------- */
-const GAME_VERSION = '1.11.6', GAME_BUILD = 209;
+const GAME_VERSION = '1.11.7', GAME_BUILD = 210;
 const NATIVE = !!window.__DH_NATIVE || Q.has('nativeTest');
 if (window.__DH_OS === 'win') document.addEventListener('DOMContentLoaded', () => { const g = document.getElementById('grip'); if (g) g.title = 'ドラッグで移動／ダブルクリックでタスクバーの上に戻す'; });
 // page -> mac: the shell polls document.title. Keep the title short: big payloads (saves) are cut into chunks
@@ -2007,6 +2007,7 @@ function update(dt) {
   const front = alive.reduce((m, e) => !m || e.x < m.x ? e : m, null);
   const ch = chests.find(c => !c.opened && c.land);
   const lead = party.find(m => !m.down);
+  for (const m of party) if (m.down) m.downT += dt;
   hero.walking = false;
   if (hero.dead) { hero.deadT += dt; if (hero.deadT > 2.4) respawn(); }
   else {
@@ -2015,7 +2016,7 @@ function update(dt) {
     else if (!block && (fade === 0 || fade > 1.2)) {
       hero.walking = true; hero.x += 34 * dt; hero.phase += dt * 19;
       for (const m of party) {
-        if (m.down) { m.downT += dt; continue; }
+        if (m.down) continue;
         m.dust = (m.dust || 0) - dt; if (m.dust <= 0) { m.dust = .28 + rnd(.1); parts.push({ x: hero.x - m.off - 2, y: GROUND - 1, vx: -rnd(4, 10), vy: -rnd(2, 6), life: .4, max: .4, col: REG.grassL, g: 0 }); }
       }
     }
