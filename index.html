@@ -373,13 +373,13 @@ body.flip #panel{top:170px;bottom:auto}
     <div id="mid"><div id="stagebox" class="glass" title="ステージ選択"><svg class="mapic" viewBox="0 0 16 16"><path d="M1 3.5 5.5 2l5 1.5L15 2v10.5L10.5 14l-5-1.5L1 14zM5.5 3.6v8.9l5 1.5V5.1z"/></svg><span id="region"></span><span id="stage"></span><span id="pips"></span></div></div>
     <div id="right">
       <div id="goldbox" class="glass"><span class="coin"></span><b id="gold">0</b></div>
-      <button class="up glass" data-k="atk" title="攻撃力 +10%"><span class="ic">⚔︎</span><span class="tx"><small>攻撃</small><b>0</b></span></button>
-      <button class="up glass" data-k="hp" title="最大HP +10%"><span class="ic">♥︎</span><span class="tx"><small>体力</small><b>0</b></span></button>
-      <button class="up glass" data-k="spd" title="攻撃速度 +7%"><span class="ic">≫</span><span class="tx"><small>速さ</small><b>0</b></span></button>
+      <div class="up glass" data-k="atk" title="パーティの攻撃力（合計）"><span class="ic">⚔︎</span><span class="tx"><small>攻撃</small><b>0</b></span></div>
+      <div class="up glass" data-k="hp" title="パーティの最大HP（合計）"><span class="ic">♥︎</span><span class="tx"><small>体力</small><b>0</b></span></div>
+      <div class="up glass" data-k="spd" title="パーティの攻撃回数（1秒あたり合計）"><span class="ic">≫</span><span class="tx"><small>速さ</small><b>0</b></span></div>
       <button id="rankbtn" class="tbtn glass" title="フレンドランキング"><svg viewBox="0 0 16 16"><path d="M4 1h8v2h3v2.5A3.5 3.5 0 0 1 11.7 9 4 4 0 0 1 9 11.2V13h2.5v2h-7v-2H7v-1.8A4 4 0 0 1 4.3 9 3.5 3.5 0 0 1 1 5.5V3h3zm8 3.5v3a2 2 0 0 0 1.5-2V4.5zM4 4.5H2.5v1a2 2 0 0 0 1.5 2z"/></svg></button>
       <button id="partybtn" class="tbtn glass" title="キャラクター・グループ"><svg viewBox="0 0 16 16"><path d="M5.5 7.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5zm6 .5a2 2 0 1 1 0-4 2 2 0 0 1 0 4zM1 13c0-2.5 2-4 4.5-4S10 10.5 10 13v1H1zm10 1v-1c0-1.3-.4-2.4-1.1-3.2.5-.2 1-.3 1.6-.3 2 0 3.5 1.2 3.5 3.3V14z"/></svg></button>
       <button id="bagbtn" class="tbtn glass" title="装備・合成・強化"><svg viewBox="0 0 16 16"><path d="M5 5V4a3 3 0 0 1 6 0v1h2.2l.8 9.5H2L2.8 5zm1.5 0h3V4a1.5 1.5 0 0 0-3 0z"/></svg><i id="bagbadge"></i></button>
-      <button id="auto" class="tbtn glass" title="ゴールドが貯まったら自動で強化">AUTO</button>
+      <button id="auto" class="tbtn glass" title="ゴールドが貯まったら自動で強化" style="display:none">AUTO</button>
       <button id="mini" class="tbtn glass" title="小さくする">–</button>
       <button id="quit" class="tbtn glass" title="終了（進み具合は保存されます）">✕</button>
     </div>
@@ -431,7 +431,7 @@ function fmt(n) {
 function fmtPix(n) { n = Math.floor(n); if (n < 10000) return '' + n; if (n < 1e6) return Math.floor(n / 1000) + 'K'; if (n < 1e9) return Math.floor(n / 1e6) + 'M'; return Math.floor(n / 1e9) + 'B'; }
 
 /* ---------- bridge to the macOS shell ---------- */
-const GAME_VERSION = '1.4.1', GAME_BUILD = 141;
+const GAME_VERSION = '1.5.0', GAME_BUILD = 150;
 const NATIVE = !!window.__DH_NATIVE || Q.has('nativeTest');
 // page -> mac: the shell polls document.title. Keep the title short: big payloads (saves) are cut into chunks
 // and sent one at a time; each title carries a session id so a reload never confuses the shell.
@@ -597,13 +597,13 @@ function statsFor(cls, gear) {
     const m = mainStat(it); wAtk += m.atk || 0; gHp += m.hp || 0; bAs += m.aspd || 0; cCr += m.crit || 0; cG += m.gold || 0;
     for (const a of it.a) A[a.k] = (A[a.k] || 0) + a.v;
   }
-  const atk = ((2 + LV * .7) * Math.pow(1.1, u.atk) + wAtk) * (1 + (A.atkp || 0)) * C.atk;
-  const maxHp = ((22 + LV * 4) * Math.pow(1.1, u.hp) + gHp) * (1 + (A.hpp || 0)) * C.hp;
-  const aps = Math.min(4.5, 0.85 * Math.pow(1.07, u.spd) * (1 + bAs + (A.aspd || 0)) * C.aps);
+  const atk = ((1.5 + LV * .5) + wAtk) * (1 + (A.atkp || 0)) * C.atk;
+  const maxHp = ((18 + LV * 3) + gHp) * (1 + (A.hpp || 0)) * C.hp;
+  const aps = Math.min(4.5, 0.85 * (1 + bAs + (A.aspd || 0)) * C.aps);
   const crit = Math.min(.8, 0.06 + (C.crit || 0) + cCr + (A.crit || 0));
   const critMul = 2.2 + (C.critd || 0) + (A.critd || 0);
   const gm = 1 + cG + (A.gold || 0);
-  const regen = .035 + (A.regen || 0), ls = A.ls || 0;
+  const regen = .02 + (A.regen || 0), ls = A.ls || 0;
   const power = atk * aps * (1 + crit * (critMul - 1)) * Math.sqrt(maxHp) * (1 + (gm - 1) * .2) * (1 + ls * 3);
   return { atk, maxHp, aps, crit, critMul, gm, regen, ls, power };
 }
@@ -1415,11 +1415,18 @@ function drawBG() {
   if (art && art.complete && art.naturalWidth) {
     // The source panoramas already contain their own illustrated ground lip and terrain.
     // A mirrored parallax repeat keeps the scene continuous as the party advances.
-    const shift = ((camX * .075) % IW + IW) % IW;
+    const iw = art.naturalWidth, ih = art.naturalHeight, split = .8;
     ctx.save(); ctx.imageSmoothingEnabled = true;
-    ctx.drawImage(art, -shift, 0, IW, IH);
-    ctx.translate(IW * 2 - shift, 0); ctx.scale(-1, 1);
-    ctx.drawImage(art, 0, 0, IW, IH);
+    const band = (y0, y1, par) => {
+      const W = IW, off = ((camX * par) % (W * 2) + W * 2) % (W * 2);
+      for (let i = -1; i * W - off < IW + W; i++) {
+        const x = i * W - off;
+        if (((i % 2) + 2) % 2) { ctx.save(); ctx.translate(x + W, 0); ctx.scale(-1, 1); ctx.drawImage(art, 0, ih * y0, iw, ih * (y1 - y0), 0, IH * y0, W + .5, IH * (y1 - y0)); ctx.restore(); }
+        else ctx.drawImage(art, 0, ih * y0, iw, ih * (y1 - y0), x, IH * y0, W + .5, IH * (y1 - y0));
+      }
+    };
+    band(0, split, .12);      // sky + scenery: distant, slow
+    band(split, 1, 1);        // ground: scrolls with the heroes so walking reads at full speed
     ctx.restore();
     // Preserve gameplay-readable floor baseline and add a subtle foreground shade.
     ctx.fillStyle = 'rgba(16,18,34,.10)'; ctx.fillRect(0, GROUND + 2, IW, IH - GROUND - 2);
@@ -1518,7 +1525,9 @@ function spawnEnemy() {
   const t = tier(), boss = isBoss();
   const def = boss ? REG.boss : REG.foes[Math.floor(rnd(REG.foes.length))];
   const elite = !boss && Math.random() < .15, nP = Math.max(1, party.length);
-  const hpM = (boss ? 15 : elite ? 2.6 : 1) * (1 + .45 * (nP - 1)), atkM = (boss ? 2.2 : elite ? 1.5 : 1) * (1 + .1 * (nP - 1));
+  // each new chapter is a wall: enemies jump well above the previous chapter's boss, so you level up before pushing on
+  const ch = G.region + G.loop * REGIONS.length, chH = Math.pow(1.45, Math.min(ch, 3)) * Math.pow(1.3, Math.max(0, ch - 3)), chA = Math.pow(1.3, Math.min(ch, 3)) * Math.pow(1.2, Math.max(0, ch - 3));
+  const hpM = (boss ? 18 : elite ? 2.6 : 1) * (1 + .45 * (nP - 1)) * chH, atkM = (boss ? 2.4 : elite ? 1.5 : 1) * (1 + .1 * (nP - 1)) * chA;
   const last = enemies.length ? enemies[enemies.length - 1].x : 0;
   enemies.push({
     k: def.k, c: def.c, boss, name: def.name, x: Math.max(camX + IW + 8, last + 16 + rnd(12)), y: GROUND,
@@ -1757,7 +1766,7 @@ function update(dt) {
     const block = front && lead && front.x - (hero.x - lead.off) < (front.boss ? 19 : 13);
     if (!block && ch && ch.x - hero.x < 7) openChest(ch);
     else if (!block && (fade === 0 || fade > 1.2)) {
-      hero.walking = true; hero.x += 25 * dt; hero.phase += dt * 15;
+      hero.walking = true; hero.x += 34 * dt; hero.phase += dt * 19;
       for (const m of party) {
         if (m.down) { m.downT += dt; if (m.downT > 6) { m.down = false; m.hp = m.st.maxHp * .4; burst(hero.x - m.off, GROUND - 7, 10, '#fff2b8', 30); } continue; }
         m.hp = Math.min(m.st.maxHp, m.hp + m.st.maxHp * m.st.regen * dt);
@@ -1772,11 +1781,17 @@ function update(dt) {
       if (C.type === 'heal') {
         const hurt = party.filter(x => !x.down && x.hp < x.st.maxHp * .92).sort((a, b) => a.hp / a.st.maxHp - b.hp / b.st.maxHp)[0];
         if (hurt) target = { heal: hurt }; else if (front && front.x - mx < C.range && front.x - camX < IW + 4) target = front;
-      } else if (front && front.x - mx < C.range + (MELEE[C.type] ? m.off : 0) && front.x - camX < IW + 4) target = front;
+      } else if (front && front.x - mx < C.range + (MELEE[C.type] ? m.off + (front.boss ? 8 : 0) : 0) && front.x - camX < IW + 4) target = front;
       if (target && m.swing < 0 && m.cd <= 0) { m.swing = 0; m.hit = false; m.tgt = target; m.swingDur = Math.max(.14, .36 / Math.max(1, m.st.aps / 1.1)); m.cd = 1 / m.st.aps; }
       if (m.swing >= 0) {
         m.swing += dt / m.swingDur;
-        if (!m.hit && m.swing >= .5) { m.hit = true; memberAct(m, m.tgt && m.tgt.heal ? m.tgt : front); m.hits = (m.hits || 0) + 1; }
+        if (!m.hit && m.swing >= .5) {
+          m.hit = true;
+          // the original target may have died or been knocked back mid-swing: hit whoever is in front instead, or retry right away
+          let tg = m.tgt && m.tgt.heal ? m.tgt : (m.tgt && !m.tgt.dying ? m.tgt : front);
+          if (tg && !tg.heal && MELEE[C.type] && tg.x - mx > C.range + m.off + 6 + (tg.boss ? 8 : 0)) tg = front && front.x - mx <= C.range + m.off + 6 + (front.boss ? 8 : 0) ? front : null;
+          if (tg) { memberAct(m, tg); m.hits = (m.hits || 0) + 1; } else m.cd = Math.min(m.cd, .05);
+        }
         if (m.swing >= 1) m.swing = -1;
       }
     }
@@ -1961,7 +1976,8 @@ function updHud(force) {
   if (isBoss()) h = bz ? '<i class="bossbar"><i style="width:' + (Math.max(0, bz.hp / bz.max) * 100).toFixed(1) + '%"></i></i>' : '<b class="boss' + (killed ? ' on' : '') + '"></b>'; else for (let i = 0; i < stageCount(); i++) h += '<b class="' + (i < killed ? 'on' : '') + '"></b>';
   if (pips._h !== h) { pips.innerHTML = h; pips._h = h; }
   if (Math.floor(G.gold) !== shownGold) { shownGold = Math.floor(G.gold); $('gold').textContent = fmt(G.gold); }
-  document.querySelectorAll('.up').forEach(b => { const k = b.dataset.k, c = upCost(k); b.querySelector('b').textContent = fmt(c); b.classList.toggle('no', G.gold < c); });
+  { const ps = party.filter(m => m.st), v = { atk: ps.reduce((a, m) => a + m.st.atk, 0), hp: ps.reduce((a, m) => a + m.st.maxHp, 0), spd: ps.reduce((a, m) => a + m.st.aps, 0) };
+    document.querySelectorAll('.up').forEach(b => { const k = b.dataset.k; b.querySelector('b').textContent = k === 'spd' ? v.spd.toFixed(1) : fmt(v[k]); }); }
   $('auto').classList.toggle('on', !!G.auto);
 }
 let bumpT = 0;
@@ -1972,9 +1988,7 @@ function buy(k, silent) {
   const b = document.querySelector('.up[data-k=' + k + ']'); b.classList.remove('buy'); void b.offsetWidth; b.classList.add('buy');
   hero.aura = Math.max(hero.aura, .35); updHud(true); return true;
 }
-document.querySelectorAll('.up').forEach(b => b.addEventListener('click', () => { buy(b.dataset.k); save(); }));
 $('auto').addEventListener('click', () => { G.auto = !G.auto; updHud(true); save(); toast(G.auto ? 'オート強化 <b>ON</b>' : 'オート強化 <b>OFF</b>', '#b48bff'); });
-setInterval(() => { if (!G.auto) return; const ks = ['atk', 'hp', 'spd'].sort((a, b) => upCost(a) - upCost(b)); if (buy(ks[0])) save(); }, 900);
 
 function updGear() {
   const box = $('gear'); let h = '';
