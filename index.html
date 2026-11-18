@@ -431,7 +431,7 @@ function fmt(n) {
 function fmtPix(n) { n = Math.floor(n); if (n < 10000) return '' + n; if (n < 1e6) return Math.floor(n / 1000) + 'K'; if (n < 1e9) return Math.floor(n / 1e6) + 'M'; return Math.floor(n / 1e9) + 'B'; }
 
 /* ---------- bridge to the macOS shell ---------- */
-const GAME_VERSION = '1.4.0', GAME_BUILD = 140;
+const GAME_VERSION = '1.4.1', GAME_BUILD = 141;
 const NATIVE = !!window.__DH_NATIVE || Q.has('nativeTest');
 // page -> mac: the shell polls document.title. Keep the title short: big payloads (saves) are cut into chunks
 // and sent one at a time; each title carries a session id so a reload never confuses the shell.
@@ -653,7 +653,7 @@ const idxOf = (lp, r, st) => (lp * REGIONS.length + r) * 10 + st - 1;
 const curIdx = () => idxOf(G.loop, G.region, G.stage);
 const unlockedAt = (r, st) => idxOf(G.loop, r, st) <= (G.best || 0);
 const stageCount = () => isBoss() ? 1 : 5 + Math.min(5, Math.floor(G.stage / 2));
-const xpNeed = l => Math.floor(12 * Math.pow(1.19, l - 1));
+const xpNeed = l => Math.floor(30 * Math.pow(1.23, l - 1));
 const upCost = k => Math.floor(5 * Math.pow(1.17, G.upg[k]) * (k === 'spd' ? 1.6 : 1));
 let ST = { maxHp: 1, power: 1, gm: 1, xm: 1 };
 
@@ -1757,7 +1757,7 @@ function update(dt) {
     const block = front && lead && front.x - (hero.x - lead.off) < (front.boss ? 19 : 13);
     if (!block && ch && ch.x - hero.x < 7) openChest(ch);
     else if (!block && (fade === 0 || fade > 1.2)) {
-      hero.walking = true; hero.x += 15 * dt; hero.phase += dt * 11;
+      hero.walking = true; hero.x += 25 * dt; hero.phase += dt * 15;
       for (const m of party) {
         if (m.down) { m.downT += dt; if (m.downT > 6) { m.down = false; m.hp = m.st.maxHp * .4; burst(hero.x - m.off, GROUND - 7, 10, '#fff2b8', 30); } continue; }
         m.hp = Math.min(m.st.maxHp, m.hp + m.st.maxHp * m.st.regen * dt);

@@ -1,1 +1,1 @@
-{"version": "1.4.0", "build": 140, "minShell": 3, "sha256": "2bbd7f6ef4eec31797bb5c0696cd409fcb41ab4097a124817d8e8dbdd0f52e0c", "notes": "背景をGPT版の細かいドット絵に、キャラはちびキャラに戻す"}
+{"version": "1.4.1", "build": 141, "minShell": 3, "sha256": "cad276ca306633e2c9cb059937405b930ae81f546ade6e683e51fdb55790671c", "notes": "レベルアップをゆっくりに、主人公の移動を速く"}
