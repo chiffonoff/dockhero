@@ -52,6 +52,8 @@ canvas{position:absolute;left:0;bottom:0;image-rendering:pixelated;image-renderi
 #pips{display:flex;gap:3px}
 #pips b{width:5px;height:5px;border-radius:2px;background:rgba(255,255,255,.18);transition:.2s}
 #pips b.on{background:#c7a8ff;box-shadow:0 0 6px #a57bff}
+#pips b.cur{background:#ffe08a;box-shadow:0 0 6px #ffcf5e;animation:wpulse 1s infinite}@keyframes wpulse{50%{opacity:.45}}
+#pips .wv{font-size:9px;font-weight:900;color:#ffe08a;letter-spacing:.04em;margin-right:3px;align-self:center}
 #pips .bossbar{display:block;position:relative;width:90px;height:7px;border-radius:4px;background:rgba(80,10,30,.6);overflow:hidden;box-shadow:inset 0 0 0 1px rgba(255,120,150,.3)}
 #pips .bossbar i{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,#ff3d6e,#ff9a6b);box-shadow:0 0 8px #ff4d7a;transition:width .2s}
 #pips b.boss{width:9px;background:rgba(255,120,120,.25)}
@@ -449,7 +451,7 @@ function fmt(n) {
 function fmtPix(n) { n = Math.floor(n); if (n < 10000) return '' + n; if (n < 1e6) return Math.floor(n / 1000) + 'K'; if (n < 1e9) return Math.floor(n / 1e6) + 'M'; return Math.floor(n / 1e9) + 'B'; }
 
 /* ---------- bridge to the macOS shell ---------- */
-const GAME_VERSION = '1.7.0', GAME_BUILD = 170;
+const GAME_VERSION = '1.8.0', GAME_BUILD = 180;
 const NATIVE = !!window.__DH_NATIVE || Q.has('nativeTest');
 // page -> mac: the shell polls document.title. Keep the title short: big payloads (saves) are cut into chunks
 // and sent one at a time; each title carries a session id so a reload never confuses the shell.
@@ -483,56 +485,56 @@ const REGIONS = [
     far: '#4b2b70', far2: '#3a2158', mid: '#2a1842', midKind: 'trees', accent: '#ffb36b', accent2: '#ff7aa8',
     grass: '#6aa86a', grassL: '#9bd28a', grassD: '#3b6a4d', dirt: '#3a2236', dirtD: '#24142a', flower: ['#ffd1e8', '#ffe28a', '#c9b3ff'],
     amb: { kind: 'petal', col: '#ffc2dd', n: 18 }, rim: '#ffb38a',
-    foes: [{ k: 'slime', c: '#7ee081' }, { k: 'mush', c: '#e65b6e' }, { k: 'bat', c: '#6c4aa2' }],
+    foes: [{ k: 'slime', c: '#7ee081' }, { k: 'mush', c: '#e65b6e' }, { k: 'bat', c: '#6c4aa2' }, { k: 'wolf', c: '#b8a090' }, { k: 'stump', c: '#8a5a3a' }],
     boss: { k: 'slime', c: '#5fd6a0', name: '草原の主 キングスライム' } },
   { name: '星降る森', en: 'STARFALL WOODS',
     sky: ['#060a2a', '#18245e', '#2a4a8e', '#3a6ab0'], cel: { kind: 'moon', col: '#eef0ff', r: 6, x: .26, y: 11 }, stars: 1,
     far: '#1c2663', far2: '#141c4a', mid: '#0c1233', midKind: 'pines', accent: '#9fe3ff', accent2: '#d4ff7a',
     grass: '#2f7a72', grassL: '#5fc2a8', grassD: '#1d4a55', dirt: '#141a36', dirtD: '#0b0f22', flower: ['#9fe3ff', '#d4ff7a', '#ffffff'],
     amb: { kind: 'firefly', col: '#d9ff86', n: 16 }, rim: '#b8c7ff',
-    foes: [{ k: 'mush', c: '#4fb8ff' }, { k: 'bat', c: '#3b3480' }, { k: 'slime', c: '#a08bff' }],
+    foes: [{ k: 'mush', c: '#4fb8ff' }, { k: 'bat', c: '#3b3480' }, { k: 'slime', c: '#a08bff' }, { k: 'wolf', c: '#5a6aa8' }, { k: 'wisp', c: '#9fe3ff' }],
     boss: { k: 'mush', c: '#58d6ff', name: '森の王 ルミナキノコ' } },
   { name: '結晶洞窟', en: 'CRYSTAL HOLLOW',
     sky: ['#0a0618', '#1e1240', '#34206a', '#4a2e8a'], cel: { kind: 'none' }, stars: 0, ceiling: '#0d0719',
     far: '#24163f', far2: '#1b1032', mid: '#140b26', midKind: 'crystals', accent: '#6ff0ff', accent2: '#ff74dc',
     grass: '#4a3a72', grassL: '#7a68b0', grassD: '#2d2250', dirt: '#1a1230', dirtD: '#100a20', flower: ['#6ff0ff', '#ff74dc', '#c8b6ff'],
     amb: { kind: 'sparkle', col: '#c4f6ff', n: 20 }, rim: '#a88bff',
-    foes: [{ k: 'slime', c: '#62e4ff' }, { k: 'bat', c: '#d653b8' }, { k: 'golem', c: '#6f62a6' }],
+    foes: [{ k: 'slime', c: '#62e4ff' }, { k: 'bat', c: '#d653b8' }, { k: 'golem', c: '#6f62a6' }, { k: 'eye', c: '#a88aff' }],
     boss: { k: 'golem', c: '#7d70c4', name: '結晶の番人 プリズムゴーレム' } },
   { name: '灰の城塞', en: 'ASHEN CITADEL',
     sky: ['#140812', '#3a1028', '#8a2a3a', '#e0604a'], cel: { kind: 'moon', col: '#ff6a5c', r: 8, x: .62, y: 14 }, stars: .5,
     far: '#2c0f1c', far2: '#200a14', mid: '#14060c', midKind: 'towers', accent: '#ffb347', accent2: '#ff5f3d',
     grass: '#5a4446', grassL: '#86686a', grassD: '#352628', dirt: '#1d1316', dirtD: '#120a0c', flower: ['#ff8a3d', '#ffcf6b', '#ff5f3d'],
     amb: { kind: 'ember', col: '#ff9a4a', n: 22 }, rim: '#ff8a6a',
-    foes: [{ k: 'golem', c: '#8c6c5e' }, { k: 'bat', c: '#b8344f' }, { k: 'slime', c: '#ff7a3d' }],
+    foes: [{ k: 'golem', c: '#8c6c5e' }, { k: 'bat', c: '#b8344f' }, { k: 'skel', c: '#ff5a3a' }, { k: 'imp', c: '#d8403a' }, { k: 'wisp', c: '#ff8a3d' }],
     boss: { k: 'golem', c: '#5a4a52', name: '灰の騎士王 アッシュロード' } },
   { name: '砂塵の遺跡', en: 'DUSTWIND RUINS',
     sky: ['#3a6ad0', '#6a9ae8', '#a8ccf4', '#f4e4c0'], cel: { kind: 'sun', col: '#fff0b0', r: 9, x: .3, y: 22 }, stars: 0,
     far: '#8a4a3a', far2: '#6e3a32', mid: '#4a2a2e', midKind: 'pillars', accent: '#ffcf6b', accent2: '#ff8a4a',
     grass: '#d8a86a', grassL: '#f2cf8f', grassD: '#a8784a', dirt: '#7a4a32', dirtD: '#5a3424', flower: ['#ffcf6b', '#ff8a4a', '#fff0c0'],
     amb: { kind: 'sand', col: '#f6d29a', n: 26 }, rim: '#ffd59a',
-    foes: [{ k: 'ghost', c: '#f2c27a' }, { k: 'golem', c: '#c2925a' }, { k: 'bat', c: '#8a4a3a' }],
+    foes: [{ k: 'ghost', c: '#f2c27a' }, { k: 'golem', c: '#c2925a' }, { k: 'scorp', c: '#c8783a' }, { k: 'skel', c: '#4a8aff' }, { k: 'bat', c: '#8a4a3a' }],
     boss: { k: 'golem', c: '#d8a05a', name: '砂の王 サンドコロッサス' } },
   { name: '凍てつく峰', en: 'FROSTFANG PEAKS',
     sky: ['#0a1440', '#2a3a88', '#5a6ab8', '#a8b8e8'], cel: { kind: 'moon', col: '#e8fbff', r: 5, x: .8, y: 9 }, stars: .8, fx: 'aurora',
     far: '#2a4a7a', far2: '#1e3a62', mid: '#16304f', midKind: 'icepeaks', accent: '#bff6ff', accent2: '#7dffd8',
     grass: '#e8f4ff', grassL: '#ffffff', grassD: '#a8c8e8', dirt: '#5a7aa8', dirtD: '#3e5a86', flower: ['#bff6ff', '#ffffff', '#9fd0ff'],
     amb: { kind: 'snow', col: '#ffffff', n: 34 }, rim: '#dff6ff',
-    foes: [{ k: 'slime', c: '#9fe0ff' }, { k: 'ghost', c: '#d8f4ff' }, { k: 'golem', c: '#7a9ac8' }],
+    foes: [{ k: 'slime', c: '#9fe0ff' }, { k: 'ghost', c: '#d8f4ff' }, { k: 'yeti', c: '#eef6ff' }, { k: 'wolf', c: '#a8c0e0' }, { k: 'golem', c: '#7a9ac8' }],
     boss: { k: 'ghost', c: '#bff6ff', name: '氷霧の女王 フロストレイス' } },
   { name: '深海の神殿', en: 'ABYSSAL SHRINE',
     sky: ['#3ab0e0', '#1a7ab8', '#0e5290', '#0a3a6a'], cel: { kind: 'none' }, stars: 0, fx: 'water',
     far: '#0a3048', far2: '#08263a', mid: '#06202e', midKind: 'kelp', accent: '#5affd8', accent2: '#ff7ac8',
     grass: '#2a8a8a', grassL: '#5affd8', grassD: '#1a5a62', dirt: '#123a4a', dirtD: '#0a2634', flower: ['#ff7ac8', '#5affd8', '#ffe08a'],
     amb: { kind: 'bubble', col: '#bff6ff', n: 22 }, rim: '#5affd8',
-    foes: [{ k: 'slime', c: '#ff7ac8' }, { k: 'ghost', c: '#5affd8' }, { k: 'mush', c: '#7a8aff' }],
+    foes: [{ k: 'slime', c: '#ff7ac8' }, { k: 'crab', c: '#ff6a4a' }, { k: 'eye', c: '#5affd8' }, { k: 'ghost', c: '#5affd8' }, { k: 'mush', c: '#7a8aff' }],
     boss: { k: 'slime', c: '#c86aff', name: '深淵の主 アビスジェリー' } },
   { name: '天空の浮島', en: 'SKYREACH ISLES',
     sky: ['#3a7ad8', '#6aa8f0', '#a8d4ff', '#f0f8ff'], cel: { kind: 'sun', col: '#fffbe0', r: 6, x: .85, y: 10 }, stars: 0,
     far: '#ffffff', far2: '#e8f2ff', mid: '#6aa86a', midKind: 'clouds', accent: '#ffe08a', accent2: '#ff9ad8',
     grass: '#7ad87a', grassL: '#b8ffa8', grassD: '#4a9a5a', dirt: '#8a6a4a', dirtD: '#6a4a34', flower: ['#ff9ad8', '#ffe08a', '#ffffff'],
     amb: { kind: 'petal', col: '#ffffff', n: 16 }, rim: '#ffffff',
-    foes: [{ k: 'bat', c: '#ff9ad8' }, { k: 'ghost', c: '#ffffff' }, { k: 'slime', c: '#ffe08a' }],
+    foes: [{ k: 'bat', c: '#ff9ad8' }, { k: 'imp', c: '#8a7aff' }, { k: 'ghost', c: '#ffffff' }, { k: 'eye', c: '#ffe08a' }, { k: 'slime', c: '#ffe08a' }],
     boss: { k: 'bat', c: '#5a6aff', name: '嵐の翼 ストームウィング' } },
 ];
 const ROMAN = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII'];
@@ -692,6 +694,10 @@ const isBoss = () => G.stage === 10;
 const idxOf = (lp, r, st) => (lp * REGIONS.length + r) * 10 + st - 1;
 const curIdx = () => idxOf(G.loop, G.region, G.stage);
 const unlockedAt = (r, st) => idxOf(G.loop, r, st) <= (G.best || 0);
+// stages are fought in waves: later stages (and later chapters) bring more of them
+let wave = 0, waveT = 0, waveLeft = 0, waveFx = 0;
+const waveCount = () => isBoss() ? 1 : Math.min(8, 2 + Math.floor(G.stage / 3) + Math.min(2, Math.floor((G.region + G.loop * REGIONS.length) / 2)));
+const waveSize = w => isBoss() ? 1 : Math.min(6, 2 + Math.floor(G.stage / 4) + (w === waveCount() ? 1 : 0));
 const stageCount = () => isBoss() ? 1 : 5 + Math.min(5, Math.floor(G.stage / 2));
 const xpNeed = l => Math.floor(30 * Math.pow(1.23, l - 1));
 const upCost = k => Math.floor(5 * Math.pow(1.17, G.upg[k]) * (k === 'spd' ? 1.6 : 1));
@@ -1031,7 +1037,119 @@ function dGhost(c, ox, oy, col, t, e) {
   R(c, ox - 6, cy, 1, 2, col); R(c, ox - 7, cy + 1, 1, 1, col);
   return cy - 5;
 }
-const DRAW = { slime: dSlime, bat: dBat, mush: dMush, golem: dGolem, ghost: dGhost };
+// ---- more monsters (all face left, toward the heroes; (ox, oy) = feet; return the top y) ----
+const EYE = '#160a26';
+function dWolf(c, ox, oy, col, t, e) {
+  const w = e.walk || 0, s = Math.sin(w), d = shade(col, -.35), l = shade(col, .35), lunge = e.lunge > 0 ? -Math.round(Math.sin((1 - e.lunge / .3) * Math.PI) * 3) : 0;
+  ox += lunge;
+  // legs (gallop)
+  R(c, ox - 5, oy - 3 + (s > 0 ? -1 : 0), 2, 3, d); R(c, ox - 2, oy - 3 + (s < 0 ? -1 : 0), 2, 3, col);
+  R(c, ox + 3, oy - 3 + (s < 0 ? -1 : 0), 2, 3, d); R(c, ox + 6, oy - 3 + (s > 0 ? -1 : 0), 2, 3, col);
+  // body
+  R(c, ox - 5, oy - 8, 13, 5, col); R(c, ox - 5, oy - 8, 13, 1, l); R(c, ox - 4, oy - 4, 11, 1, d); R(c, ox + 1, oy - 7, 6, 3, shade(col, -.12));
+  R(c, ox - 2, oy - 9, 8, 1, d); R(c, ox, oy - 10, 1, 1, d); R(c, ox + 3, oy - 10, 1, 1, d);           // ruff
+  // tail
+  const tw = Math.round(Math.sin(t * 8 + e.seed)); R(c, ox + 8, oy - 9 + tw, 2, 2, col); R(c, ox + 10, oy - 10 + tw, 2, 2, l);
+  // head
+  R(c, ox - 9, oy - 11, 6, 5, col); R(c, ox - 9, oy - 11, 6, 1, l); R(c, ox - 11, oy - 8, 3, 2, col); R(c, ox - 12, oy - 8, 1, 1, EYE);
+  R(c, ox - 8, oy - 13, 2, 2, d); R(c, ox - 5, oy - 13, 2, 2, d); R(c, ox - 8, oy - 9, 1, 1, '#ffe066');
+  R(c, ox - 11, oy - 6, 3, 1, '#ffffff');
+  return oy - 13;
+}
+function dSkel(c, ox, oy, col, t, e) {
+  const bone = '#efe8dc', bd = '#b8ad9c', w = e.walk || 0, s = Math.sin(w), at = e.lunge > 0 ? Math.sin((1 - e.lunge / .3) * Math.PI) : 0;
+  R(c, ox - 3, oy - 5 + (s > .3 ? -1 : 0), 1, 5, bd); R(c, ox + 1, oy - 5 + (s < -.3 ? -1 : 0), 1, 5, bone);
+  R(c, ox - 3, oy - 6, 5, 1, bd);
+  for (let i = 0; i < 3; i++) R(c, ox - 3, oy - 10 + i * 2, 5, 1, bone); R(c, ox - 1, oy - 11, 1, 6, bd);
+  R(c, ox - 4, oy - 16, 6, 5, bone); R(c, ox - 4, oy - 16, 6, 1, '#ffffff'); R(c, ox + 1, oy - 15, 1, 4, bd);
+  R(c, ox - 3, oy - 14, 2, 2, EYE); R(c, ox, oy - 14, 1, 2, EYE); R(c, ox - 3, oy - 13, 1, 1, col);
+  R(c, ox - 3, oy - 11, 4, 1, bd);
+  // shield arm (back) + rusty sword (front)
+  R(c, ox + 2, oy - 11, 3, 5, shade(col, -.2)); R(c, ox + 2, oy - 11, 3, 1, col);
+  const sx = ox - 5 - Math.round(at * 3), sy = oy - 10 + Math.round(at * 3);
+  R(c, sx, sy, 1, 2, bd); for (let i = 1; i <= 6; i++) R(c, sx - (at > .4 ? i : 0), sy - (at > .4 ? 0 : i), 1, 1, i > 5 ? '#ffffff' : '#c8ccd8');
+  R(c, sx - 1, sy, 3, 1, '#8a5a2a');
+  return oy - 16;
+}
+function dImp(c, ox, oy, col, t, e) {
+  const f = Math.sin(t * 14 + e.seed), cy = oy - 12 + Math.round(Math.sin(t * 2.6 + e.seed) * 2), d = shade(col, -.35), l = shade(col, .3);
+  // wings
+  for (let i = 1; i <= 4; i++) { const dy = Math.round(f * i * .5); R(c, ox + 2 + i, cy - 3 + dy - (i > 2 ? 1 : 0), 1, 3 - (i > 3 ? 1 : 0), d); }
+  // body + head + horns
+  R(c, ox - 2, cy - 1, 5, 5, col); R(c, ox - 2, cy - 1, 5, 1, l); R(c, ox + 1, cy, 2, 4, d);
+  R(c, ox - 3, cy - 5, 6, 4, col); R(c, ox - 3, cy - 5, 6, 1, l); R(c, ox - 3, cy - 7, 1, 2, '#2a1830'); R(c, ox + 2, cy - 7, 1, 2, '#2a1830');
+  R(c, ox - 2, cy - 3, 1, 1, '#ffe066'); R(c, ox, cy - 3, 1, 1, '#ffe066'); R(c, ox - 2, cy - 1, 3, 1, '#2a1830');
+  // tail + trident
+  const tw = Math.round(Math.sin(t * 6 + e.seed)); R(c, ox + 3, cy + 3, 2, 1, d); R(c, ox + 5, cy + 2 + tw, 1, 2, d); R(c, ox + 6, cy + 1 + tw, 1, 1, '#ff5c7a');
+  R(c, ox - 6, cy - 4, 1, 9, '#5a3a2a'); R(c, ox - 7, cy - 5, 3, 1, '#c8ccd8'); R(c, ox - 7, cy - 6, 1, 1, '#c8ccd8'); R(c, ox - 5, cy - 6, 1, 1, '#c8ccd8');
+  return cy - 7;
+}
+function dEye(c, ox, oy, col, t, e) {
+  const cy = oy - 11 + Math.round(Math.sin(t * 2 + e.seed) * 2), look = e.lunge > 0 ? -1 : Math.round(Math.sin(t * .7 + e.seed) * .6);
+  const blink = ((t + e.seed) % 4) < .12;
+  // tentacles
+  for (let i = 0; i < 4; i++) { const wv = Math.round(Math.sin(t * 5 + i * 1.3 + e.seed)); R(c, ox - 3 + i * 2, cy + 4, 1, 2, shade(col, -.3)); R(c, ox - 3 + i * 2 + wv, cy + 6, 1, 2, shade(col, -.45)); }
+  // eyeball
+  for (let yy = -4; yy <= 4; yy++) { const w = Math.round(Math.sqrt(20 - yy * yy)); R(c, ox - w, cy + yy, w * 2 + 1, 1, yy < -2 ? '#ffffff' : yy > 2 ? '#c8c0d8' : '#f0ecf6'); }
+  R(c, ox + 2, cy - 2, 1, 1, '#ff8aa0'); R(c, ox + 3, cy, 1, 1, '#ff8aa0'); R(c, ox - 4, cy + 2, 1, 1, '#ff8aa0');
+  if (blink) R(c, ox - 4, cy, 9, 1, shade(col, -.3));
+  else { R(c, ox - 2 + look, cy - 2, 4, 4, col); R(c, ox - 1 + look, cy - 1, 2, 2, EYE); R(c, ox - 1 + look, cy - 2, 1, 1, '#ffffff'); }
+  return cy - 4;
+}
+function dCrab(c, ox, oy, col, t, e) {
+  const w = e.walk || 0, s = Math.sin(w * 1.5), d = shade(col, -.35), l = shade(col, .35), snap = e.lunge > 0 ? 1 : (Math.sin(t * 3 + e.seed) > .9 ? 1 : 0);
+  for (let i = 0; i < 3; i++) { R(c, ox - 6 + i * 2, oy - 2 + (i % 2 ? Math.round(s) : -Math.round(s)), 1, 2, d); R(c, ox + 2 + i * 2, oy - 2 + (i % 2 ? -Math.round(s) : Math.round(s)), 1, 2, d); }
+  R(c, ox - 6, oy - 6, 13, 4, col); R(c, ox - 5, oy - 7, 11, 1, col); R(c, ox - 5, oy - 7, 11, 1, l); R(c, ox - 6, oy - 3, 13, 1, d);
+  R(c, ox - 3, oy - 10, 1, 3, d); R(c, ox + 1, oy - 10, 1, 3, d); R(c, ox - 4, oy - 11, 2, 2, '#ffffff'); R(c, ox, oy - 11, 2, 2, '#ffffff'); R(c, ox - 4, oy - 11, 1, 1, EYE); R(c, ox, oy - 11, 1, 1, EYE);
+  // big claw (front) + small claw (back)
+  R(c, ox - 9, oy - 7, 3, 2, col); R(c, ox - 11, oy - 10, 3, 3, col); R(c, ox - 11, oy - 10, 3, 1, l); R(c, ox - 11, oy - 12 + snap, 1, 2, l); R(c, ox - 9, oy - 12, 1, 2, col);
+  R(c, ox + 7, oy - 7, 2, 2, d); R(c, ox + 8, oy - 9, 2, 2, col);
+  R(c, ox - 1, oy - 5, 2, 1, l);
+  return oy - 12;
+}
+function dScorp(c, ox, oy, col, t, e) {
+  const w = e.walk || 0, s = Math.sin(w * 1.4), d = shade(col, -.35), l = shade(col, .3), at = e.lunge > 0 ? Math.sin((1 - e.lunge / .3) * Math.PI) : 0;
+  for (let i = 0; i < 3; i++) R(c, ox - 4 + i * 3, oy - 2 + (i % 2 ? Math.round(s) : -Math.round(s)), 1, 2, d);
+  R(c, ox - 5, oy - 5, 11, 3, col); R(c, ox - 5, oy - 5, 11, 1, l); for (let i = 0; i < 4; i++) R(c, ox - 3 + i * 3, oy - 5, 1, 3, d);
+  R(c, ox - 8, oy - 5, 3, 3, col); R(c, ox - 8, oy - 4, 1, 1, '#ff4d5a');
+  R(c, ox - 11, oy - 6, 3, 2, col); R(c, ox - 12, oy - 7, 2, 1, l); R(c, ox - 12, oy - 4, 2, 1, col);
+  // tail arcs over the back and stabs forward on attack
+  const seg = [[6, -6], [8, -8], [9, -11], [8, -14], [5, -15 - Math.round(at * 2)], [2 - Math.round(at * 4), -14 + Math.round(at * 3)]];
+  for (let i = 0; i < seg.length; i++) R(c, ox + seg[i][0], oy + seg[i][1], 2, 2, i % 2 ? col : shade(col, .1));
+  const tip = seg[seg.length - 1]; R(c, ox + tip[0] - 1, oy + tip[1] + 1, 2, 1, '#ffe066'); R(c, ox + tip[0] - 2, oy + tip[1] + 2, 1, 1, '#ffe066');
+  return oy - 16;
+}
+function dYeti(c, ox, oy, col, t, e) {
+  const w = e.walk || 0, s = Math.sin(w * .8), d = shade(col, -.25), l = shade(col, .35), face = '#7ab0d8', at = e.lunge > 0 ? Math.sin((1 - e.lunge / .3) * Math.PI) : 0;
+  R(c, ox - 4, oy - 4 + (s > .3 ? -1 : 0), 3, 4, d); R(c, ox + 2, oy - 4 + (s < -.3 ? -1 : 0), 3, 4, d);
+  for (let yy = 0; yy < 12; yy++) { const ww = yy < 3 ? 4 + yy : 7; R(c, ox - ww, oy - 16 + yy, ww * 2, 1, yy === 0 ? l : col); }
+  for (let i = 0; i < 6; i++) R(c, ox - 6 + i * 2 + (i % 2), oy - 13 + (i % 3) * 3, 1, 2, l);
+  R(c, ox - 5, oy - 14, 5, 4, face); R(c, ox - 4, oy - 13, 1, 1, EYE); R(c, ox - 2, oy - 13, 1, 1, EYE); R(c, ox - 4, oy - 11, 3, 1, '#2a3a5a'); R(c, ox - 4, oy - 11, 1, 1, '#ffffff');
+  R(c, ox - 9 - Math.round(at * 2), oy - 11 + Math.round(at * 3), 3, 7, col); R(c, ox - 9 - Math.round(at * 2), oy - 5 + Math.round(at * 3), 3, 1, face);
+  R(c, ox + 6, oy - 11, 3, 7, d);
+  return oy - 16;
+}
+function dStump(c, ox, oy, col, t, e) {
+  const w = e.walk || 0, s = Math.sin(w * .9), bark = col, d = shade(col, -.35), l = shade(col, .25), leaf = REG.grass || '#6aa86a';
+  R(c, ox - 6, oy - 2, 3, 2 + (s > 0 ? 0 : 0), d); R(c, ox - 2, oy - 2 + (s > .3 ? -1 : 0), 2, 2, d); R(c, ox + 3, oy - 2 + (s < -.3 ? -1 : 0), 3, 2, d);
+  R(c, ox - 5, oy - 12, 10, 10, bark); R(c, ox - 5, oy - 12, 2, 10, l); R(c, ox + 3, oy - 12, 2, 10, d); R(c, ox - 1, oy - 10, 1, 7, d);
+  R(c, ox - 5, oy - 13, 10, 1, '#e8c890'); R(c, ox - 3, oy - 13, 6, 1, '#c8a070'); R(c, ox - 1, oy - 13, 2, 1, '#a8804a');
+  R(c, ox - 4, oy - 9, 2, 2, EYE); R(c, ox - 1, oy - 9, 2, 2, EYE); R(c, ox - 4, oy - 9, 1, 1, '#ffe066'); R(c, ox - 3, oy - 6, 4, 1, EYE);
+  const sw = Math.round(Math.sin(t * 2 + e.seed)); R(c, ox + 2, oy - 16 + sw, 1, 3, d); R(c, ox + 1, oy - 18 + sw, 3, 2, leaf); R(c, ox + 2, oy - 19 + sw, 1, 1, shade(leaf, .3));
+  R(c, ox - 8 - (e.lunge > 0 ? 2 : 0), oy - 9, 3, 1, d); R(c, ox - 9 - (e.lunge > 0 ? 2 : 0), oy - 10, 1, 1, d);
+  return oy - 19;
+}
+function dWisp(c, ox, oy, col, t, e) {
+  const cy = oy - 9 + Math.round(Math.sin(t * 3 + e.seed) * 2), l = shade(col, .55), d = shade(col, -.25);
+  for (let yy = 0; yy < 9; yy++) { const fl = Math.round(Math.sin(t * 12 + yy + e.seed)), ww = yy < 4 ? 1 + yy : Math.max(1, 5 - (yy - 4)); R(c, ox - ww + (yy < 4 ? fl : 0), cy - 6 + yy, ww * 2, 1, yy < 2 ? l : yy > 6 ? d : col); }
+  R(c, ox - 2, cy - 1, 4, 3, l); R(c, ox - 2, cy, 1, 1, EYE); R(c, ox + 1, cy, 1, 1, EYE);
+  for (let i = 0; i < 2; i++) { const p = (t * 1.5 + i * .5 + e.seed) % 1; R(c, ox + 3 + i * 2, cy + 3 - Math.round(p * 8), 1, 1, l); }
+  return cy - 6;
+}
+const DRAW = { slime: dSlime, bat: dBat, mush: dMush, golem: dGolem, ghost: dGhost, wolf: dWolf, skel: dSkel, imp: dImp, eye: dEye, crab: dCrab, scorp: dScorp, yeti: dYeti, stump: dStump, wisp: dWisp };
+const FLY = { bat: 1, imp: 1, eye: 1 };
+// per-monster temperament: hp multiplier, walk speed
+const FOE = { slime: [1, 9], mush: [1, 9], bat: [.8, 13], golem: [1.3, 6], ghost: [1, 9], wolf: [.85, 15], skel: [1.05, 9], imp: [.8, 13], eye: [.9, 8], crab: [1.25, 7], scorp: [1.05, 10], yeti: [1.45, 6], stump: [1.35, 6], wisp: [.85, 11] };
 function dCrown(c, x, top) { const g = '#ffcf4d', gd = '#c98a1a'; R(c, x - 3, top - 2, 7, 2, g); R(c, x - 3, top - 4, 1, 2, g); R(c, x, top - 5, 1, 3, g); R(c, x + 3, top - 4, 1, 2, g); R(c, x - 3, top - 1, 7, 1, gd); R(c, x, top - 2, 1, 1, '#ff4d7a'); }
 
 function dChest(c, ox, oy, ch) {
@@ -1043,7 +1161,7 @@ function dChest(c, ox, oy, ch) {
 }
 
 /* ---------- pixel font ---------- */
-const FONT = { '0': '111101101101111', '1': '010110010010111', '2': '111001111100111', '3': '111001111001111', '4': '101101111001001', '5': '111100111001111', '6': '111100111101111', '7': '111001010010010', '8': '111101111101111', '9': '111101111001111', '+': '000010111010000', '!': '010010010000010', 'K': '101101110101101', 'M': '101111111101101', 'B': '110101110101110', '-': '000000111000000' };
+const FONT = { '0': '111101101101111', '1': '010110010010111', '2': '111001111100111', '3': '111001111001111', '4': '101101111001001', '5': '111100111001111', '6': '111100111101111', '7': '111001010010010', '8': '111101111101111', '9': '111101111001111', '+': '000010111010000', '!': '010010010000010', 'K': '101101110101101', 'M': '101111111101101', 'B': '110101110101110', '-': '000000111000000', 'W': '101101101111101', 'A': '010101111101101', 'V': '101101101101010', 'E': '111100110100111', '/': '001001010100100', ' ': '000000000000000' };
 function ptext(str, x, y, col, out = '#14081f') {
   const w = str.length * 4 - 1; x = Math.round(x - w / 2); y = Math.round(y);
   for (const pass of [0, 1]) {
@@ -1576,8 +1694,8 @@ function spawnEnemy() {
   const last = enemies.length ? enemies[enemies.length - 1].x : 0;
   enemies.push({
     k: def.k, c: def.c, boss, name: def.name, x: Math.max(camX + IW + 8, last + 16 + rnd(12)), y: GROUND,
-    elite, slamT: 3.5, max: 6 * Math.pow(1.145, t) * hpM * (def.k === 'golem' ? 1.3 : def.k === 'bat' ? .8 : 1), hp: 0,
-    atk: 1.5 * Math.pow(1.122, t) * atkM, spd: def.k === 'bat' ? 13 : def.k === 'golem' ? 6 : 9,
+    elite, slamT: 3.5, max: 7 * Math.pow(1.145, t) * hpM * (FOE[def.k] || [1])[0], hp: 0,
+    atk: 2.1 * Math.pow(1.122, t) * atkM, spd: (FOE[def.k] || [1, 9])[1],
     cd: 1, lunge: 0, flash: 0, dying: 0, kb: 0, seed: rnd(10), walk: 0, hopT: 0, hb: 0
   });
   const e = enemies[enemies.length - 1]; e.hp = e.max; spawned++;
@@ -1629,7 +1747,7 @@ function healMember(src, tgt, amt) {
 function respawn() {
   hero.dead = false; party.forEach(m => { m.down = false; m.hp = m.st.maxHp; m.swing = -1; });
   enemies.length = 0; projs.length = 0; chests = chests.filter(c => !c.opened);
-  spawned = killed = 0;
+  spawned = killed = 0; wave = waveLeft = 0;
   if (G.stage > 1) { G.stage--; }
   toast('撤退… <b>' + (G.region + 1) + '-' + G.stage + '</b> で鍛え直します', '#9b8cff');
   save(); updHud(true);
@@ -1651,7 +1769,7 @@ function addXp(x, silent) {
 }
 function stageClear() {
   const wasBoss = isBoss();
-  spawned = killed = 0;
+  spawned = killed = 0; wave = waveLeft = 0;
   if (G.fl.stay) { G.best = Math.max(G.best || 0, curIdx() + 1); toast('ステージ ' + (G.region + 1) + '-' + G.stage + ' をもう一周', '#9b8cff'); save(); updHud(true); return; }
   G.stage++;
   if (G.stage > 10) {
@@ -1849,7 +1967,7 @@ function update(dt) {
     pj.t += dt;
     const e = pj.e && !pj.e.dying ? pj.e : null;
     if (!e) { pj.dead = 1; burst(pj.x, pj.y, 3, pj.col, 15); continue; }
-    const tx = e ? e.x : pj.x + pj.vx * dt * 3, ty = e ? GROUND - (e.k === 'bat' ? 11 : 6) - (e.boss ? 8 : 0) : pj.y;
+    const tx = e ? e.x : pj.x + pj.vx * dt * 3, ty = e ? GROUND - (FLY[e.k] ? 11 : 6) - (e.boss ? 8 : 0) : pj.y;
     const dx = tx - pj.x, dy = ty - pj.y, d = Math.hypot(dx, dy), sp = pj.sp * dt;
     if (d <= sp + 1 || pj.t > 2) { pj.dead = 1; if (e) projHit(pj, e); }
     else { pj.x += dx / d * sp; pj.y += dy / d * sp + (pj.arc ? Math.sin(pj.t * 8) * .3 : 0); }
@@ -1859,9 +1977,11 @@ function update(dt) {
   projs = projs.filter(p => !p.dead);
   // spawning
   if (!hero.dead && fade === 0) {
-    const cap = isBoss() ? 1 : 2 + (party.length > 2 ? 1 : 0) + (party.length > 4 ? 1 : 0);
-    if (alive.length < cap && spawned < stageCount() && (!enemies.length || enemies[enemies.length - 1].x < camX + IW - 10)) spawnEnemy();
-    if (killed >= stageCount() && !alive.length && !chests.some(c => !c.opened)) stageClear();
+    if (!alive.length && waveLeft <= 0) {
+      if (wave >= waveCount()) { if (!chests.some(c => !c.opened)) stageClear(); }
+      else { waveT += dt; if (wave === 0 || waveT > 1.2) { wave++; waveT = 0; waveLeft = waveSize(wave); if (waveCount() > 1) waveFx = 1.6; } }
+    }
+    if (waveLeft > 0) { spawnEnemy(); waveLeft--; }
   }
   // enemies
   const tgtM = party.find(m => !m.down);
@@ -1872,7 +1992,9 @@ function update(dt) {
     const tx = tgtM ? hero.x - tgtM.off : hero.x;
     const dist = e.x - tx;
     const reachE = e.boss ? 17 : 11;
-    if (dist > reachE) { e.x -= e.spd * dt * (e.x - camX > IW * .72 ? 3.2 : 1); e.walk += dt * 10; if (e.k === 'slime') e.hopT += dt * 9; }
+    let blocked = false;
+    for (const o of enemies) if (o !== e && !o.dying && o.x < e.x && e.x - o.x < (o.boss || e.boss ? 15 : FLY[e.k] !== FLY[o.k] ? 6 : 10)) { blocked = true; break; }
+    if (dist > reachE && !blocked) { e.x -= e.spd * dt * (e.x - camX > IW * .72 ? 3.2 : 1); e.walk += dt * 10; if (e.k === 'slime') e.hopT += dt * 9; }
     else if (!hero.dead) {
       if (e.k === 'slime') e.hopT += dt * 4;
       e.cd -= dt;
@@ -1912,7 +2034,7 @@ function update(dt) {
   const want = hero.x - Math.max(IW * (document.body.classList.contains('mini') ? .35 : .3), back + 16);
   camX = lerp(camX, want, Math.min(1, dt * 6));
   shake = Math.max(0, shake - dt); flashT = Math.max(0, flashT - dt);
-  updAmb(dt); updFx(dt); updBubbles(dt);
+  updAmb(dt); updFx(dt); updBubbles(dt); waveFx = Math.max(0, waveFx - dt);
 }
 
 function render() {
@@ -1937,11 +2059,13 @@ function render() {
     if (e.dying && !e.sh) { e.sh = 1; shatter(e, x + lungeX); }
     if (e.boss) glow(x, GROUND - 10, 22, e.c, .25 + .08 * Math.sin(T * 3));
     if (e.k === 'golem' || e.k === 'mush' && G.region === 1) glow(x - 1, GROUND - (e.boss ? 24 : 12), 5, e.k === 'golem' ? REG.accent : e.c, .45);
+    if (e.k === 'eye' || e.k === 'wisp') glow(x, GROUND - 11, 9, e.c, .4);
     if (e.k === 'ghost') glow(x, GROUND - (e.boss ? 18 : 9), e.boss ? 16 : 8, e.c, .35);
-    if (e.elite && !e.dying) { R(ctx, x - 1, GROUND - (e.k === 'bat' ? 22 : 19), 3, 1, '#ffd25e'); R(ctx, x, GROUND - (e.k === 'bat' ? 23 : 20), 1, 1, '#fff2b8'); }
+    const topY = GROUND - (68 - top) * (e.boss ? 2 : 1);
+    if (e.elite && !e.dying) { R(ctx, x - 1, topY - 3, 3, 1, '#ffd25e'); R(ctx, x, topY - 4, 1, 1, '#fff2b8'); }
     if (e.elite && !e.dying) glow(x, GROUND - 8, 12, '#ffd25e', .3 + .15 * Math.sin(T * 6));
     // hp bar
-    if (!e.dying && !e.boss && e.hp < e.max) { const w = e.elite ? 14 : 10, hy = GROUND - (e.boss ? 34 : e.k === 'bat' ? 20 : 17); R(ctx, x - w / 2 - 1, hy - 1, w + 2, 3, '#12071f'); R(ctx, x - w / 2, hy, w, 1, '#3a1830'); R(ctx, x - w / 2, hy, Math.max(1, Math.round(w * e.hp / e.max)), 1, e.elite ? '#ffd25e' : '#ff8fa8'); }
+    if (!e.dying && !e.boss && e.hp < e.max) { const w = e.elite ? 14 : 10, hy = topY - (e.elite ? 7 : 3); R(ctx, x - w / 2 - 1, hy - 1, w + 2, 3, '#12071f'); R(ctx, x - w / 2, hy, w, 1, '#3a1830'); R(ctx, x - w / 2, hy, Math.max(1, Math.round(w * e.hp / e.max)), 1, e.elite ? '#ffd25e' : '#ff8fa8'); }
   }
   if (arena.on) arenaRender(); else {
   // party (back to front so the leader draws last) — painted sprites on the hi-res layer
@@ -1997,6 +2121,7 @@ function render() {
     ptext(p.s, p.x - camX, y, p.c, p.crit ? '#5a1d00' : '#14081f');
   }
   ctx.globalAlpha = 1;
+  if (waveFx > 0 && !arena.on) { const k = waveFx > 1.3 ? (1.6 - waveFx) / .3 : Math.min(1, waveFx / .4); ctx.globalAlpha = clamp(k, 0, 1); ptext('WAVE ' + wave + '/' + waveCount(), IW / 2, GROUND - 34 - (1 - clamp(k, 0, 1)) * 4, wave === waveCount() ? '#ff9ab0' : '#ffe08a'); ctx.globalAlpha = 1; }
   ctx.restore();
   // chapter fade
   if (fade > 0) { const a = fade < 1 ? fade : 2 - fade; ctx.fillStyle = 'rgba(8,3,18,' + clamp(a, 0, 1) + ')'; ctx.fillRect(0, 0, IW, IH); }
@@ -2019,7 +2144,7 @@ function updHud(force) {
   $('stage').textContent = (G.loop ? '★' + (G.loop + 1) + ' ' : '') + (G.region + 1) + '-' + G.stage;
   const pips = $('pips'); let h = '';
   const bz = enemies.find(e => e.boss && !e.dying);
-  if (isBoss()) h = bz ? '<i class="bossbar"><i style="width:' + (Math.max(0, bz.hp / bz.max) * 100).toFixed(1) + '%"></i></i>' : '<b class="boss' + (killed ? ' on' : '') + '"></b>'; else for (let i = 0; i < stageCount(); i++) h += '<b class="' + (i < killed ? 'on' : '') + '"></b>';
+  if (isBoss()) h = bz ? '<i class="bossbar"><i style="width:' + (Math.max(0, bz.hp / bz.max) * 100).toFixed(1) + '%"></i></i>' : '<b class="boss' + (killed ? ' on' : '') + '"></b>'; else { const wc = waveCount(); h += '<small class="wv">WAVE ' + Math.max(1, wave) + '/' + wc + '</small>'; for (let i = 0; i < wc; i++) h += '<b class="' + (i < wave - 1 || (i === wave - 1 && !enemies.some(e => !e.dying) && waveLeft <= 0) ? 'on' : i === wave - 1 ? 'cur' : '') + '"></b>'; }
   if (pips._h !== h) { pips.innerHTML = h; pips._h = h; }
   if (Math.floor(G.gold) !== shownGold) { shownGold = Math.floor(G.gold); $('gold').textContent = fmtG(G.gold); }
 
@@ -2407,7 +2532,7 @@ function renderMap() {
 }
 function travel(r, st) {
   if (!unlockedAt(r, st)) return;
-  G.region = r; G.stage = st; spawned = killed = 0; enemies.length = 0; projs.length = 0; chests = chests.filter(c => !c.opened && c.land);
+  G.region = r; G.stage = st; spawned = killed = 0; wave = waveLeft = 0; enemies.length = 0; projs.length = 0; chests = chests.filter(c => !c.opened && c.land);
   fadeTo = r; fade = 0.001; save(); updHud(true); renderMap();
   toast('<b>' + REGIONS[r].name + ' ' + (r + 1) + '-' + st + '</b> へ移動', '#b48bff');
 }

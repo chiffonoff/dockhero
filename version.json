@@ -1,1 +1,1 @@
-{"version": "1.7.0", "build": 170, "minShell": 3, "sha256": "e135bfb4726836ed5982c3384688a57f82db95f2abf7fc7f82c385fc2e766b3b", "notes": "お金を全桁表示に、攻撃・体力・速さの表示を削除、全員Lv1からリスタート"}
+{"version": "1.8.0", "build": 180, "minShell": 3, "sha256": "bdf3c1869760ed30e859bc1a8040a731840ef8401837e49c42b73f04bb18d1e7", "notes": "ステージをWAVE制に（後半ほどWAVEが増える）、新しい敵9種類を追加"}
