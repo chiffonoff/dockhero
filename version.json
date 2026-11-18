@@ -1,1 +1,1 @@
-{"version":"1.0.0","build":100,"minShell":3,"sha256":"35b0a073e6eb808c07736947e9d4a06d50b6e88a0afc3422e213c71697180f14","notes":"自動更新に対応した最初の版"}
+{"version": "1.0.1", "build": 101, "minShell": 3, "sha256": "f5d4d8580447ee346ff65bd80ad48440d04be8145853203c49f70b4a6ba3bfce", "notes": "自動更新のテスト"}

@@ -392,7 +392,7 @@ function fmt(n) {
 function fmtPix(n) { n = Math.floor(n); if (n < 10000) return '' + n; if (n < 1e6) return Math.floor(n / 1000) + 'K'; if (n < 1e9) return Math.floor(n / 1e6) + 'M'; return Math.floor(n / 1e9) + 'B'; }
 
 /* ---------- bridge to the macOS shell ---------- */
-const GAME_VERSION = '1.0.0', GAME_BUILD = 100;
+const GAME_VERSION = '1.0.1', GAME_BUILD = 101;
 const NATIVE = !!window.__DH_NATIVE || Q.has('nativeTest');
 // page -> mac: the shell polls document.title. Keep the title short: big payloads (saves) are cut into chunks
 // and sent one at a time; each title carries a session id so a reload never confuses the shell.
