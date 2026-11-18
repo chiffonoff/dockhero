@@ -132,7 +132,23 @@ body.mini #bagbtn,body.mini #quit,body.mini #partybtn,body.mini #grpchip{display
 .page{position:absolute;inset:12px 14px;display:none;gap:14px}
 #pgear{grid-template-columns:230px minmax(0,1fr) 270px}
 #pparty{grid-template-columns:minmax(0,1fr) 300px}
-body.pg-gear #pgear,body.pg-party #pparty,body.pg-map #pmap,body.pg-rank #prank{display:grid}
+body.pg-gear #pgear,body.pg-party #pparty,body.pg-map #pmap,body.pg-rank #prank,body.pg-rune #prune{display:grid}
+#prune{grid-template-columns:minmax(0,1fr) 230px}
+#runebtn{display:grid;place-items:center;width:34px;padding:0;font-size:17px;font-weight:900;color:#c9a8ff;text-shadow:0 0 8px rgba(180,130,255,.8)}
+#runebtn.on{background:linear-gradient(#e8d8ff,#b48bff);color:#2a1050;text-shadow:none}
+body.mini #runebtn{display:none}
+.rgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;overflow:auto;padding:2px}
+.rune{position:relative;display:grid;grid-template-columns:34px minmax(0,1fr);gap:2px 8px;align-items:center;padding:7px 8px;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);cursor:pointer;transition:transform .12s,background .2s}
+.rune:hover{background:rgba(255,255,255,.09);transform:translateY(-1px)}
+.rune .rg{grid-row:1/4;width:34px;height:34px;border-radius:10px;display:grid;place-items:center;font-size:20px;font-weight:900;color:var(--rc);background:radial-gradient(circle,color-mix(in srgb,var(--rc) 30%,transparent),rgba(0,0,0,.25));box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--rc) 50%,transparent),0 0 12px color-mix(in srgb,var(--rc) 35%,transparent)}
+.rune b{font-size:11px;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.rune b i{font-style:normal;color:var(--rc);margin-left:4px}
+.rune small{font-size:9.5px;color:var(--sub);line-height:1.2}
+.rune .rc{font-size:10px;font-weight:800;color:#ffe08a;display:flex;align-items:center;gap:3px}
+.rune.no .rc{color:#8a7ab0}.rune.max .rc{color:#7dffa8}
+.rune.lock{opacity:.42;cursor:default;filter:grayscale(.7)}.rune.lock .rg{color:#8a7ab0}
+.rune.pop{animation:rpop .35s}@keyframes rpop{40%{transform:scale(1.06);background:rgba(255,230,140,.2)}}
+.rsum{display:flex;flex-direction:column;gap:6px;font-size:11px;color:var(--sub);overflow:auto}
+.rsum div{display:flex;justify-content:space-between}.rsum div b{color:#fff}
 #prank{grid-template-columns:minmax(0,1fr) 270px}
 #pmap{grid-template-rows:auto 1fr auto;gap:10px}
 body.panel #panel{display:block;animation:pin .28s cubic-bezier(.2,1.2,.4,1)}
@@ -197,7 +213,9 @@ body.panel #panel{display:block;animation:pin .28s cubic-bezier(.2,1.2,.4,1)}
 .altar .arrow{font-size:14px;color:#cbb3ff}
 .altar .res{width:50px;height:50px}
 .altar.fuse .cell.in{animation:fuse .55s ease-in forwards}
-@keyframes fuse{to{transform:translateX(var(--fx)) scale(.3);opacity:0}}
+@keyframes fuse{to{transform:translate(var(--fx),var(--fy,0)) scale(.3);opacity:0}}
+.m9{display:grid;grid-template-columns:repeat(3,24px);gap:2px}
+.m9 .cell{width:24px;height:24px;border-radius:6px}.m9 .cell img{width:16px;height:16px}.m9 .cell .lvb{display:none}
 .rays{position:absolute;inset:-20px;border-radius:50%;pointer-events:none;opacity:0;background:repeating-conic-gradient(from 0deg,var(--rc,#fff) 0 6deg,transparent 6deg 24deg);-webkit-mask:radial-gradient(circle,#000 20%,transparent 65%);mask:radial-gradient(circle,#000 20%,transparent 65%)}
 .rays.go{animation:rays 1.4s ease-out}
 @keyframes rays{0%{opacity:0;transform:rotate(0) scale(.6)}20%{opacity:.9}100%{opacity:0;transform:rotate(90deg) scale(1.3)}}
@@ -355,6 +373,7 @@ body.flip #panel{top:170px;bottom:auto}
   <div id="pparty" class="page"></div>
   <div id="pmap" class="page"></div>
   <div id="prank" class="page"></div>
+  <div id="prune" class="page"></div>
 </div>
 <div id="card">
   <canvas id="c"></canvas>
@@ -378,6 +397,7 @@ body.flip #panel{top:170px;bottom:auto}
       <div class="up glass" data-k="spd" title="パーティの攻撃回数（1秒あたり合計）"><span class="ic">≫</span><span class="tx"><small>速さ</small><b>0</b></span></div>
       <button id="rankbtn" class="tbtn glass" title="フレンドランキング"><svg viewBox="0 0 16 16"><path d="M4 1h8v2h3v2.5A3.5 3.5 0 0 1 11.7 9 4 4 0 0 1 9 11.2V13h2.5v2h-7v-2H7v-1.8A4 4 0 0 1 4.3 9 3.5 3.5 0 0 1 1 5.5V3h3zm8 3.5v3a2 2 0 0 0 1.5-2V4.5zM4 4.5H2.5v1a2 2 0 0 0 1.5 2z"/></svg></button>
       <button id="partybtn" class="tbtn glass" title="キャラクター・グループ"><svg viewBox="0 0 16 16"><path d="M5.5 7.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5zm6 .5a2 2 0 1 1 0-4 2 2 0 0 1 0 4zM1 13c0-2.5 2-4 4.5-4S10 10.5 10 13v1H1zm10 1v-1c0-1.3-.4-2.4-1.1-3.2.5-.2 1-.3 1.6-.3 2 0 3.5 1.2 3.5 3.3V14z"/></svg></button>
+      <button id="runebtn" class="tbtn glass" title="ルーン（ゴールドで永続強化）"><span>ᚱ</span></button>
       <button id="bagbtn" class="tbtn glass" title="装備・合成・強化"><svg viewBox="0 0 16 16"><path d="M5 5V4a3 3 0 0 1 6 0v1h2.2l.8 9.5H2L2.8 5zm1.5 0h3V4a1.5 1.5 0 0 0-3 0z"/></svg><i id="bagbadge"></i></button>
       <button id="auto" class="tbtn glass" title="ゴールドが貯まったら自動で強化" style="display:none">AUTO</button>
       <button id="mini" class="tbtn glass" title="小さくする">–</button>
@@ -431,7 +451,7 @@ function fmt(n) {
 function fmtPix(n) { n = Math.floor(n); if (n < 10000) return '' + n; if (n < 1e6) return Math.floor(n / 1000) + 'K'; if (n < 1e9) return Math.floor(n / 1e6) + 'M'; return Math.floor(n / 1e9) + 'B'; }
 
 /* ---------- bridge to the macOS shell ---------- */
-const GAME_VERSION = '1.5.0', GAME_BUILD = 150;
+const GAME_VERSION = '1.6.0', GAME_BUILD = 160;
 const NATIVE = !!window.__DH_NATIVE || Q.has('nativeTest');
 // page -> mac: the shell polls document.title. Keep the title short: big payloads (saves) are cut into chunks
 // and sent one at a time; each title carries a session id so a reload never confuses the shell.
@@ -528,10 +548,30 @@ const PRE = [['錆びた', '鋼の', '見習いの', '旅人の'], ['蒼月の',
 const NOUN = { weapon: ['剣', 'ブレード', '大剣', 'サーベル'], helm: ['兜', 'ヘルム', 'サークレット', 'フード'], armor: ['よろい', 'メイル', 'プレート', 'クローク'], boots: ['ブーツ', 'グリーヴ', '具足', 'サンダル'], charm: ['お守り', 'ペンダント', '指輪', '護符'] };
 const AFFIX = {
   crit: { n: '会心率', b: .02, pct: 1 }, critd: { n: '会心ダメージ', b: .15, pct: 1 }, aspd: { n: '攻撃速度', b: .04, pct: 1 },
-  gold: { n: '獲得ゴールド', b: .08, pct: 1 }, regen: { n: 'HP回復', b: .012, pct: 1 }, atkp: { n: '攻撃力', b: .05, pct: 1 },
+  gold: { n: '獲得ゴールド', b: .08, pct: 1 }, atkp: { n: '攻撃力', b: .05, pct: 1 },
   hpp: { n: '最大HP', b: .06, pct: 1 }, ls: { n: '吸血', b: .02, pct: 1 } };
 const AFFIXKEYS = Object.keys(AFFIX);
-const BAG_MAX = 24, ENH_MAX = 10;
+/* ---------- runes: permanent account-wide boosts bought with gold, unlocked along a path ---------- */
+const RUNES = [
+  { id: 'atk',   n: '力のルーン',     g: 'ᚠ', col: '#ff7a6a', d: '攻撃力',           v: .05,  pct: 1, max: 15, base: 40,  req: null },
+  { id: 'hp',    n: '守りのルーン',   g: 'ᚢ', col: '#ff8ec8', d: '最大HP',           v: .06,  pct: 1, max: 15, base: 40,  req: 'atk' },
+  { id: 'gold',  n: '富のルーン',     g: 'ᚷ', col: '#ffd25e', d: '獲得ゴールド',     v: .08,  pct: 1, max: 10, base: 90,  req: 'atk' },
+  { id: 'aspd',  n: '疾風のルーン',   g: 'ᚱ', col: '#7ad8ff', d: '攻撃速度',         v: .03,  pct: 1, max: 10, base: 160, req: 'hp' },
+  { id: 'kheal', n: '生命のルーン',   g: 'ᛒ', col: '#7dffa8', d: '敵を倒すとHP回復', v: .02,  pct: 1, max: 10, base: 200, req: 'hp' },
+  { id: 'xp',    n: '知恵のルーン',   g: 'ᚨ', col: '#b8a0ff', d: '獲得経験値',       v: .06,  pct: 1, max: 10, base: 220, req: 'gold' },
+  { id: 'crit',  n: '鋭眼のルーン',   g: 'ᛏ', col: '#ffe08a', d: '会心率',           v: .015, pct: 1, max: 10, base: 350, req: 'aspd' },
+  { id: 'chest', n: '幸運のルーン',   g: 'ᛚ', col: '#5affd8', d: '宝箱の出現率',     v: .03,  pct: 1, max: 10, base: 400, req: 'xp' },
+  { id: 'critd', n: '破砕のルーン',   g: 'ᛞ', col: '#ffb070', d: '会心ダメージ',     v: .1,   pct: 1, max: 10, base: 600, req: 'crit' },
+  { id: 'ls',    n: '吸血のルーン',   g: 'ᛉ', col: '#ff5c7a', d: '与ダメージの吸収', v: .004, pct: 1, max: 10, base: 900, req: 'kheal' },
+  { id: 'boss',  n: '討伐のルーン',   g: 'ᛟ', col: '#ff6b3d', d: 'ボスへのダメージ', v: .08,  pct: 1, max: 10, base: 1200, req: 'critd' },
+  { id: 'rare',  n: '星のルーン',     g: 'ᛝ', col: '#ffc94d', d: 'レア装備の出やすさ', v: .015, pct: 1, max: 10, base: 1500, req: 'chest' },
+];
+const RUNE = Object.fromEntries(RUNES.map(r => [r.id, r]));
+const runeLv = id => (G.runes && G.runes[id]) || 0;
+const runeVal = id => runeLv(id) * RUNE[id].v;
+const runeCost = id => Math.floor(RUNE[id].base * Math.pow(1.55, runeLv(id)));
+const runeOpen = id => !RUNE[id].req || runeLv(RUNE[id].req) >= 2;
+const BAG_MAX = 32, ENH_MAX = 10, MERGE_N = 9;
 const ENH_RATE = [1, 1, 1, 1, 1, .8, .65, .5, .38, .28];
 let UID = 1;
 function makeItem(slot, r, t, name) {
@@ -577,7 +617,7 @@ const SLOT_UNLOCK = [0, 10, 20]; // progress index needed: start, after 1-10 bos
 
 /* ---------- state ---------- */
 const SAVE_EPOCH = 2;   // bump this and publish an update to restart everyone from Lv1
-const DEF = { epoch: SAVE_EPOCH, pvp: { rate: 1000, w: 0, l: 0 }, v: 4, uid: '', friends: [], gifted: {}, lv: 1, xp: 0, gold: 0, upg: { atk: 0, hp: 0, spd: 0 }, heroes: { knight: { gear: {} } }, party: ['knight'], main: 'knight', name: '', grp: null, bag: [], shards: 0, fl: { equip: true, merge: false, salv: false }, region: 0, stage: 1, loop: 0, auto: false, ts: Date.now(), kills: 0 };
+const DEF = { epoch: SAVE_EPOCH, pvp: { rate: 1000, w: 0, l: 0 }, v: 4, uid: '', friends: [], gifted: {}, lv: 1, xp: 0, gold: 0, upg: { atk: 0, hp: 0, spd: 0 }, heroes: { knight: { gear: {} } }, party: ['knight'], main: 'knight', name: '', grp: null, bag: [], shards: 0, fl: { equip: true, merge: false, salv: false }, runes: {}, region: 0, stage: 1, loop: 0, auto: false, ts: Date.now(), kills: 0 };
 let G = JSON.parse(JSON.stringify(DEF));
 let REG = REGIONS[0];
 const hero = { x: 0, phase: 0, walking: true, dead: false, deadT: 0, aura: 0 }; // party anchor (front)
@@ -589,6 +629,7 @@ const grp = { active: false, code: '', peers: {}, status: 'off', pid: Math.rando
 function heroData(cls) { const h = G.heroes[cls] || (G.heroes[cls] = { gear: {} }); if (!h.lv) { h.lv = 1; h.xp = 0; } return h; }
 const heroLv = cls => heroData(cls).lv;
 const topLv = () => Math.max(1, ...Object.keys(G.heroes).map(heroLv));
+const FAIR = {};
 function statsFor(cls, gear) {
   const C = CLASSES[cls], hd = heroData(cls), g = gear || hd.gear, u = G.upg, A = {}, LV = hd.lv;
   let wAtk = 0, gHp = 0, bAs = 0, cCr = 0, cG = 0;
@@ -597,13 +638,14 @@ function statsFor(cls, gear) {
     const m = mainStat(it); wAtk += m.atk || 0; gHp += m.hp || 0; bAs += m.aspd || 0; cCr += m.crit || 0; cG += m.gold || 0;
     for (const a of it.a) A[a.k] = (A[a.k] || 0) + a.v;
   }
+  if (!gear || gear !== FAIR) for (const k of ['atkp', 'hpp', 'aspd', 'crit', 'critd', 'gold']) { const id = k === 'atkp' ? 'atk' : k === 'hpp' ? 'hp' : k; A[k] = (A[k] || 0) + runeVal(id); }
   const atk = ((1.5 + LV * .5) + wAtk) * (1 + (A.atkp || 0)) * C.atk;
   const maxHp = ((18 + LV * 3) + gHp) * (1 + (A.hpp || 0)) * C.hp;
   const aps = Math.min(4.5, 0.85 * (1 + bAs + (A.aspd || 0)) * C.aps);
   const crit = Math.min(.8, 0.06 + (C.crit || 0) + cCr + (A.crit || 0));
   const critMul = 2.2 + (C.critd || 0) + (A.critd || 0);
   const gm = 1 + cG + (A.gold || 0);
-  const regen = .02 + (A.regen || 0), ls = A.ls || 0;
+  const regen = 0, ls = (A.ls || 0) + runeVal('ls');
   const power = atk * aps * (1 + crit * (critMul - 1)) * Math.sqrt(maxHp) * (1 + (gm - 1) * .2) * (1 + ls * 3);
   return { atk, maxHp, aps, crit, critMul, gm, regen, ls, power };
 }
@@ -632,7 +674,7 @@ function partyStats() {
   const loc = party.filter(m => m.local);
   return {
     maxHp: party.reduce((a, m) => a + m.st.maxHp, 0), power: loc.reduce((a, m) => a + m.st.power, 0),
-    gm: Math.max(1, ...loc.map(m => m.st.gm)) * groupBonus(), xm: groupBonus()
+    gm: Math.max(1, ...loc.map(m => m.st.gm)) * groupBonus(), xm: groupBonus() * (1 + runeVal('xp'))
   };
 }
 function stats() { return partyStats(); }
@@ -664,6 +706,11 @@ function load() {
   let reset = false;
   if (s) { try { const d0 = JSON.parse(s); if ((d0.epoch || 1) !== SAVE_EPOCH) { reset = true; const keep = { uid: d0.uid || '', name: d0.name || '', friends: d0.friends || [], gifted: d0.gifted || {}, auto: !!d0.auto }; s = JSON.stringify(Object.assign(JSON.parse(JSON.stringify(DEF)), keep)); } } catch (e) { } }
   if (s) { try { const d = JSON.parse(s); G = Object.assign(JSON.parse(JSON.stringify(DEF)), d); G.upg = Object.assign({ atk: 0, hp: 0, spd: 0 }, d.upg || {}); G.gear = d.gear; G.heroes = d.heroes || G.heroes; G.bag = d.bag || []; G.fl = Object.assign({ equip: true, merge: false, salv: false }, d.fl || {}); migrate(); } catch (e) { } }
+  if (!G.runes) G.runes = {};
+  if (G.upg && (G.upg.atk || G.upg.hp || G.upg.spd)) {   // stat buttons were removed: give back what was spent so it can go into runes
+    let back = 0; for (const k of ['atk', 'hp', 'spd']) for (let i = 0; i < (G.upg[k] || 0); i++) back += Math.floor(5 * Math.pow(1.17, i) * (k === 'spd' ? 1.6 : 1));
+    G.gold += back; G.upg = { atk: 0, hp: 0, spd: 0 }; G._refund = back;
+  }
   if (Q.get('region')) { G.region = +Q.get('region'); G.stage = +(Q.get('stage') || 1); }
   if (Q.get('lv')) { G.lv = +Q.get('lv'); for (const c in G.heroes) heroData(c).lv = G.lv; G.best = Math.max(G.best || 0, 25); }
   REG = REGIONS[G.region];
@@ -1543,8 +1590,9 @@ function damageEnemy(e, m, mult, opt = {}) {
   if (!e || e.dying) return;
   const owner = m.remote ? m.key.split(':')[1] : 'me';
   if (grp.active && Object.keys(grp.peers).length) { if (T - chain.t < 1.3) { if (owner !== chain.o) chain.n++; } else chain.n = 0; chain.t = T; chain.o = owner; }
-  const st = m.st, crit = Math.random() < st.crit, dmg = st.atk * atkBuff() * mult * rnd(.9, 1.1) * (crit ? st.critMul : 1) * (1 + Math.min(.5, chain.n * .025));
+  const st = m.st, crit = Math.random() < st.crit; let dmg = st.atk * atkBuff() * mult * rnd(.9, 1.1) * (crit ? st.critMul : 1) * (1 + Math.min(.5, chain.n * .025));
   if (st.ls && !m.down) m.hp = Math.min(st.maxHp, m.hp + dmg * st.ls);
+  if (e.boss) dmg *= 1 + runeVal('boss');
   e.hp -= dmg; e.flash = 1; e.kb = opt.kb !== undefined ? opt.kb : (crit ? 4 : 2);
   const top = e.boss ? 26 : 14;
   pops.push({ x: e.x + rnd(-2, 2), y: GROUND - top - 2 - (opt.small ? 0 : 0), t: 0, s: fmtPix(dmg) + (crit ? '!' : ''), c: crit ? '#ffd84d' : (opt.col || '#ffffff'), crit });
@@ -1560,10 +1608,11 @@ function killEnemy(e) {
   burst(e.x, GROUND - 6, e.boss ? 40 : 14, e.c, 50); burst(e.x, GROUND - 6, 6, '#ffffff', 30);
   parts.push({ x: e.x, y: GROUND - 8, vx: 0, vy: -10, life: 1.2, max: 1.2, col: '#e6dcff', soul: 1, g: 0 });
   addXp(xp);
-  if (e.boss || Math.random() < (e.elite ? .6 : .2)) chests.push({ x: e.x + 6, y: GROUND - 20, vy: -20, land: 0, openT: 0, rar: rollRarity(e.boss), opened: false, done: 0 });
+  if (runeLv('kheal')) for (const m of party) if (!m.down) m.hp = Math.min(m.st.maxHp, m.hp + m.st.maxHp * runeVal('kheal'));
+  if (e.boss || Math.random() < (e.elite ? .6 : .2) + runeVal('chest')) chests.push({ x: e.x + 6, y: GROUND - 20, vy: -20, land: 0, openT: 0, rar: rollRarity(e.boss), opened: false, done: 0 });
   if (e.boss) { shake = .5; flashT = .25; }
 }
-function rollRarity(boss) { const r = Math.random() + (boss ? .3 : 0) + Math.min(.15, G.loop * .05); return r > 1.25 ? 4 : r > 1.06 ? 3 : r > .9 ? 2 : r > .62 ? 1 : 0; }
+function rollRarity(boss) { const r = Math.random() + (boss ? .3 : 0) + Math.min(.15, G.loop * .05) + runeVal('rare'); return r > 1.25 ? 4 : r > 1.06 ? 3 : r > .9 ? 2 : r > .62 ? 1 : 0; }
 function hurtMember(m, d) {
   if (m.down) return;
   m.hp -= d; m.hurt = .25;
@@ -1657,7 +1706,7 @@ function salvage(it, quiet) {
   return y;
 }
 function mergeItems(items, quiet) {
-  const r = items[0].r; if (r >= 4 || items.length !== 3 || items.some(i => i.r !== r)) return null;
+  const r = items[0].r; if (r >= 4 || items.length !== MERGE_N || items.some(i => i.r !== r)) return null;
   const sameSlot = items.every(i => i.s === items[0].s);
   const big = r <= 2 && Math.random() < .08;
   const nr = Math.min(4, r + (big ? 2 : 1)), t = Math.max(...items.map(i => i.t));
@@ -1674,7 +1723,7 @@ function autoRoutines() {
   if (G.fl.merge) {
     for (let r = 0; r <= 1 && guard < 20; r++) {
       let c = G.bag.filter(i => i.r === r && !i.lv);
-      while (c.length >= 3 && guard++ < 20) { const out = mergeItems(c.slice(0, 3), true); out.nw = 1; G.bag.push(out); toast('自動合成 → ' + itemHtml(out), RARITY[out.r].c); c = G.bag.filter(i => i.r === r && !i.lv); }
+      while (c.length >= MERGE_N && guard++ < 20) { const out = mergeItems(c.slice(0, MERGE_N), true); out.nw = 1; G.bag.push(out); toast('自動合成 → ' + itemHtml(out), RARITY[out.r].c); c = G.bag.filter(i => i.r === r && !i.lv); }
     }
   }
 }
@@ -1769,7 +1818,6 @@ function update(dt) {
       hero.walking = true; hero.x += 34 * dt; hero.phase += dt * 19;
       for (const m of party) {
         if (m.down) { m.downT += dt; if (m.downT > 6) { m.down = false; m.hp = m.st.maxHp * .4; burst(hero.x - m.off, GROUND - 7, 10, '#fff2b8', 30); } continue; }
-        m.hp = Math.min(m.st.maxHp, m.hp + m.st.maxHp * m.st.regen * dt);
         m.dust = (m.dust || 0) - dt; if (m.dust <= 0) { m.dust = .28 + rnd(.1); parts.push({ x: hero.x - m.off - 2, y: GROUND - 1, vx: -rnd(4, 10), vy: -rnd(2, 6), life: .4, max: .4, col: REG.grassL, g: 0 }); }
       }
     }
@@ -2064,10 +2112,11 @@ function setPanel(on, page) {
   document.body.classList.toggle('pg-party', on && panelPage === 'party');
   document.body.classList.toggle('pg-map', on && panelPage === 'map');
   document.body.classList.toggle('pg-rank', on && panelPage === 'rank');
+  document.body.classList.toggle('pg-rune', on && panelPage === 'rune'); $('runebtn').classList.toggle('on', on && panelPage === 'rune');
   $('rankbtn').classList.toggle('on', on && panelPage === 'rank');
   $('bagbtn').classList.toggle('on', on && panelPage === 'gear'); $('partybtn').classList.toggle('on', on && panelPage === 'party');
   if (on !== was) native({ t: 'panel', on });
-  if (on) { renderPanel(); renderParty(); renderMap(); renderRank(); } else { G.bag.forEach(i => i.nw = 0); updGear(); save(); }
+  if (on) { renderPanel(); renderParty(); renderMap(); renderRank(); renderRunes(); } else { G.bag.forEach(i => i.nw = 0); updGear(); save(); }
 }
 function renderPanel() {
   updGear();
@@ -2083,7 +2132,7 @@ function renderPanel() {
   const H = statsFor(curHero());
   $('power').textContent = '総合力 ' + fmt(H.power);
   $('herotabs').innerHTML = localClasses().map(c => '<button class="htab' + (c === curHero() ? ' on' : '') + '" data-hero="' + c + '" style="--cc:' + CLASSES[c].col + '">' + CLASSES[c].n + ' Lv' + heroLv(c) + '</button>').join('');
-  const sl = [['攻撃', fmt(H.atk)], ['最大HP', fmt(H.maxHp)], ['攻撃速度', H.aps.toFixed(2) + '/秒'], ['会心率', (H.crit * 100).toFixed(1) + '%'], ['会心ダメ', '×' + H.critMul.toFixed(2)], ['ゴールド', '+' + Math.round((H.gm - 1) * 100) + '%'], ['HP回復', (H.regen * 100).toFixed(1) + '%/秒'], ['吸血', (H.ls * 100).toFixed(1) + '%']];
+  const sl = [['攻撃', fmt(H.atk)], ['最大HP', fmt(H.maxHp)], ['攻撃速度', H.aps.toFixed(2) + '/秒'], ['会心率', (H.crit * 100).toFixed(1) + '%'], ['会心ダメ', '×' + H.critMul.toFixed(2)], ['ゴールド', '+' + Math.round((H.gm - 1) * 100) + '%'], ['吸血', (H.ls * 100).toFixed(1) + '%']];
   $('statlist').innerHTML = sl.map(([a, b]) => '<div>' + a + '<b>' + b + '</b></div>').join('');
   // bag
   $('bagcount').textContent = G.bag.length + ' / ' + BAG_MAX;
@@ -2111,10 +2160,10 @@ function renderForge() {
   const tg = (k, label) => '<div class="tg' + (G.fl[k] ? ' on' : '') + '" data-fl="' + k + '"><span>' + label + '</span><i></i></div>';
   if (tab === 'merge') {
     const items = mergeSel.map(findItem).filter(Boolean);
-    const r = items[0] ? items[0].r : -1, ready = items.length === 3;
-    h += '<div class="fhint">同じレア度の装備を<b>3つ</b>で、ひとつ上のレア度に。<br>3つとも同じ部位なら部位を引き継ぎ、まれに<b style="color:#ffd25e">大成功</b>で2段階アップ。</div>';
+    const r = items[0] ? items[0].r : -1, ready = items.length === MERGE_N;
+    h += '<div class="fhint">同じレア度の装備を<b>9つ</b>で、ひとつ上のレア度に（' + items.length + '/9）。<br>9つとも同じ部位なら部位を引き継ぎ、まれに<b style="color:#ffd25e">大成功</b>で2段階アップ。</div>';
     h += '<div class="altar" id="altar">';
-    for (let i = 0; i < 3; i++) h += cellHtml(items[i], 'in');
+    h += '<div class="m9">'; for (let i = 0; i < MERGE_N; i++) h += cellHtml(items[i], 'in'); h += '</div>';
     const nr = r >= 0 ? Math.min(4, r + 1) : -1;
     h += '<span class="arrow">➜</span><div class="cell res" id="mres" style="--rc:' + (nr >= 0 ? RARITY[nr].c : 'rgba(255,255,255,.15)') + ';--rc2:' + (nr >= 0 ? rgba(RARITY[nr].c, .3) : 'transparent') + '"><b style="font-size:18px;color:' + (nr >= 0 ? RARITY[nr].c : 'var(--sub)') + '">?</b></div><div class="rays" id="rays"></div></div>';
     h += '<div style="display:flex;gap:6px"><button class="btn sub" data-act="mauto">おまかせで選ぶ</button><button class="btn" data-act="merge"' + (ready && r < 4 ? '' : ' disabled') + '>合成する</button></div>';
@@ -2161,17 +2210,17 @@ function pickMerge(it) {
   if (mergeSel.includes(it.u)) { mergeSel = mergeSel.filter(u => u !== it.u); return; }
   const first = mergeSel[0] && findItem(mergeSel[0]);
   if (first && first.r !== it.r) mergeSel = [];
-  if (mergeSel.length >= 3) mergeSel.shift();
+  if (mergeSel.length >= MERGE_N) mergeSel.shift();
   mergeSel.push(it.u);
 }
 function autoPick() {
-  for (let r = 0; r < 4; r++) { const c = G.bag.filter(i => i.r === r).sort((a, b) => (a.lv - b.lv) || (powerWith(a, curHero()) - powerWith(b, curHero()))); if (c.length >= 3) { mergeSel = c.slice(0, 3).map(i => i.u); return true; } }
-  toast('同じレア度の装備が3つありません', '#9b8cff'); return false;
+  for (let r = 0; r < 4; r++) { const c = G.bag.filter(i => i.r === r).sort((a, b) => (a.lv - b.lv) || (powerWith(a, curHero()) - powerWith(b, curHero()))); if (c.length >= MERGE_N) { mergeSel = c.slice(0, MERGE_N).map(i => i.u); return true; } }
+  toast('同じレア度の装備が9つありません', '#9b8cff'); return false;
 }
 function doMerge() {
-  if (busy) return; const items = mergeSel.map(findItem).filter(Boolean); if (items.length !== 3) return;
+  if (busy) return; const items = mergeSel.map(findItem).filter(Boolean); if (items.length !== MERGE_N) return;
   busy = true; const alt = $('altar');
-  alt.querySelectorAll('.cell.in').forEach((el, i) => el.style.setProperty('--fx', (2 - i) * 52 + 'px'));
+  alt.querySelectorAll('.cell.in').forEach((el, i) => { el.style.setProperty('--fx', (2 - i % 3) * 26 + 34 + 'px'); el.style.setProperty('--fy', (1 - Math.floor(i / 3)) * 26 + 'px'); });
   alt.classList.add('fuse');
   setTimeout(() => {
     const out = mergeItems(items); busy = false; if (!out) return renderPanel();
@@ -2436,6 +2485,33 @@ function renderRank() {
   $('prank').innerHTML = h;
 }
 $('rankbtn').addEventListener('click', () => setPanel(!(panelOpen && panelPage === 'rank'), 'rank'));
+$('runebtn').addEventListener('click', () => setPanel(!(panelOpen && panelPage === 'rune'), 'rune'));
+function runeTxt(r, lv) { const v = lv * r.v; return r.pct ? '+' + (v * 100).toFixed(r.v < .01 ? 1 : r.v < .1 ? 1 : 0).replace(/\.0$/, '') + '%' : '+' + v; }
+function renderRunes() {
+  if (!panelOpen || panelPage !== 'rune') return;
+  let h = '<div class="pcol"><div class="ph"><b>ルーン</b><span>ゴールドで永続的に強くなる。となりのルーンをLv2にすると次が解放</span></div><div class="rgrid">';
+  for (const r of RUNES) {
+    const lv = runeLv(r.id), open = runeOpen(r.id), max = lv >= r.max, c = runeCost(r.id), can = open && !max && G.gold >= c;
+    h += '<div class="rune' + (open ? '' : ' lock') + (max ? ' max' : can ? '' : ' no') + '" data-rune="' + r.id + '" style="--rc:' + r.col + '" title="' + r.d + ' ' + runeTxt(r, 1) + '／Lv">' +
+      '<span class="rg">' + r.g + '</span><b>' + r.n + '<i>Lv' + lv + '/' + r.max + '</i></b><small>' + r.d + ' ' + runeTxt(r, lv) + (max ? '' : ' → ' + runeTxt(r, lv + 1)) + '</small>' +
+      '<span class="rc">' + (!open ? '🔒 ' + RUNE[r.req].n + ' Lv2' : max ? 'MAX' : '<span class="coin" style="width:10px;height:10px"></span>' + fmt(c)) + '</span></div>';
+  }
+  h += '</div></div><div class="pcol"><div class="ph"><b>効果の合計</b><span>全キャラに効きます</span></div><div class="rsum">';
+  h += '<div>所持ゴールド<b style="color:#ffe08a">' + fmt(G.gold) + '</b></div>';
+  for (const r of RUNES) if (runeLv(r.id)) h += '<div>' + r.d + '<b style="color:' + r.col + '">' + runeTxt(r, runeLv(r.id)) + '</b></div>';
+  if (!RUNES.some(r => runeLv(r.id))) h += '<div style="justify-content:center;margin-top:20px">まだルーンがありません。<br>まずは「力のルーン」から。</div>';
+  h += '</div></div>';
+  $('prune').innerHTML = h;
+}
+$('prune').addEventListener('click', e => {
+  const el = e.target.closest('[data-rune]'); if (!el) return; const id = el.dataset.rune, r = RUNE[id];
+  if (!runeOpen(id) || runeLv(id) >= r.max) return;
+  const c = runeCost(id); if (G.gold < c) { toast('ゴールドが足りません（' + fmt(c) + ' 必要）', '#9b8cff'); return; }
+  G.gold -= c; G.runes[id] = runeLv(id) + 1; rebuildParty(); hero.aura = Math.max(hero.aura, .5);
+  toast('<b style="color:' + r.col + '">' + r.n + '</b> Lv' + G.runes[id] + '  ' + r.d + ' ' + runeTxt(r, G.runes[id]), r.col);
+  renderRunes(); const n = $('prune').querySelector('[data-rune=' + id + ']'); if (n) n.classList.add('pop'); updHud(true); save();
+});
+setInterval(() => { if (panelOpen && panelPage === 'rune') { const g = Math.floor(G.gold); if (g !== renderRunes._g) { renderRunes._g = g; renderRunes(); } } }, 500);
 $('prank').addEventListener('click', e => {
   const t = e.target.closest('[data-rt],[data-r],[data-emo],[data-duel],[data-dm]'); if (!t) return;
   if (t.dataset.dm) { duelMode = t.dataset.dm; return renderRank(); }
@@ -2713,6 +2789,7 @@ function frame(now) {
 }
 load(); resize(); updGear(); updHud(true);
 if (!G.name) G.name = window.__DH_USER || '';
+if (G._refund) { const b = G._refund; delete G._refund; setTimeout(() => toast('強化ボタン廃止のため <b style="color:#ffe08a">' + fmt(b) + ' G</b> を返却しました。ルーン（ᚱ）に使えます', '#ffd25e'), 2500); }
 if (G.grp && G.grp.code) setTimeout(() => grpJoin(G.grp.code, false), 1200);
 setTimeout(socStart, 2000);
 hero.x = 0; camX = hero.x - IW * .3;
