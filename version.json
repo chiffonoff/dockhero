@@ -1,1 +1,1 @@
-{"version": "1.11.3", "build": 206, "minShell": 3, "sha256": "9699c01f5d962de43f85b39c6d1852f3df311c6c231ee9f2afcff692ab13cc23", "notes": "吸血はミシック以上の装備だけに付くように"}
+{"version": "1.11.4", "build": 207, "minShell": 3, "sha256": "0988da435d4d86f334a49896358280c68d3dea0360c1b6a954236a5acdab363c", "notes": "弓の射程アップ／武器がキャラごとの見た目と名前に／HPはキャラの下に常時表示"}

@@ -39,7 +39,7 @@ canvas{position:absolute;left:0;bottom:0;image-rendering:pixelated;image-renderi
 .bar{position:relative;height:9px;border-radius:5px;background:rgba(0,0,0,.45);overflow:hidden;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
 .bar i{position:absolute;left:0;top:0;bottom:0;border-radius:5px;transition:width .25s}
 .bar.hp i{background:linear-gradient(90deg,#ff5a8a,#ff8fb0);box-shadow:0 0 8px rgba(255,90,140,.7)}
-.bar.hp i.low{animation:pulse .6s infinite alternate}
+.bar.hp{display:none}.bar.hp i.low{animation:pulse .6s infinite alternate}
 .bar em{position:absolute;inset:0;font-style:normal;font-size:8px;line-height:9px;text-align:center;font-weight:800;color:#fff;text-shadow:0 1px 1px rgba(0,0,0,.6);font-variant-numeric:tabular-nums}
 .bar.xp{height:4px}
 .bar.xp i{background:linear-gradient(90deg,#7c5cff,#c39bff);box-shadow:0 0 6px rgba(160,120,255,.8)}
@@ -446,7 +446,7 @@ function fmt(n) {
 function fmtPix(n) { n = Math.floor(n); if (n < 10000) return '' + n; if (n < 1e6) return Math.floor(n / 1000) + 'K'; if (n < 1e9) return Math.floor(n / 1e6) + 'M'; return Math.floor(n / 1e9) + 'B'; }
 
 /* ---------- bridge to the macOS shell ---------- */
-const GAME_VERSION = '1.11.3', GAME_BUILD = 206;
+const GAME_VERSION = '1.11.4', GAME_BUILD = 207;
 const NATIVE = !!window.__DH_NATIVE || Q.has('nativeTest');
 if (window.__DH_OS === 'win') document.addEventListener('DOMContentLoaded', () => { const g = document.getElementById('grip'); if (g) g.title = 'ドラッグで移動／ダブルクリックでタスクバーの上に戻す'; });
 // page -> mac: the shell polls document.title. Keep the title short: big payloads (saves) are cut into chunks
@@ -550,6 +550,14 @@ const SLOTS = ['weapon', 'helm', 'armor', 'boots', 'charm'];
 const SLOTNAME = { weapon: '武器', helm: '兜', armor: '鎧', boots: '靴', charm: '護符' };
 const PRE = [['錆びた', '鋼の', '見習いの', '旅人の'], ['若葉の', '狩人の', '樫の', '風見の'], ['蒼月の', '疾風の', '銀狼の', '水晶の'], ['星屑の', '紫電の', '夜想の', '影縫いの'], ['竜王の', '暁光の', '聖王の', '天穹の'], ['創世の', '星喰いの', '無銘の', '終焉の'], ['太古の', '遺跡の', '巨人の', '琥珀の'], ['天使の', '蒼穹の', '光輪の', '雲海の'], ['銀河の', '彗星の', '星界の', '極光の'], ['原初の', '始まりの', '虚無の', '真なる']];
 const NOUN = { weapon: ['剣', 'ブレード', '大剣', 'サーベル'], helm: ['兜', 'ヘルム', 'サークレット', 'フード'], armor: ['よろい', 'メイル', 'プレート', 'クローク'], boots: ['ブーツ', 'グリーヴ', '具足', 'サンダル'], charm: ['お守り', 'ペンダント', '指輪', '護符'] };
+const WNOUN = { knight: ['剣', 'ブレード', '大剣', 'サーベル'], archer: ['弓', 'ロングボウ', '短弓', 'クロスボウ'], mage: ['杖', 'ロッド', '魔導書', 'スタッフ'], healer: ['ワンド', '聖杖', '錫杖', 'セプター'], rogue: ['短剣', 'ダガー', '双剣', 'ナイフ'], smith: ['大槌', 'ハンマー', '戦鎚', 'メイス'], bard: ['ギター', 'リュート', '竪琴', 'マンドリン'] };
+const wCls = it => (typeof ownerOf === 'function' && ownerOf(it)) || (typeof curHero === 'function' ? curHero() : 'knight');
+function itemName(it, cls) {
+  if (!it || it.s !== 'weapon') return it ? it.n : '';
+  cls = cls || wCls(it); const L = WNOUN[cls] || WNOUN.knight; let base = it.n;
+  for (const w of NOUN.weapon.concat(...Object.values(WNOUN)).sort((x, y) => y.length - x.length)) if (base.endsWith(w) && base.length > w.length) { base = base.slice(0, -w.length); break; }
+  let h = 0; for (const ch of String(it.u)) h = (h * 31 + ch.charCodeAt(0)) | 0; return base + L[Math.abs(h) % 4];
+}
 const AFFIX = {
   crit: { n: '会心率', b: .02, pct: 1 }, critd: { n: '会心ダメージ', b: .15, pct: 1 }, aspd: { n: '攻撃速度', b: .04, pct: 1 },
   gold: { n: '獲得ゴールド', b: .08, pct: 1 }, atkp: { n: '攻撃力', b: .05, pct: 1 },
@@ -615,7 +623,7 @@ const affTxt = a => AFFIX[a.k].n + ' +' + (a.v * 100).toFixed(1) + '%';
 /* ---------- classes (original designs) ---------- */
 const CLASSES = {
   knight: { n: '騎士', role: '前衛・守り', desc: '硬くて頼れる剣士。いちばん前で仲間を守る。', atk: 1, hp: 1.35, aps: 1, range: 13, type: 'melee', col: '#8a4dff' },
-  archer: { n: '弓使い', role: '遠距離・会心', desc: '後ろから矢を放つ。会心が出やすい。', atk: 1.05, hp: .8, aps: 1.05, crit: .06, range: 72, type: 'arrow', col: '#4fbf7a' },
+  archer: { n: '弓使い', role: '遠距離・会心', desc: '後ろから矢を放つ。会心が出やすい。', atk: 1.05, hp: .8, aps: 1.05, crit: .06, range: 120, type: 'arrow', col: '#4fbf7a' },
   mage: { n: '魔導士', role: '範囲攻撃', desc: '星の魔弾で、近くの敵をまとめて攻撃。', atk: 1.25, hp: .7, aps: .7, range: 62, type: 'magic', col: '#5b6cff' },
   healer: { n: 'ヒーラー', role: '回復', desc: '傷ついた仲間を癒やす。攻撃は控えめ。', atk: .6, hp: .95, aps: .8, range: 56, type: 'heal', col: '#7fe7ff' },
   rogue: { n: '双剣士', role: '連撃', desc: '二本の短剣ですばやく斬る。会心ダメージが高い。', atk: .62, hp: .9, aps: 1.75, critd: .4, range: 13, type: 'dagger', col: '#ff5c6c' },
@@ -1847,7 +1855,7 @@ function openChest(ch) {
   if (it.r >= 3) { flashT = .15; shake = .15; }
   gainItem(it, true);
 }
-function itemHtml(it) { return '<span style="color:' + RARITY[it.r].c + '">【' + RARITY[it.r].n + '】' + it.n + (it.lv ? ' +' + it.lv : '') + '</span>'; }
+function itemHtml(it) { return '<span style="color:' + RARITY[it.r].c + '">【' + RARITY[it.r].n + '】' + itemName(it) + (it.lv ? ' +' + it.lv : '') + '</span>'; }
 function bestOwner(it) {
   let best = null, gain = 1.0001;
   for (const cls of localClasses()) { const cur = statsFor(cls).power, g = powerWith(it, cls) / cur; if (g > gain) { gain = g; best = cls; } }
@@ -2137,7 +2145,7 @@ function render() {
       else if (C.type === 'hammer' && k > .6) glow(hx + 7, GROUND - 12, 7, '#ffcf8a', .45);
     }
     if (m.remote) { const c = '#7dffa8'; R(ctx, hx - 1, GROUND - 34, 3, 1, c); R(ctx, hx, GROUND - 33, 1, 1, c); }
-    if (!m.down && m.hp < m.st.maxHp && party.length > 1) { const w = 12, y = (sprReady(m.cls) ? GROUND + 3 : GROUND - 31) + (m.remote ? -4 : 0); R(ctx, hx - 6, y - 1, w + 2, 3, '#12071f'); R(ctx, hx - 5, y, w, 1, '#3a1830'); R(ctx, hx - 5, y, Math.max(1, Math.round(w * m.hp / m.st.maxHp)), 1, '#7dffa8'); }
+    if (!m.down) { const w = 12, y = (sprReady(m.cls) ? GROUND + 3 : GROUND - 31) + (m.remote ? -4 : 0); R(ctx, hx - 6, y - 1, w + 2, 3, '#12071f'); R(ctx, hx - 5, y, w, 1, '#3a1830'); R(ctx, hx - 5, y, Math.max(1, Math.round(w * m.hp / m.st.maxHp)), 1, '#7dffa8'); }
     if (m.cls === 'knight' && m.swing >= .38 && m.swing < .75) {
       const p = m.swing, a1 = 2.35, a2 = p < .62 ? lerp(2.35, -.65, (p - .38) / .24) : -.65, fadeK = p < .62 ? 1 : 1 - (p - .62) / .13;
       const cx = hx + 4, cy = GROUND - 8;
@@ -2216,7 +2224,7 @@ $('auto').addEventListener('click', () => { G.auto = !G.auto; updHud(true); save
 function updGear() {
   const box = $('gear'); let h = '';
   const lg = heroData(localClasses()[0]).gear;
-  for (const k of SLOTS) { const it = lg[k]; h += '<div class="slot' + (it ? ' r' + it.r : '') + '" data-s="' + k + '" title="' + (it ? it.n + (it.lv ? ' +' + it.lv : '') : SLOTNAME[k]) + '">' + (it ? '<img src="' + icon(k, it.r) + '">' : '<img class="ghost" src="' + icon(k, -1) + '">') + '</div>'; }
+  for (const k of SLOTS) { const it = lg[k]; h += '<div class="slot' + (it ? ' r' + it.r : '') + '" data-s="' + k + '" title="' + (it ? itemName(it, localClasses()[0]) + (it.lv ? ' +' + it.lv : '') : SLOTNAME[k]) + '">' + (it ? '<img src="' + icon(k, it.r, localClasses()[0]) + '">' : '<img class="ghost" src="' + icon(k, -1, localClasses()[0]) + '">') + '</div>'; }
   const nNew = G.bag.filter(i => i.nw).length;
   if (box._h !== h) { box.innerHTML = h; box._h = h; }
   const b = $('bagbadge'); b.textContent = nNew; b.style.display = nNew ? '' : 'none';
@@ -2231,12 +2239,32 @@ function toast(html, col) {
 
 /* ===================== item icons (original pixel art) ===================== */
 const ICONC = {};
-function icon(slot, r) {
-  const key = slot + r; if (ICONC[key]) return ICONC[key];
+function icon(slot, r, cls) {
+  if (slot === 'weapon') cls = cls || (typeof curHero === 'function' ? curHero() : 'knight'); else cls = '';
+  const key = slot + r + cls; if (ICONC[key]) return ICONC[key];
   const a = document.createElement('canvas'); a.width = a.height = 14; const c = a.getContext('2d');
   const rc = r < 0 ? '#888888' : RARITY[r].c, metal = r < 0 ? '#bbbbbb' : RARITY[r].metal, md = shade(metal, -.32), gold = '#ffcc4d', dk = '#2a1840';
   const px = (x, y, w, h, col) => { c.fillStyle = col; c.fillRect(x, y, w, h); };
-  if (slot === 'weapon') {
+  const wood = '#8a5a34', wdk = '#5a3820';
+  if (slot === 'weapon' && cls === 'archer') {
+    const arc = [[6,1],[7,2],[8,3],[8,4],[9,5],[9,6],[9,7],[9,8],[8,9],[8,10],[7,11],[6,12]];
+    arc.forEach(([x, y], i) => { px(x, y, 1, 1, i % 5 === 2 ? rc : metal); px(x - 1, y, 1, 1, md); });
+    for (let y = 1; y <= 12; y++) px(4, y, 1, 1, '#eae4ff');
+    for (let i = 0; i < 9; i++) px(2 + i, 6, 1, 1, i < 2 ? rc : wood); px(11, 5, 1, 3, metal); px(12, 6, 1, 1, '#ffffff');
+  } else if (slot === 'weapon' && (cls === 'mage' || cls === 'healer')) {
+    for (let i = 0; i < 9; i++) { px(2 + i, 12 - i, 1, 1, wood); px(3 + i, 12 - i, 1, 1, wdk); }
+    if (cls === 'mage') { px(9, 1, 4, 4, rc); px(10, 0, 2, 6, rc); px(8, 2, 6, 2, rc); px(10, 1, 1, 1, '#ffffff'); px(9, 5, 3, 1, gold); }
+    else { px(10, 0, 2, 6, gold); px(8, 2, 6, 2, gold); px(10, 2, 2, 2, rc); px(10, 0, 1, 1, '#ffffff'); }
+  } else if (slot === 'weapon' && cls === 'rogue') {
+    for (const ox of [0, 4]) { for (let i = 0; i < 5; i++) { px(4 + ox + i, 8 - i, 1, 1, metal); px(5 + ox + i, 8 - i, 1, 1, md); } px(3 + ox, 8, 1, 2, gold); px(2 + ox, 10, 2, 1, wood); px(9 + ox, 3, 1, 1, '#ffffff'); }
+    px(1, 12, 3, 1, rc);
+  } else if (slot === 'weapon' && cls === 'smith') {
+    for (let i = 0; i < 8; i++) { px(2 + i, 12 - i, 1, 1, wood); px(3 + i, 12 - i, 1, 1, wdk); }
+    px(7, 1, 7, 5, metal); px(7, 1, 7, 1, '#ffffff'); px(7, 5, 7, 1, md); px(9, 2, 3, 3, rc); px(8, 6, 2, 1, gold);
+  } else if (slot === 'weapon' && cls === 'bard') {
+    for (let i = 0; i < 6; i++) px(7 + i, 6 - i, 1, 1, wood); px(12, 0, 2, 2, wdk);
+    px(2, 7, 6, 5, rc); px(3, 6, 4, 7, rc); px(4, 5, 3, 1, rc); px(2, 11, 6, 1, shade(rc, -.3)); px(4, 8, 2, 2, '#2a1840'); px(3, 7, 1, 1, '#ffffff'); px(6, 10, 2, 1, gold);
+  } else if (slot === 'weapon') {
     for (let i = 0; i < 8; i++) { px(4 + i, 9 - i, 1, 1, metal); px(5 + i, 9 - i, 1, 1, md); }
     px(12, 1, 1, 1, '#ffffff'); px(11, 2, 1, 1, '#ffffff');
     px(2, 7, 1, 1, gold); px(3, 8, 1, 1, gold); px(4, 9, 1, 1, gold); px(5, 10, 1, 1, gold); px(6, 11, 1, 1, gold);
@@ -2276,7 +2304,7 @@ const isEquipped = it => !!ownerOf(it);
 function cellHtml(it, extra = '') {
   if (!it) return '<div class="cell empty ' + extra + '"></div>';
   const c = RARITY[it.r].c;
-  return '<div class="cell r' + it.r + ' ' + extra + '" data-u="' + it.u + '" style="--rc:' + c + ';--rc2:' + rgba(c, .28) + '"><img src="' + icon(it.s, it.r) + '">' + (it.lv ? '<span class="lvb">+' + it.lv + '</span>' : '') + (it.nw ? '<span class="nw"></span>' : '') + '</div>';
+  return '<div class="cell r' + it.r + ' ' + extra + '" data-u="' + it.u + '" style="--rc:' + c + ';--rc2:' + rgba(c, .28) + '"><img src="' + icon(it.s, it.r, it.s === 'weapon' ? wCls(it) : 0) + '">' + (it.lv ? '<span class="lvb">+' + it.lv + '</span>' : '') + (it.nw ? '<span class="nw"></span>' : '') + '</div>';
 }
 function setPanel(on, page) {
   if (on && mini) return;
@@ -2352,7 +2380,7 @@ function renderForge() {
       const max = it.lv >= ENH_MAX, rate = ENH_RATE[it.lv] || 0, cs = 2 * (it.lv + 1) * (it.r + 1), cg = goldOf(it.t) * (it.lv + 1) * 2;
       const nx = Object.assign({}, it, { lv: it.lv + 1 });
       h += '<div class="altar" id="altar"><div class="enhbig">' + cellHtml(it) + '<span class="arrow">➜</span>' + (max ? '<b>MAX</b>' : cellHtml(nx)) + '</div><div class="rays" id="rays"></div></div>';
-      h += '<div class="fhint"><b style="color:#fff">' + it.n + '</b><br>' + mainTxt(it) + (max ? '' : '<br>➜ <b style="color:#7dffa8">' + mainTxt(nx) + '</b>') + '</div>';
+      h += '<div class="fhint"><b style="color:#fff">' + itemName(it) + '</b><br>' + mainTxt(it) + (max ? '' : '<br>➜ <b style="color:#7dffa8">' + mainTxt(nx) + '</b>') + '</div>';
       if (!max) {
         h += '<div class="rate" style="color:' + (rate >= 1 ? '#7dffa8' : rate > .5 ? '#ffe08a' : '#ff8fa8') + '">成功率 ' + Math.round(rate * 100) + '%</div>';
         h += '<div class="cost"><span><span class="shard"></span>' + fmt(cs) + ' <small style="color:var(--sub)">/ ' + fmt(G.shards) + '</small></span><span><span class="coin" style="width:10px;height:10px"></span>' + fmtG(cg) + '</span></div>';
