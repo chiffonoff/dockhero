@@ -451,7 +451,7 @@ function fmt(n) {
 function fmtPix(n) { n = Math.floor(n); if (n < 10000) return '' + n; if (n < 1e6) return Math.floor(n / 1000) + 'K'; if (n < 1e9) return Math.floor(n / 1e6) + 'M'; return Math.floor(n / 1e9) + 'B'; }
 
 /* ---------- bridge to the macOS shell ---------- */
-const GAME_VERSION = '1.8.1', GAME_BUILD = 181;
+const GAME_VERSION = '1.8.2', GAME_BUILD = 182;
 const NATIVE = !!window.__DH_NATIVE || Q.has('nativeTest');
 // page -> mac: the shell polls document.title. Keep the title short: big payloads (saves) are cut into chunks
 // and sent one at a time; each title carries a session id so a reload never confuses the shell.
@@ -734,7 +734,7 @@ function load() {
 }
 function fmtTime(s) { const h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60); return h ? h + '時間' + (m ? m + '分' : '') : Math.max(1, m) + '分'; }
 const goldOf = t => 1 * Math.pow(1.14, t);
-const xpOf = t => 4 * Math.pow(1.135, t);
+const xpOf = t => 2 * Math.pow(1.135, t);
 
 /* ---------- sizing ---------- */
 let goldTarget = { x: 0, y: 0 };
@@ -1695,7 +1695,7 @@ function spawnEnemy() {
   enemies.push({
     k: def.k, c: def.c, boss, name: def.name, x: Math.max(camX + IW + 8, last + 16 + rnd(12)), y: GROUND,
     elite, slamT: 3.5, max: 7 * Math.pow(1.145, t) * hpM * (FOE[def.k] || [1])[0], hp: 0,
-    atk: 2.1 * Math.pow(1.122, t) * atkM, spd: (FOE[def.k] || [1, 9])[1],
+    atk: 2.1 * Math.pow(1.122, t) * atkM * Math.min(1, .6 + t * .06), spd: (FOE[def.k] || [1, 9])[1],
     cd: 1, lunge: 0, flash: 0, dying: 0, kb: 0, seed: rnd(10), walk: 0, hopT: 0, hb: 0
   });
   const e = enemies[enemies.length - 1]; e.hp = e.max; spawned++;

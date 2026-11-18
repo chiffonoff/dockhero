@@ -1,1 +1,1 @@
-{"version": "1.8.1", "build": 181, "minShell": 3, "sha256": "a5dc6c5010cdd0d3f09f4b863dda4be30b97e5bfea8dbc68394b3b7bd4184daf", "notes": "レベルアップでの最大HPの伸びを半分に"}
+{"version": "1.8.2", "build": 182, "minShell": 3, "sha256": "8deb456a76eb9741fb57e718cc61619b2dd651d47ba3b3491e7660e00cbcf9bc", "notes": "獲得経験値を半分に（序盤の敵は少しやさしく）"}
