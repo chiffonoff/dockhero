@@ -149,6 +149,7 @@ body.mini #runebtn{display:none}
 .rune.no .rc{color:#8a7ab0}.rune.max .rc{color:#7dffa8}
 .rune.lock{opacity:.42;cursor:default;filter:grayscale(.7)}.rune.lock .rg{color:#8a7ab0}
 .rune.pop{animation:rpop .35s}@keyframes rpop{40%{transform:scale(1.06);background:rgba(255,230,140,.2)}}
+.rpages{display:flex;gap:4px;margin-bottom:6px}.rpages button{flex:1;height:22px;border-radius:8px;border:0;background:rgba(255,255,255,.06);color:var(--sub);font-size:10px;font-weight:800;font-family:inherit;cursor:pointer}.rpages button.on{background:linear-gradient(#e8d8ff,#b48bff);color:#2a1050}.rpages button.lock{opacity:.5}
 .rsum{display:flex;flex-direction:column;gap:6px;font-size:11px;color:var(--sub);overflow:auto}
 .rsum div{display:flex;justify-content:space-between}.rsum div b{color:#fff}
 #prank{grid-template-columns:minmax(0,1fr) 270px}
@@ -451,7 +452,7 @@ function fmt(n) {
 function fmtPix(n) { n = Math.floor(n); if (n < 10000) return '' + n; if (n < 1e6) return Math.floor(n / 1000) + 'K'; if (n < 1e9) return Math.floor(n / 1e6) + 'M'; return Math.floor(n / 1e9) + 'B'; }
 
 /* ---------- bridge to the macOS shell ---------- */
-const GAME_VERSION = '1.9.2', GAME_BUILD = 192;
+const GAME_VERSION = '1.10.0', GAME_BUILD = 200;
 const NATIVE = !!window.__DH_NATIVE || Q.has('nativeTest');
 if (window.__DH_OS === 'win') document.addEventListener('DOMContentLoaded', () => { const g = document.getElementById('grip'); if (g) g.title = 'ドラッグで移動／ダブルクリックでタスクバーの上に戻す'; });
 // page -> mac: the shell polls document.title. Keep the title short: big payloads (saves) are cut into chunks
@@ -568,10 +569,16 @@ const RUNES = [
   { id: 'rare',  n: '星のルーン',     g: 'ᛝ', col: '#ffc94d', d: 'レア装備の出やすさ', v: .015, pct: 1, max: 10, base: 1500, req: 'chest' },
 ];
 const RUNE = Object.fromEntries(RUNES.map(r => [r.id, r]));
-const runeLv = id => (G.runes && G.runes[id]) || 0;
+// rune pages: the same 12 runes again on each page, stacking, at much higher prices
+const RUNE_PAGES = 5, PAGE_GATE = 5, PAGE_NUM = ['Ⅰ', 'Ⅱ', 'Ⅲ', 'Ⅳ', 'Ⅴ'];
+const rkey = (p, id) => p === 1 ? id : p + ':' + id;
+const runeLvP = (p, id) => (G.runes && G.runes[rkey(p, id)]) || 0;
+const runeLv = id => { let t = 0; for (let p = 1; p <= RUNE_PAGES; p++) t += runeLvP(p, id); return t; };
 const runeVal = id => runeLv(id) * RUNE[id].v;
-const runeCost = id => Math.floor(RUNE[id].base * Math.pow(1.55, runeLv(id)));
-const runeOpen = id => !RUNE[id].req || runeLv(RUNE[id].req) >= 2;
+const runeCost = (p, id) => Math.floor(RUNE[id].base * Math.pow(1.55, runeLvP(p, id)) * Math.pow(12, p - 1));
+const pageOpen = p => p === 1 || RUNES.every(r => runeLvP(p - 1, r.id) >= PAGE_GATE);
+const runeOpen = (p, id) => pageOpen(p) && (!RUNE[id].req || runeLvP(p, RUNE[id].req) >= 2);
+let runePage = 1;
 const BAG_MAX = 32, ENH_MAX = 10, MERGE_N = 9;
 const ENH_RATE = [1, 1, 1, 1, 1, .8, .65, .5, .38, .28];
 let UID = 1;
@@ -2588,7 +2595,8 @@ $('stagebox').addEventListener('click', () => { mapSel = G.region; setPanel(!(pa
 
 /* ===================== friends: ranking, gifts, emotes ===================== */
 const UTOPIC = id => 'dockhero-mac/v1/u/' + id, GTOPIC = id => 'dockhero-mac/v1/g/' + id;
-let soc = null, socStatus = 'off', rankTab = 'power';
+let soc = null, socStatus = 'off', rankTab = 'power', rankScope = 'all';
+const MIN_BUILD = 170;   // profiles from before the last season reset are ignored
 const profiles = {};
 function myProfile() {
   return { uid: G.uid, name: G.name || 'プレイヤー', b: GAME_BUILD, best: G.best || 0, loop: G.loop, power: Math.round(ST.power), top: topLv(), kills: G.kills || 0, party: G.party.slice(0, slotsUnlocked()), team: G.party.slice(0, slotsUnlocked()).map(c => { const st = statsFor(c), r2 = v => Math.round(v * 100) / 100; return { cls: c, lv: heroLv(c), st: { atk: r2(st.atk), maxHp: r2(st.maxHp), aps: r2(st.aps), crit: r2(st.crit), critMul: r2(st.critMul), ls: r2(st.ls), power: Math.round(st.power) } }; }), rate: Math.round(G.pvp.rate), pw: G.pvp.w, pl: G.pvp.l, ts: Date.now() };
@@ -2603,6 +2611,7 @@ function socStart() {
   }, st => { socStatus = st; renderRank(); });
   soc.onReady = () => { socPublish(); };
   soc.subscribe(GTOPIC(G.uid) + '/+');
+  soc.subscribe(UTOPIC('+'));   // everyone's retained profile: global ranking + population
   for (const f of G.friends) soc.subscribe(UTOPIC(f.uid));
   soc.connect();
   setInterval(socPublish, 5 * 60 * 1000);
@@ -2628,15 +2637,20 @@ function rankLabel(p, k) {
 function ago(ts) { const m = Math.floor((Date.now() - (ts || 0)) / 60000); return m < 2 ? 'いま' : m < 60 ? m + '分前' : m < 1440 ? Math.floor(m / 60) + '時間前' : Math.floor(m / 1440) + '日前'; }
 function renderRank() {
   if (!panelOpen || panelPage !== 'rank') return;
-  const me = myProfile(), list = [me, ...G.friends.map(f => profiles[f.uid] || { uid: f.uid, name: f.name || '（読み込み中）', ts: 0 })];
+  const me = myProfile(), everyone = Object.values(profiles).filter(p => p.uid !== G.uid && (p.b || 0) >= MIN_BUILD);
+  const pop = everyone.length + 1, online = everyone.filter(p => Date.now() - (p.ts || 0) < 12 * 60 * 1000).length + 1;
+  let list = rankScope === 'all' ? [me, ...everyone] : [me, ...G.friends.map(f => profiles[f.uid] || { uid: f.uid, name: f.name || '（読み込み中）', ts: 0 })];
   list.sort((a, b) => rankValue(b, rankTab) - rankValue(a, rankTab));
+  const myRank = list.findIndex(p => p.uid === G.uid) + 1;
+  if (list.length > 50) { list = list.slice(0, 50); if (myRank > 50) list.push(me); }
   const tabs = [['rate', 'バトル'], ['power', '総合力'], ['stage', '到達ステージ'], ['kills', '討伐数'], ['lv', '最高Lv']];
-  let h = '<div class="pcol"><div class="ph"><b>フレンドランキング</b><span>' + (G.friends.length ? G.friends.length + '人のフレンド' : 'フレンドを追加すると順位が出ます') + '</span></div>';
+  let h = '<div class="pcol"><div class="ph"><b>ランキング</b><span>プレイヤー <b style="color:#fff">' + pop + '人</b>（いま遊んでいる <b style="color:#7dffa8">' + online + '人</b>）　あなたは ' + myRank + '位</span></div>';
+  h += '<div class="rtabs" style="margin-bottom:4px"><button data-rs="all" class="' + (rankScope === 'all' ? 'on' : '') + '">全員</button><button data-rs="friends" class="' + (rankScope === 'friends' ? 'on' : '') + '">フレンド（' + G.friends.length + '人）</button></div>';
   h += '<div class="rtabs">' + tabs.map(([k, n]) => '<button data-rt="' + k + '" class="' + (rankTab === k ? 'on' : '') + '">' + n + '</button>').join('') + '</div><div class="rlist">';
   list.forEach((p, i) => {
-    const isMe = p.uid === G.uid, cls = (p.party || [])[0];
-    h += '<div class="rrow' + (isMe ? ' me' : '') + '"><span class="no' + (i < 3 ? ' g' + (i + 1) : '') + '">' + (i + 1) + '</span><span>' + String(p.name || '').replace(/</g, '') + (isMe ? '（あなた）' : '') +
-      '<small>' + (p.party || []).map(c => (CLASSES[c] || {}).n || '').join('・') + (isMe ? '' : ' · ' + (p.ts ? ago(p.ts) : '未取得')) + '</small></span><span class="val">' + rankLabel(p, rankTab) + (isMe || !p.team ? '' : ' <button class="mini-btn" data-duel="' + p.uid + '" style="margin-left:6px">⚔ 対戦</button>') + '</span></div>';
+    const isMe = p.uid === G.uid, cls = (p.party || [])[0], rk = isMe ? myRank : i + 1;
+    h += '<div class="rrow' + (isMe ? ' me' : '') + '"><span class="no' + (rk <= 3 ? ' g' + rk : '') + '">' + rk + '</span><span>' + String(p.name || '').replace(/</g, '') + (isMe ? '（あなた）' : '') +
+      '<small>' + (p.party || []).map(c => (CLASSES[c] || {}).n || '').join('・') + '</small></span><span class="val">' + rankLabel(p, rankTab) + (isMe || !p.team ? '' : ' <button class="mini-btn" data-duel="' + p.uid + '" style="margin-left:6px">⚔ 対戦</button>') + '</span></div>';
   });
   h += '</div></div><div class="pcol" style="padding-left:12px;border-left:1px solid rgba(255,255,255,.07)">';
   h += '<div class="lbl" style="margin-top:0">対戦ルール</div><div class="seg" style="margin-right:0;margin-bottom:4px"><button data-dm="fair" class="' + (duelMode === 'fair' ? 'on' : '') + '">公平バトル</button><button data-dm="real" class="' + (duelMode === 'real' ? 'on' : '') + '">本気（ハンデ付き）</button></div><div class="fhint" style="text-align:left;margin-bottom:8px">' + (duelMode === 'fair' ? '全員が同じ強さ（Lv30・装備なし）で戦う。勝負はキャラの組み合わせ次第。' : 'いまの実力で戦う。弱い側には差に応じたハンデが付く。') + '</div>';
@@ -2652,14 +2666,23 @@ $('runebtn').addEventListener('click', () => setPanel(!(panelOpen && panelPage =
 function runeTxt(r, lv) { const v = lv * r.v; return r.pct ? '+' + (v * 100).toFixed(r.v < .01 ? 1 : r.v < .1 ? 1 : 0).replace(/\.0$/, '') + '%' : '+' + v; }
 function renderRunes() {
   if (!panelOpen || panelPage !== 'rune') return;
-  let h = '<div class="pcol"><div class="ph"><b>ルーン</b><span>ゴールドで永続的に強くなる。となりのルーンをLv2にすると次が解放</span></div><div class="rgrid">';
-  for (const r of RUNES) {
-    const lv = runeLv(r.id), open = runeOpen(r.id), max = lv >= r.max, c = runeCost(r.id), can = open && !max && G.gold >= c;
-    h += '<div class="rune' + (open ? '' : ' lock') + (max ? ' max' : can ? '' : ' no') + '" data-rune="' + r.id + '" style="--rc:' + r.col + '" title="' + r.d + ' ' + runeTxt(r, 1) + '／Lv">' +
-      '<span class="rg">' + r.g + '</span><b>' + r.n + '<i>Lv' + lv + '/' + r.max + '</i></b><small>' + r.d + ' ' + runeTxt(r, lv) + (max ? '' : ' → ' + runeTxt(r, lv + 1)) + '</small>' +
-      '<span class="rc">' + (!open ? '🔒 ' + RUNE[r.req].n + ' Lv2' : max ? 'MAX' : '<span class="coin" style="width:10px;height:10px"></span>' + fmtG(c)) + '</span></div>';
+  const P = runePage;
+  let h = '<div class="pcol"><div class="ph"><b>ルーン</b><span>' + (P === 1 ? 'ゴールドで永続的に強くなる。となりのルーンをLv2にすると次が解放' : 'ページ' + PAGE_NUM[P - 1] + '：同じルーンを重ねがけ。値段は前のページの12倍') + '</span></div>';
+  h += '<div class="rpages">';
+  for (let p = 1; p <= RUNE_PAGES; p++) h += '<button data-rp="' + p + '" class="' + (p === P ? 'on' : '') + (pageOpen(p) ? '' : ' lock') + '" title="' + (pageOpen(p) ? '' : 'ページ' + PAGE_NUM[p - 2] + 'のルーンを全部Lv' + PAGE_GATE + '以上にすると開きます') + '">' + (pageOpen(p) ? '' : '🔒') + 'ページ' + PAGE_NUM[p - 1] + '</button>';
+  h += '</div>';
+  if (!pageOpen(P)) h += '<div class="fhint" style="margin:30px 0">ページ' + PAGE_NUM[P - 2] + 'のルーンを<b>全部Lv' + PAGE_GATE + '以上</b>にすると開きます。</div>';
+  else {
+    h += '<div class="rgrid">';
+    for (const r of RUNES) {
+      const lv = runeLvP(P, r.id), open = runeOpen(P, r.id), max = lv >= r.max, c = runeCost(P, r.id), can = open && !max && G.gold >= c;
+      h += '<div class="rune' + (open ? '' : ' lock') + (max ? ' max' : can ? '' : ' no') + '" data-rune="' + r.id + '" style="--rc:' + r.col + '" title="' + r.d + ' ' + runeTxt(r, 1) + '／Lv">' +
+        '<span class="rg">' + r.g + '</span><b>' + r.n + '<i>Lv' + lv + '/' + r.max + '</i></b><small>' + r.d + ' ' + runeTxt(r, lv) + (max ? '' : ' → ' + runeTxt(r, lv + 1)) + '</small>' +
+        '<span class="rc">' + (!open ? '🔒 ' + RUNE[r.req].n + ' Lv2' : max ? 'MAX' : '<span class="coin" style="width:10px;height:10px"></span>' + fmtG(c)) + '</span></div>';
+    }
+    h += '</div>';
   }
-  h += '</div></div><div class="pcol"><div class="ph"><b>効果の合計</b><span>全キャラに効きます</span></div><div class="rsum">';
+  h += '</div><div class="pcol"><div class="ph"><b>効果の合計</b><span>全ページ・全キャラに効きます</span></div><div class="rsum">';
   h += '<div>所持ゴールド<b style="color:#ffe08a">' + fmtG(G.gold) + '</b></div>';
   for (const r of RUNES) if (runeLv(r.id)) h += '<div>' + r.d + '<b style="color:' + r.col + '">' + runeTxt(r, runeLv(r.id)) + '</b></div>';
   if (!RUNES.some(r => runeLv(r.id))) h += '<div style="justify-content:center;margin-top:20px">まだルーンがありません。<br>まずは「力のルーン」から。</div>';
@@ -2667,16 +2690,19 @@ function renderRunes() {
   $('prune').innerHTML = h;
 }
 $('prune').addEventListener('click', e => {
-  const el = e.target.closest('[data-rune]'); if (!el) return; const id = el.dataset.rune, r = RUNE[id];
-  if (!runeOpen(id) || runeLv(id) >= r.max) return;
-  const c = runeCost(id); if (G.gold < c) { toast('ゴールドが足りません（' + fmtG(c) + ' 必要）', '#9b8cff'); return; }
-  G.gold -= c; G.runes[id] = runeLv(id) + 1; rebuildParty(); hero.aura = Math.max(hero.aura, .5);
-  toast('<b style="color:' + r.col + '">' + r.n + '</b> Lv' + G.runes[id] + '  ' + r.d + ' ' + runeTxt(r, G.runes[id]), r.col);
+  const pg = e.target.closest('[data-rp]'); if (pg) { runePage = +pg.dataset.rp; return renderRunes(); }
+  const el = e.target.closest('[data-rune]'); if (!el) return; const id = el.dataset.rune, r = RUNE[id], P = runePage;
+  if (!runeOpen(P, id) || runeLvP(P, id) >= r.max) return;
+  const c = runeCost(P, id); if (G.gold < c) { toast('ゴールドが足りません（' + fmtG(c) + ' 必要）', '#9b8cff'); return; }
+  G.gold -= c; G.runes[rkey(P, id)] = runeLvP(P, id) + 1; rebuildParty(); hero.aura = Math.max(hero.aura, .5);
+  toast('<b style="color:' + r.col + '">' + r.n + '</b>' + (P > 1 ? '（' + PAGE_NUM[P - 1] + '）' : '') + ' Lv' + runeLvP(P, id) + '  合計 ' + r.d + ' ' + runeTxt(r, runeLv(id)), r.col);
+  if (P < RUNE_PAGES && pageOpen(P + 1) && !G['pg' + (P + 1)]) { G['pg' + (P + 1)] = 1; setTimeout(() => toast('<b style="color:#ffe08a">ルーン ページ' + PAGE_NUM[P] + '</b> が開きました', '#ffd25e'), 600); }
   renderRunes(); const n = $('prune').querySelector('[data-rune=' + id + ']'); if (n) n.classList.add('pop'); updHud(true); save();
 });
 setInterval(() => { if (panelOpen && panelPage === 'rune') { const g = Math.floor(G.gold); if (g !== renderRunes._g) { renderRunes._g = g; renderRunes(); } } }, 500);
 $('prank').addEventListener('click', e => {
-  const t = e.target.closest('[data-rt],[data-r],[data-emo],[data-duel],[data-dm]'); if (!t) return;
+  const t = e.target.closest('[data-rt],[data-rs],[data-r],[data-emo],[data-duel],[data-dm]'); if (!t) return;
+  if (t.dataset.rs) { rankScope = t.dataset.rs; return renderRank(); }
   if (t.dataset.dm) { duelMode = t.dataset.dm; return renderRank(); }
   if (t.dataset.duel) { const pr = profiles[t.dataset.duel]; if (pr) startDuel(pr); return; }
   if (t.dataset.rt) { rankTab = t.dataset.rt; renderRank(); }

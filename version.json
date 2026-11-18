@@ -1,1 +1,1 @@
-{"version": "1.9.2", "build": 192, "minShell": 3, "sha256": "6a9a7c3184ef28d47c5ff30a04e48a68473f02b1f2c5f5771e9e1e65d536e1fc", "notes": "敵14種類をドット絵で描き直し（キャラと同じくらいの大きさに）"}
+{"version": "1.10.0", "build": 200, "minShell": 3, "sha256": "d8f038dc3bfcf5ffc61f89a6cbbc9e9e5bb264c794e8c2ce38623087fd3c98dd", "notes": "ルーンにページⅡ〜Ⅴを追加、全員ランキングとプレイヤー数表示、フレンドの最終ログイン表示を削除"}
