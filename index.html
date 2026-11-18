@@ -452,7 +452,7 @@ function fmt(n) {
 function fmtPix(n) { n = Math.floor(n); if (n < 10000) return '' + n; if (n < 1e6) return Math.floor(n / 1000) + 'K'; if (n < 1e9) return Math.floor(n / 1e6) + 'M'; return Math.floor(n / 1e9) + 'B'; }
 
 /* ---------- bridge to the macOS shell ---------- */
-const GAME_VERSION = '1.10.1', GAME_BUILD = 201;
+const GAME_VERSION = '1.10.2', GAME_BUILD = 202;
 const NATIVE = !!window.__DH_NATIVE || Q.has('nativeTest');
 if (window.__DH_OS === 'win') document.addEventListener('DOMContentLoaded', () => { const g = document.getElementById('grip'); if (g) g.title = 'ドラッグで移動／ダブルクリックでタスクバーの上に戻す'; });
 // page -> mac: the shell polls document.title. Keep the title short: big payloads (saves) are cut into chunks
@@ -555,18 +555,18 @@ const AFFIX = {
 const AFFIXKEYS = Object.keys(AFFIX);
 /* ---------- runes: permanent account-wide boosts bought with gold, unlocked along a path ---------- */
 const RUNES = [
-  { id: 'atk',   n: '力のルーン',     g: 'ᚠ', col: '#ff7a6a', d: '攻撃力',           v: .05,  pct: 1, max: 15, base: 40,  req: null },
-  { id: 'hp',    n: '守りのルーン',   g: 'ᚢ', col: '#ff8ec8', d: '最大HP',           v: .06,  pct: 1, max: 15, base: 40,  req: 'atk' },
-  { id: 'gold',  n: '富のルーン',     g: 'ᚷ', col: '#ffd25e', d: '獲得ゴールド',     v: .08,  pct: 1, max: 10, base: 90,  req: 'atk' },
-  { id: 'aspd',  n: '疾風のルーン',   g: 'ᚱ', col: '#7ad8ff', d: '攻撃速度',         v: .03,  pct: 1, max: 10, base: 160, req: 'hp' },
-  { id: 'kheal', n: '生命のルーン',   g: 'ᛒ', col: '#7dffa8', d: '敵を倒すとHP回復', v: .02,  pct: 1, max: 10, base: 200, req: 'hp' },
-  { id: 'xp',    n: '知恵のルーン',   g: 'ᚨ', col: '#b8a0ff', d: '獲得経験値',       v: .06,  pct: 1, max: 10, base: 220, req: 'gold' },
-  { id: 'crit',  n: '鋭眼のルーン',   g: 'ᛏ', col: '#ffe08a', d: '会心率',           v: .015, pct: 1, max: 10, base: 350, req: 'aspd' },
-  { id: 'chest', n: '幸運のルーン',   g: 'ᛚ', col: '#5affd8', d: '宝箱の出現率',     v: .03,  pct: 1, max: 10, base: 400, req: 'xp' },
-  { id: 'critd', n: '破砕のルーン',   g: 'ᛞ', col: '#ffb070', d: '会心ダメージ',     v: .1,   pct: 1, max: 10, base: 600, req: 'crit' },
-  { id: 'ls',    n: '吸血のルーン',   g: 'ᛉ', col: '#ff5c7a', d: '与ダメージの吸収', v: .004, pct: 1, max: 10, base: 900, req: 'kheal' },
-  { id: 'boss',  n: '討伐のルーン',   g: 'ᛟ', col: '#ff6b3d', d: 'ボスへのダメージ', v: .08,  pct: 1, max: 10, base: 1200, req: 'critd' },
-  { id: 'rare',  n: '星のルーン',     g: 'ᛝ', col: '#ffc94d', d: 'レア装備の出やすさ', v: .015, pct: 1, max: 10, base: 1500, req: 'chest' },
+  { id: 'atk',   n: '力のルーン',     g: 'ᚠ', col: '#ff7a6a', d: '攻撃力',           v: .02,  pct: 1, max: 15, base: 40,  req: null },
+  { id: 'hp',    n: '守りのルーン',   g: 'ᚢ', col: '#ff8ec8', d: '最大HP',           v: .025,  pct: 1, max: 15, base: 40,  req: 'atk' },
+  { id: 'gold',  n: '富のルーン',     g: 'ᚷ', col: '#ffd25e', d: '獲得ゴールド',     v: .04,  pct: 1, max: 10, base: 90,  req: 'atk' },
+  { id: 'aspd',  n: '疾風のルーン',   g: 'ᚱ', col: '#7ad8ff', d: '攻撃速度',         v: .01,  pct: 1, max: 10, base: 160, req: 'hp' },
+  { id: 'kheal', n: '生命のルーン',   g: 'ᛒ', col: '#7dffa8', d: '敵を倒すとHP回復', v: .005,  pct: 1, max: 10, base: 200, req: 'hp' },
+  { id: 'xp',    n: '知恵のルーン',   g: 'ᚨ', col: '#b8a0ff', d: '獲得経験値',       v: .03,  pct: 1, max: 10, base: 220, req: 'gold' },
+  { id: 'crit',  n: '鋭眼のルーン',   g: 'ᛏ', col: '#ffe08a', d: '会心率',           v: .005, pct: 1, max: 10, base: 350, req: 'aspd' },
+  { id: 'chest', n: '幸運のルーン',   g: 'ᛚ', col: '#5affd8', d: '宝箱の出現率',     v: .01,  pct: 1, max: 10, base: 400, req: 'xp' },
+  { id: 'critd', n: '破砕のルーン',   g: 'ᛞ', col: '#ffb070', d: '会心ダメージ',     v: .04,   pct: 1, max: 10, base: 600, req: 'crit' },
+  { id: 'ls',    n: '吸血のルーン',   g: 'ᛉ', col: '#ff5c7a', d: '与ダメージの吸収', v: .0015, pct: 1, max: 10, base: 900, req: 'kheal' },
+  { id: 'boss',  n: '討伐のルーン',   g: 'ᛟ', col: '#ff6b3d', d: 'ボスへのダメージ', v: .03,  pct: 1, max: 10, base: 1200, req: 'critd' },
+  { id: 'rare',  n: '星のルーン',     g: 'ᛝ', col: '#ffc94d', d: 'レア装備の出やすさ', v: .003, pct: 1, max: 10, base: 1500, req: 'chest' },
 ];
 const RUNE = Object.fromEntries(RUNES.map(r => [r.id, r]));
 // rune pages: the same 12 runes again on each page, stacking, at much higher prices
@@ -575,7 +575,7 @@ const rkey = (p, id) => p === 1 ? id : p + ':' + id;
 const runeLvP = (p, id) => (G.runes && G.runes[rkey(p, id)]) || 0;
 const runeLv = id => { let t = 0; for (let p = 1; p <= RUNE_PAGES; p++) t += runeLvP(p, id); return t; };
 const runeVal = id => runeLv(id) * RUNE[id].v;
-const runeCost = (p, id) => Math.floor(RUNE[id].base * Math.pow(1.55, runeLvP(p, id)) * Math.pow(12, p - 1));
+const runeCost = (p, id) => Math.floor(RUNE[id].base * 2.5 * Math.pow(1.7, runeLvP(p, id)) * Math.pow(12, p - 1));
 const pageOpen = p => p === 1 || RUNES.every(r => runeLvP(p - 1, r.id) >= PAGE_GATE);
 const runeOpen = (p, id) => pageOpen(p) && (!RUNE[id].req || runeLvP(p, RUNE[id].req) >= 2);
 let runePage = 1;
@@ -664,8 +664,9 @@ const perPlayer = () => Math.max(1, Math.min(3, Math.floor(6 / groupSize())));
 function localClasses() { return G.party.slice(0, Math.min(slotsUnlocked(), perPlayer())); }
 function gearRar(g) { const o = {}; for (const k of SLOTS) o[k] = g[k] ? g[k].r : -1; return o; }
 const groupBonus = () => grp.active ? 1 + .15 * Object.keys(grp.peers).length : 1;
+const hpMem = {};   // HP left on heroes who were swapped out
 function rebuildParty() {
-  const prev = {}; party.forEach(m => prev[m.key] = m);
+  const prev = {}; party.forEach(m => { prev[m.key] = m; if (m.local && m.st) hpMem[m.cls] = m.down ? 0 : m.hp / m.st.maxHp; });
   const list = [];
   for (const cls of localClasses()) list.push({ key: 'L:' + cls, cls, st: statsFor(cls), gr: gearRar(heroData(cls).gear), name: G.name || 'あなた', local: true });
   if (grp.active) for (const pr of Object.values(grp.peers)) (pr.heroes || []).slice(0, perPlayer()).forEach((h, j) => { if (h && CLASSES[h.cls] && h.st) list.push({ key: 'R:' + pr.pid + ':' + j, cls: h.cls, st: h.st, gr: h.gr || {}, name: pr.name || 'なかま', remote: true, lv: pr.lv }); });
@@ -673,7 +674,9 @@ function rebuildParty() {
   party = list.map((d, i) => {
     const o = prev[d.key];
     const m = o || { swing: -1, cd: rnd(.4), hit: false, hurt: 0, down: false, downT: 0, ph: rnd(6) };
-    const hp = o ? (o.down ? 0 : Math.min(d.st.maxHp, o.hp / o.st.maxHp * d.st.maxHp)) : d.st.maxHp;
+    const fr = d.local && hpMem[d.cls] !== undefined ? hpMem[d.cls] : 1;
+    if (!o && d.local && fr <= 0) { m.down = true; m.downT = 0; }
+    const hp = o ? (o.down ? 0 : Math.min(d.st.maxHp, o.hp / o.st.maxHp * d.st.maxHp)) : d.st.maxHp * fr;
     return Object.assign(m, d, { off: i * (list.length > 4 ? 19 : 24), hp });
   });
   ST = partyStats();
@@ -1743,7 +1746,7 @@ function spawnEnemy() {
   enemies.push({
     k: def.k, c: def.c, boss, name: def.name, x: Math.max(camX + IW + 8, last + 16 + rnd(12)), y: GROUND,
     elite, slamT: 3.5, max: 7 * Math.pow(1.145, t) * hpM * (FOE[def.k] || [1])[0], hp: 0,
-    atk: 2.1 * Math.pow(1.122, t) * atkM * Math.min(1, .6 + t * .06), spd: (FOE[def.k] || [1, 9])[1],
+    atk: 1.6 * Math.pow(1.122, t) * atkM * Math.min(1, .6 + t * .06), spd: (FOE[def.k] || [1, 9])[1],
     cd: 1, lunge: 0, flash: 0, dying: 0, kb: 0, seed: rnd(10), walk: 0, hopT: 0, hb: 0
   });
   const e = enemies[enemies.length - 1]; e.hp = e.max; spawned++;
@@ -1776,7 +1779,7 @@ function killEnemy(e) {
   if (e.boss || Math.random() < (e.elite ? .6 : .2) + runeVal('chest')) chests.push({ x: e.x + 6, y: GROUND - 20, vy: -20, land: 0, openT: 0, rar: rollRarity(e.boss), opened: false, done: 0 });
   if (e.boss) { shake = .5; flashT = .25; }
 }
-function rollRarity(boss) { const r = Math.random() + (boss ? .3 : 0) + Math.min(.15, G.loop * .05) + runeVal('rare'); return r > 1.25 ? 4 : r > 1.06 ? 3 : r > .9 ? 2 : r > .62 ? 1 : 0; }
+function rollRarity(boss) { const r = Math.random() + (boss ? .15 : 0) + Math.min(.08, G.loop * .03) + runeVal('rare'); return r > 1.12 ? 4 : r > .995 ? 3 : r > .965 ? 2 : r > .82 ? 1 : 0; }
 function hurtMember(m, d) {
   if (m.down) return;
   m.hp -= d; m.hurt = .25;
@@ -1793,7 +1796,7 @@ function healMember(src, tgt, amt) {
   for (let i = 0; i < 3; i++) parts.push({ x: hero.x - tgt.off + rnd(-4, 4), y: GROUND - rnd(4, 10), vx: 0, vy: -rnd(8, 14), life: .9, max: .9, col: '#d4ffe4', g: 0, cross: 1 });
 }
 function respawn() {
-  hero.dead = false; party.forEach(m => { m.down = false; m.hp = m.st.maxHp; m.swing = -1; });
+  hero.dead = false; for (const k in hpMem) delete hpMem[k]; party.forEach(m => { m.down = false; m.hp = m.st.maxHp; m.swing = -1; });
   enemies.length = 0; projs.length = 0; chests = chests.filter(c => !c.opened);
   spawned = killed = 0; wave = waveLeft = 0;
   if (G.stage > 1) { G.stage--; }
@@ -2040,9 +2043,8 @@ function update(dt) {
     const tx = tgtM ? hero.x - tgtM.off : hero.x;
     const dist = e.x - tx;
     const reachE = e.boss ? 26 : 15;
-    let blocked = false;
-    for (const o of enemies) if (o !== e && !o.dying && o.x < e.x && e.x - o.x < (o.boss || e.boss ? 26 : FLY[e.k] !== FLY[o.k] ? 8 : 17)) { blocked = true; break; }
-    if (dist > reachE && !blocked) { e.x -= e.spd * dt * (e.x - camX > IW * .72 ? 3.2 : 1); e.walk += dt * 10; if (e.k === 'slime') e.hopT += dt * 9; }
+    if (e.stop === undefined) e.stop = e.boss ? 0 : Math.round(rnd(0, 9));
+    if (dist > reachE + e.stop) { e.x -= e.spd * dt * (e.x - camX > IW * .72 ? 3.2 : 1); e.walk += dt * 10; if (e.k === 'slime') e.hopT += dt * 9; }
     else if (!hero.dead) {
       if (e.k === 'slime') e.hopT += dt * 4;
       e.cd -= dt;
@@ -2057,7 +2059,7 @@ function update(dt) {
         toast('<b style="color:#ff7a95">' + e.name + '</b> の全体攻撃！', '#ff5c7f');
       }
     }
-    if (e.lunge > 0) { e.lunge -= dt; if (!e.hb && e.lunge < .15) { e.hb = 1; const t2 = party.find(m => !m.down); if (t2 && e.x - (hero.x - t2.off) < (e.boss ? 30 : 19)) hurtMember(t2, e.atk * rnd(.85, 1.15)); } }
+    if (e.lunge > 0) { e.lunge -= dt; if (!e.hb && e.lunge < .15) { e.hb = 1; const t2 = party.find(m => !m.down); if (t2 && e.x - (hero.x - t2.off) < (e.boss ? 30 : 19) + (e.stop || 0)) hurtMember(t2, e.atk * rnd(.85, 1.15)); } }
   }
   enemies = enemies.filter(e => !(e.dying > .45));
   // chests
