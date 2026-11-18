@@ -89,10 +89,6 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
 #gear{position:absolute;left:10px;bottom:7px;display:flex;gap:4px;z-index:5}
 .slot{width:20px;height:20px;border-radius:7px;display:grid;place-items:center;background:rgba(10,4,24,.55);border:1px solid rgba(255,255,255,.12);position:relative}
 .slot svg{width:12px;height:12px;fill:rgba(255,255,255,.35)}
-.slot.r0{border-color:#b9b3cf}.slot.r0 svg{fill:#d8d3ea}
-.slot.r1{border-color:#5aa9ff;box-shadow:0 0 8px rgba(90,169,255,.5)}.slot.r1 svg{fill:#9fd0ff}
-.slot.r2{border-color:#b46cff;box-shadow:0 0 9px rgba(180,108,255,.6)}.slot.r2 svg{fill:#d7b3ff}
-.slot.r3{border-color:#ffc94d;box-shadow:0 0 10px rgba(255,200,80,.7)}.slot.r3 svg{fill:#ffe39a}
 .slot:hover .tip{opacity:1;transform:translateY(0)}
 .tip{position:absolute;left:0;bottom:26px;white-space:nowrap;font-size:10px;padding:5px 8px;border-radius:8px;opacity:0;transform:translateY(4px);transition:.15s;pointer-events:none;font-weight:700}
 .tip small{display:block;color:var(--sub);font-weight:600;font-size:9px}
@@ -123,7 +119,6 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
 .slot{cursor:pointer}
 .slot img{width:14px;height:14px;image-rendering:pixelated}
 .slot img.ghost{opacity:.28;filter:grayscale(1)}
-.slot.r4{border-color:#ff5c7a;box-shadow:0 0 11px rgba(255,92,122,.75)}
 body.mini #bagbtn,body.mini #quit,body.mini #partybtn,body.mini #grpchip{display:none}
 
 /* ===== panel ===== */
@@ -180,8 +175,7 @@ body.panel #panel{display:block;animation:pin .28s cubic-bezier(.2,1.2,.4,1)}
 .cell .eqd{position:absolute;left:3px;bottom:2px;font-size:8px;font-weight:900;color:#ffe08a}
 .cell.sel{outline:2px solid #fff;outline-offset:1px}
 .cell.picked{outline:2px solid #ffd25e;outline-offset:1px}
-.cell.r4{animation:myth 2.4s infinite}
-@keyframes myth{50%{box-shadow:0 0 16px rgba(255,92,122,.8)}}
+@keyframes myth{50%{box-shadow:0 0 16px var(--rc)}}@keyframes astral{to{filter:hue-rotate(360deg)}}@keyframes primal{50%{box-shadow:0 0 18px #fff,inset 0 0 10px rgba(255,255,255,.5)}}
 .cell.empty{cursor:default;opacity:.6}
 .cell.empty:hover{transform:none;box-shadow:none}
 #panel>.pcol:nth-of-type(1){padding-right:12px;border-right:1px solid rgba(255,255,255,.07)}
@@ -452,7 +446,7 @@ function fmt(n) {
 function fmtPix(n) { n = Math.floor(n); if (n < 10000) return '' + n; if (n < 1e6) return Math.floor(n / 1000) + 'K'; if (n < 1e9) return Math.floor(n / 1e6) + 'M'; return Math.floor(n / 1e9) + 'B'; }
 
 /* ---------- bridge to the macOS shell ---------- */
-const GAME_VERSION = '1.10.2', GAME_BUILD = 202;
+const GAME_VERSION = '1.11.0', GAME_BUILD = 203;
 const NATIVE = !!window.__DH_NATIVE || Q.has('nativeTest');
 if (window.__DH_OS === 'win') document.addEventListener('DOMContentLoaded', () => { const g = document.getElementById('grip'); if (g) g.title = 'ドラッグで移動／ダブルクリックでタスクバーの上に戻す'; });
 // page -> mac: the shell polls document.title. Keep the title short: big payloads (saves) are cut into chunks
@@ -541,12 +535,20 @@ const REGIONS = [
 ];
 const ROMAN = ['I', 'II', 'III', 'IV', 'V', 'VI', 'VII', 'VIII', 'IX', 'X', 'XI', 'XII'];
 const RARITY = [
-  { n: 'コモン', c: '#cfc9e6', m: 1, metal: '#c8c2e8' }, { n: 'レア', c: '#5aa9ff', m: 1.6, metal: '#a9d0ff' },
-  { n: 'エピック', c: '#b46cff', m: 2.5, metal: '#d2b0ff' }, { n: 'レジェンド', c: '#ffc94d', m: 4, metal: '#ffe08a' },
-  { n: '神話', c: '#ff5c7a', m: 6.5, metal: '#ffb0c0' }];
+  { n: 'コモン', c: '#cfc9e6', m: 1, metal: '#c8c2e8' }, { n: 'アンコモン', c: '#6fe08a', m: 1.4, metal: '#b8f0c4' },
+  { n: 'レア', c: '#5aa9ff', m: 1.9, metal: '#a9d0ff' }, { n: 'エピック', c: '#b46cff', m: 2.6, metal: '#d2b0ff' },
+  { n: 'レジェンド', c: '#ffc94d', m: 3.6, metal: '#ffe08a' }, { n: 'ミシック', c: '#ff5c7a', m: 5, metal: '#ffb0c0' },
+  { n: 'エンシェント', c: '#ff9a3c', m: 7, metal: '#ffc98f' }, { n: 'セレスティアル', c: '#7ff4ff', m: 10, metal: '#d4fbff' },
+  { n: 'アストラル', c: '#ff8cf0', m: 14, metal: '#e9d4ff' }, { n: 'プライマル', c: '#ffffff', m: 20, metal: '#4a4058' }];
+const RMAX = RARITY.length - 1;
+(function () { let css = ''; RARITY.forEach((R, i) => { const g = 6 + i * 1.2; css += '.slot.r' + i + '{border-color:' + R.c + (i ? ';box-shadow:0 0 ' + g + 'px ' + R.c : '') + '}';
+  if (i >= 5) css += '.cell.r' + i + '{animation:myth ' + (2.6 - (i - 5) * .35) + 's infinite}';
+  if (i === 8) css += '.cell.r8 img,.slot.r8 img{animation:astral 3s linear infinite}';
+  if (i === 9) css += '.cell.r9{background:#120a1c!important;animation:primal 1.6s infinite}.slot.r9{background:#120a1c}'; });
+  const st = document.createElement('style'); st.textContent = css; document.head.appendChild(st); })();
 const SLOTS = ['weapon', 'helm', 'armor', 'boots', 'charm'];
 const SLOTNAME = { weapon: '武器', helm: '兜', armor: '鎧', boots: '靴', charm: '護符' };
-const PRE = [['錆びた', '鋼の', '見習いの', '旅人の'], ['蒼月の', '疾風の', '銀狼の', '水晶の'], ['星屑の', '紫電の', '夜想の', '影縫いの'], ['竜王の', '暁光の', '聖王の', '天穹の'], ['創世の', '星喰いの', '無銘の', '終焉の']];
+const PRE = [['錆びた', '鋼の', '見習いの', '旅人の'], ['若葉の', '狩人の', '樫の', '風見の'], ['蒼月の', '疾風の', '銀狼の', '水晶の'], ['星屑の', '紫電の', '夜想の', '影縫いの'], ['竜王の', '暁光の', '聖王の', '天穹の'], ['創世の', '星喰いの', '無銘の', '終焉の'], ['太古の', '遺跡の', '巨人の', '琥珀の'], ['天使の', '蒼穹の', '光輪の', '雲海の'], ['銀河の', '彗星の', '星界の', '極光の'], ['原初の', '始まりの', '虚無の', '真なる']];
 const NOUN = { weapon: ['剣', 'ブレード', '大剣', 'サーベル'], helm: ['兜', 'ヘルム', 'サークレット', 'フード'], armor: ['よろい', 'メイル', 'プレート', 'クローク'], boots: ['ブーツ', 'グリーヴ', '具足', 'サンダル'], charm: ['お守り', 'ペンダント', '指輪', '護符'] };
 const AFFIX = {
   crit: { n: '会心率', b: .02, pct: 1 }, critd: { n: '会心ダメージ', b: .15, pct: 1 }, aspd: { n: '攻撃速度', b: .04, pct: 1 },
@@ -586,7 +588,7 @@ function makeItem(slot, r, t, name) {
   const it = { u: Date.now().toString(36) + (UID++), s: slot, r, t, lv: 0, a: [], nw: 1 };
   it.n = name || PRE[r][Math.floor(rnd(4))] + NOUN[slot][Math.floor(rnd(4))];
   const pool = AFFIXKEYS.slice();
-  for (let i = 0; i < r; i++) { const k = pool.splice(Math.floor(rnd(pool.length)), 1)[0]; it.a.push({ k, v: +(AFFIX[k].b * (.6 + rnd(.4)) * (1 + .25 * r)).toFixed(4) }); }
+  for (let i = 0; i < Math.min(5, r); i++) { const k = pool.splice(Math.floor(rnd(pool.length)), 1)[0]; it.a.push({ k, v: +(AFFIX[k].b * (.6 + rnd(.4)) * (1 + .15 * r) * (r > 5 ? 1 + .3 * (r - 5) : 1)).toFixed(4) }); }
   it.q = +(rnd(.85, 1.15)).toFixed(3);
   return it;
 }
@@ -596,8 +598,8 @@ function mainStat(it) {
     case 'weapon': return { atk: 1 * sc };
     case 'helm': return { hp: 4 * sc };
     case 'armor': return { hp: 7 * sc };
-    case 'boots': return { aspd: Math.min(.6, (.04 + .03 * it.r) * it.q * e), hp: 1.5 * sc };
-    case 'charm': return { crit: Math.min(.4, (.02 + .02 * it.r) * it.q * e), gold: (.05 + .05 * it.r) * e };
+    case 'boots': return { aspd: Math.min(.6, (.04 + .015 * it.r) * it.q * e), hp: 1.5 * sc };
+    case 'charm': return { crit: Math.min(.4, (.02 + .01 * it.r) * it.q * e), gold: (.05 + .025 * it.r) * e };
   }
   return {};
 }
@@ -694,7 +696,7 @@ const atkBuff = () => 1 + .12 * party.filter(m => m.cls === 'bard' && !m.down).l
 function migrate() {
   if ((G.v || 1) < 2) {
     const old = G.gear || {}; G.gear = {};
-    for (const k of ['weapon', 'armor', 'charm']) { const o = old[k]; if (o && o.name) { const it = makeItem(k, Math.min(4, o.rar || 0), o.t || 0, o.name); it.nw = 0; G.gear[k] = it; } }
+    for (const k of ['weapon', 'armor', 'charm']) { const o = old[k]; if (o && o.name) { const it = makeItem(k, Math.min(5, o.rar || 0), o.t || 0, o.name); it.nw = 0; G.gear[k] = it; } }
   }
   if ((G.v || 1) < 3) { G.heroes = { knight: { gear: G.gear || {} } }; delete G.gear; G.party = ['knight']; G.main = 'knight'; }
   if ((G.v || 1) < 4) { for (const c in G.heroes) { const h = G.heroes[c]; h.lv = Math.max(1, G.lv || 1); h.xp = 0; } }
@@ -720,7 +722,7 @@ function load() {
   let s = window.__DH_SAVE || ''; if (!s) { try { s = localStorage.getItem('dockhero') || ''; } catch (e) { } }
   let reset = false;
   if (s) { try { const d0 = JSON.parse(s); if ((d0.epoch || 1) !== SAVE_EPOCH) { reset = true; const keep = { uid: d0.uid || '', name: d0.name || '', friends: d0.friends || [], gifted: d0.gifted || {}, auto: !!d0.auto }; s = JSON.stringify(Object.assign(JSON.parse(JSON.stringify(DEF)), keep)); } } catch (e) { } }
-  if (s) { try { const d = JSON.parse(s); G = Object.assign(JSON.parse(JSON.stringify(DEF)), d); G.upg = Object.assign({ atk: 0, hp: 0, spd: 0 }, d.upg || {}); G.gear = d.gear; G.heroes = d.heroes || G.heroes; G.bag = d.bag || []; G.fl = Object.assign({ equip: true, merge: false, salv: false }, d.fl || {}); migrate(); } catch (e) { } }
+  if (s) { try { const d = JSON.parse(s); G = Object.assign(JSON.parse(JSON.stringify(DEF)), d); G.upg = Object.assign({ atk: 0, hp: 0, spd: 0 }, d.upg || {}); G.gear = d.gear; G.heroes = d.heroes || G.heroes; G.bag = d.bag || []; G.fl = Object.assign({ equip: true, merge: false, salv: false }, d.fl || {}); migrate(); if (!d.rv) { const up = it => { if (it && it.r >= 1) it.r = Math.min(RMAX, it.r + 1); }; G.bag.forEach(up); for (const c in (G.heroes || {})) for (const k in ((G.heroes[c] || {}).gear || {})) up(G.heroes[c].gear[k]); } } catch (e) { } }
   if (!G.runes) G.runes = {};
   if (G.upg && (G.upg.atk || G.upg.hp || G.upg.spd)) {   // stat buttons were removed: give back what was spent so it can go into runes
     let back = 0; for (const k of ['atk', 'hp', 'spd']) for (let i = 0; i < (G.upg[k] || 0); i++) back += Math.floor(5 * Math.pow(1.17, i) * (k === 'spd' ? 1.6 : 1));
@@ -733,7 +735,7 @@ function load() {
   if (!G.uid) G.uid = newCode() + newCode().slice(0, 2); G.friends = G.friends || []; G.gifted = G.gifted || {};
   for (const c of G.party) heroData(c); if (!CLASSES[G.main]) G.main = 'knight';
   rebuildParty();
-  G.epoch = SAVE_EPOCH; G.pvp = G.pvp || { rate: 1000, w: 0, l: 0 };
+  G.rv = 2; G.epoch = SAVE_EPOCH; G.pvp = G.pvp || { rate: 1000, w: 0, l: 0 };
   if (reset) setTimeout(() => toast('<b style="color:#ffe08a">新シーズン開始！</b> 全員 Lv1 からのスタートです', '#ffd25e'), 900);
   const away = (Date.now() - (G.ts || Date.now())) / 1000;
   if (s && !reset && away > 90) {
@@ -1779,7 +1781,7 @@ function killEnemy(e) {
   if (e.boss || Math.random() < (e.elite ? .6 : .2) + runeVal('chest')) chests.push({ x: e.x + 6, y: GROUND - 20, vy: -20, land: 0, openT: 0, rar: rollRarity(e.boss), opened: false, done: 0 });
   if (e.boss) { shake = .5; flashT = .25; }
 }
-function rollRarity(boss) { const r = Math.random() + (boss ? .15 : 0) + Math.min(.08, G.loop * .03) + runeVal('rare'); return r > 1.12 ? 4 : r > .995 ? 3 : r > .965 ? 2 : r > .82 ? 1 : 0; }
+function rollRarity(boss) { const rb = runeVal('rare'); if (boss) { const x = Math.random() + rb * 3; return x > .95 ? 5 : x > .5 ? 4 : 3; } const r = Math.random() + Math.min(.08, G.loop * .03 + G.region * .01) + rb; return r > .997 ? 3 : r > .965 ? 2 : r > .8 ? 1 : 0; }
 function hurtMember(m, d) {
   if (m.down) return;
   m.hp -= d; m.hurt = .25;
@@ -1841,7 +1843,7 @@ function openChest(ch) {
   ch.opened = true; ch.openT = .001;
   const it = makeItem(SLOTS[Math.floor(rnd(SLOTS.length))], ch.rar, tier()), col = RARITY[it.r].c;
   burst(ch.x - camX, GROUND - 5, 18 + it.r * 10, col, 40);
-  if (it.r >= 2) { flashT = .15; shake = .15; }
+  if (it.r >= 3) { flashT = .15; shake = .15; }
   gainItem(it, true);
 }
 function itemHtml(it) { return '<span style="color:' + RARITY[it.r].c + '">【' + RARITY[it.r].n + '】' + it.n + (it.lv ? ' +' + it.lv : '') + '</span>'; }
@@ -1865,7 +1867,7 @@ function gainItem(it, fromChest) {
   renderPanel(); save(); if (grp.active) grpPublish();
 }
 function afterGearChange() { rebuildParty(); updGear(); updHud(true); if (grp.active) grpPublish(); }
-function salvageYield(it) { return { sh: [1, 3, 8, 20, 50][it.r] + it.lv * 2, g: goldOf(it.t) * [1, 2, 4, 8, 16][it.r] }; }
+function salvageYield(it) { return { sh: [1, 2, 4, 8, 16, 35, 70, 140, 280, 560][it.r] + it.lv * 2, g: goldOf(it.t) * [1, 1.5, 2, 4, 8, 16, 30, 55, 100, 180][it.r] }; }
 function salvage(it, quiet) {
   const i = G.bag.indexOf(it); if (i < 0) return null;
   G.bag.splice(i, 1); const y = salvageYield(it); G.shards += y.sh; G.gold += y.g;
@@ -1873,10 +1875,10 @@ function salvage(it, quiet) {
   return y;
 }
 function mergeItems(items, quiet) {
-  const r = items[0].r; if (r >= 4 || items.length !== MERGE_N || items.some(i => i.r !== r)) return null;
+  const r = items[0].r; if (r >= RMAX || items.length !== MERGE_N || items.some(i => i.r !== r)) return null;
   const sameSlot = items.every(i => i.s === items[0].s);
   const big = r <= 2 && Math.random() < .08;
-  const nr = Math.min(4, r + (big ? 2 : 1)), t = Math.max(...items.map(i => i.t));
+  const nr = Math.min(RMAX, r + (big ? 2 : 1)), t = Math.max(...items.map(i => i.t));
   const refund = items.reduce((a, i) => a + i.lv * 2, 0);
   for (const i of items) { const k = G.bag.indexOf(i); if (k >= 0) G.bag.splice(k, 1); }
   G.shards += refund;
@@ -1888,7 +1890,7 @@ function autoRoutines() {
   let guard = 0;
   if (G.fl.salv) for (const it of G.bag.slice()) if (it.r === 0 && !bestOwner(it)) salvage(it, true);
   if (G.fl.merge) {
-    for (let r = 0; r <= 1 && guard < 20; r++) {
+    for (let r = 0; r <= 2 && guard < 20; r++) {
       let c = G.bag.filter(i => i.r === r && !i.lv);
       while (c.length >= MERGE_N && guard++ < 20) { const out = mergeItems(c.slice(0, MERGE_N), true); out.nw = 1; G.bag.push(out); toast('自動合成 → ' + itemHtml(out), RARITY[out.r].c); c = G.bag.filter(i => i.r === r && !i.lv); }
     }
@@ -2253,7 +2255,8 @@ function icon(slot, r) {
     rows.forEach(([x, w], i) => px(x, 4 + i, w, 1, i > 3 ? shade(rc, -.25) : rc));
     px(5, 5, 1, 1, '#ffffff'); px(6, 4, 1, 1, shade(rc, .5));
   }
-  if (r === 4) { px(0, 0, 1, 1, '#ffffff'); px(12, 12, 1, 1, '#ffe0e8'); }
+  if (r >= 5) { px(0, 0, 1, 1, '#ffffff'); px(12, 12, 1, 1, shade(rc, .5)); }
+  if (r >= 7) { px(13, 0, 1, 1, '#ffffff'); px(0, 13, 1, 1, '#ffffff'); }
   const b = document.createElement('canvas'); b.width = b.height = 14; const d = b.getContext('2d');
   const t2 = document.createElement('canvas'); t2.width = t2.height = 14; const e = t2.getContext('2d');
   e.drawImage(a, 0, 0); e.globalCompositeOperation = 'source-in'; e.fillStyle = '#0e0618'; e.fillRect(0, 0, 14, 14);
@@ -2336,11 +2339,11 @@ function renderForge() {
     h += '<div class="fhint">同じレア度の装備を<b>9つ</b>で、ひとつ上のレア度に（' + items.length + '/9）。<br>9つとも同じ部位なら部位を引き継ぎ、まれに<b style="color:#ffd25e">大成功</b>で2段階アップ。</div>';
     h += '<div class="altar" id="altar">';
     h += '<div class="m9">'; for (let i = 0; i < MERGE_N; i++) h += cellHtml(items[i], 'in'); h += '</div>';
-    const nr = r >= 0 ? Math.min(4, r + 1) : -1;
+    const nr = r >= 0 ? Math.min(RMAX, r + 1) : -1;
     h += '<span class="arrow">➜</span><div class="cell res" id="mres" style="--rc:' + (nr >= 0 ? RARITY[nr].c : 'rgba(255,255,255,.15)') + ';--rc2:' + (nr >= 0 ? rgba(RARITY[nr].c, .3) : 'transparent') + '"><b style="font-size:18px;color:' + (nr >= 0 ? RARITY[nr].c : 'var(--sub)') + '">?</b></div><div class="rays" id="rays"></div></div>';
-    h += '<div style="display:flex;gap:6px"><button class="btn sub" data-act="mauto">おまかせで選ぶ</button><button class="btn" data-act="merge"' + (ready && r < 4 ? '' : ' disabled') + '>合成する</button></div>';
-    if (r === 4) h += '<div class="fhint" style="color:#ff8fa8">神話はこれ以上合成できません</div>';
-    h += '<div class="toggles">' + tg('merge', '自動合成（コモン・レア）') + tg('equip', '強い装備を自動で装備') + '</div>';
+    h += '<div style="display:flex;gap:6px"><button class="btn sub" data-act="mauto">おまかせで選ぶ</button><button class="btn" data-act="merge"' + (ready && r < RMAX ? '' : ' disabled') + '>合成する</button></div>';
+    if (r === RMAX) h += '<div class="fhint" style="color:#fff">' + RARITY[RMAX].n + 'はこれ以上合成できません</div>';
+    h += '<div class="toggles">' + tg('merge', '自動合成（レア以下）') + tg('equip', '強い装備を自動で装備') + '</div>';
   } else if (tab === 'enh') {
     const it = enhTarget && findItem(enhTarget);
     if (!it) h += '<div class="fhint" style="margin:30px 0">強化する装備を選んでください。<br>バッグか装備欄のアイテムを選んで「強化へ」。</div>';
@@ -2361,7 +2364,7 @@ function renderForge() {
     h += '<div class="fhint">いらない装備を分解して<b style="color:#bff6ff">結晶片</b>とゴールドに。<br>結晶片は強化に使います。</div>';
     if (it && !isEquipped(it)) { const y = salvageYield(it); h += '<div class="altar" id="altar">' + cellHtml(it) + '<span class="arrow">➜</span><div class="cost" style="flex-direction:column;gap:3px"><span><span class="shard"></span>+' + y.sh + '</span><span><span class="coin" style="width:10px;height:10px"></span>+' + fmtG(y.g) + '</span></div></div><button class="btn warn" data-act="salv1">選んだ装備を分解</button>'; }
     else h += '<div class="fhint" style="margin:8px 0">バッグのアイテムを選ぶと分解できます</div>';
-    const n0 = G.bag.filter(i => i.r === 0).length, n1 = G.bag.filter(i => i.r <= 1).length;
+    const n0 = G.bag.filter(i => i.r === 0).length, n1 = G.bag.filter(i => i.r <= 2).length;
     h += '<div class="salvrow"><button class="btn sub" data-act="salv0"' + (n0 ? '' : ' disabled') + '>コモンを全部（' + n0 + '）</button><button class="btn sub" data-act="salv01"' + (n1 ? '' : ' disabled') + '>レア以下を全部（' + n1 + '）</button></div>';
     h += '<div class="toggles">' + tg('salv', '弱いコモンを自動で分解') + '</div>';
   }
@@ -2386,7 +2389,7 @@ function pickMerge(it) {
   mergeSel.push(it.u);
 }
 function autoPick() {
-  for (let r = 0; r < 4; r++) { const c = G.bag.filter(i => i.r === r).sort((a, b) => (a.lv - b.lv) || (powerWith(a, curHero()) - powerWith(b, curHero()))); if (c.length >= MERGE_N) { mergeSel = c.slice(0, MERGE_N).map(i => i.u); return true; } }
+  for (let r = 0; r < RMAX; r++) { const c = G.bag.filter(i => i.r === r).sort((a, b) => (a.lv - b.lv) || (powerWith(a, curHero()) - powerWith(b, curHero()))); if (c.length >= MERGE_N) { mergeSel = c.slice(0, MERGE_N).map(i => i.u); return true; } }
   toast('同じレア度の装備が9つありません', '#9b8cff'); return false;
 }
 function doMerge() {
@@ -2401,7 +2404,7 @@ function doMerge() {
     const res = $('mres'), rays = $('rays'), c = RARITY[out.r].c;
     res.style.setProperty('--rc', c); res.style.setProperty('--rc2', rgba(c, .35)); res.innerHTML = '<img src="' + icon(out.s, out.r) + '">';
     rays.style.setProperty('--rc', c); rays.classList.add('go');
-    if (out.r >= 3) flashT = .2;
+    if (out.r >= 4) flashT = .2;
     toast((out.big ? '<b style="color:#ffd25e">大成功！</b> ' : '合成成功 ') + itemHtml(out), c);
     save();
   }, 560);
@@ -2449,7 +2452,7 @@ $('panel').addEventListener('click', e => {
   else if (a === 'enh') doEnh();
   else if (a === 'salv1' && it) { const y = salvage(it); if (y) toast('分解 <span class="shard"></span> +' + y.sh + ' <b style="color:#ffe08a">+' + fmtG(y.g) + ' G</b>', '#6be8ff'); renderPanel(); save(); }
   else if (a === 'salv0') salvMany(0);
-  else if (a === 'salv01') salvMany(1);
+  else if (a === 'salv01') salvMany(2);
 });
 $('bagbtn').addEventListener('click', () => setPanel(!(panelOpen && panelPage === 'gear'), 'gear'));
 $('partybtn').addEventListener('click', () => setPanel(!(panelOpen && panelPage === 'party'), 'party'));
@@ -2719,7 +2722,7 @@ function giftTo(it, uid) {
   if (!soc || socStatus !== 'on') return toast('つながっていないので送れません', '#ff8fa8');
   const i = G.bag.indexOf(it); if (i < 0) return;
   const id = Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
-  const pay = { id, from: G.name || 'フレンド', fromUid: G.uid, item: Object.assign({}, it, { nw: 1 }) };
+  const pay = { id, rv: 2, from: G.name || 'フレンド', fromUid: G.uid, item: Object.assign({}, it, { nw: 1 }) };
   soc.publish(GTOPIC(uid) + '/' + id, JSON.stringify(pay), true);
   G.bag.splice(i, 1); sel = null; save(); renderPanel();
   const f = G.friends.find(x => x.uid === uid);
@@ -2731,7 +2734,8 @@ function onGift(topic, txt) {
   if (!d || !d.item || G.gifted[d.id]) { if (d && G.gifted[d.id]) soc.publish(topic, '', true); return; }
   if (G.bag.length >= BAG_MAX) { toast('<b>' + String(d.from).replace(/</g, '') + '</b> から贈り物が届いています。バッグを空けてください', '#ff9ad8'); return; }
   G.gifted[d.id] = 1; const it = d.item; it.u = Date.now().toString(36) + (UID++);
-  if (!(it.r >= 0 && it.r <= 4) || !SLOTS.includes(it.s)) return;
+  if (!d.rv && it.r >= 1) it.r++;
+  if (!(it.r >= 0 && it.r <= RMAX) || !SLOTS.includes(it.s)) return;
   G.bag.push(it); soc.publish(topic, '', true); save(); renderPanel();
   toast('🎁 <b>' + String(d.from).replace(/</g, '') + '</b> から ' + itemHtml(it) + ' が届いた！', '#ff9ad8');
   if (d.fromUid && !G.friends.some(f => f.uid === d.fromUid)) addFriend(d.fromUid, d.from, true);
