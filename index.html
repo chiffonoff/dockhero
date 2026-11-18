@@ -446,7 +446,7 @@ function fmt(n) {
 function fmtPix(n) { n = Math.floor(n); if (n < 10000) return '' + n; if (n < 1e6) return Math.floor(n / 1000) + 'K'; if (n < 1e9) return Math.floor(n / 1e6) + 'M'; return Math.floor(n / 1e9) + 'B'; }
 
 /* ---------- bridge to the macOS shell ---------- */
-const GAME_VERSION = '1.11.0', GAME_BUILD = 203;
+const GAME_VERSION = '1.11.1', GAME_BUILD = 204;
 const NATIVE = !!window.__DH_NATIVE || Q.has('nativeTest');
 if (window.__DH_OS === 'win') document.addEventListener('DOMContentLoaded', () => { const g = document.getElementById('grip'); if (g) g.title = 'ドラッグで移動／ダブルクリックでタスクバーの上に戻す'; });
 // page -> mac: the shell polls document.title. Keep the title short: big payloads (saves) are cut into chunks
@@ -557,9 +557,9 @@ const AFFIX = {
 const AFFIXKEYS = Object.keys(AFFIX);
 /* ---------- runes: permanent account-wide boosts bought with gold, unlocked along a path ---------- */
 const RUNES = [
-  { id: 'atk',   n: '力のルーン',     g: 'ᚠ', col: '#ff7a6a', d: '攻撃力',           v: .02,  pct: 1, max: 15, base: 40,  req: null },
-  { id: 'hp',    n: '守りのルーン',   g: 'ᚢ', col: '#ff8ec8', d: '最大HP',           v: .025,  pct: 1, max: 15, base: 40,  req: 'atk' },
-  { id: 'gold',  n: '富のルーン',     g: 'ᚷ', col: '#ffd25e', d: '獲得ゴールド',     v: .04,  pct: 1, max: 10, base: 90,  req: 'atk' },
+  { id: 'atk',   n: '力のルーン',     g: 'ᚠ', col: '#ff7a6a', d: '攻撃力',           v: .012, pct: 1, max: 15, base: 40,  req: null },
+  { id: 'hp',    n: '守りのルーン',   g: 'ᚢ', col: '#ff8ec8', d: '最大HP',           v: .015, pct: 1, max: 15, base: 40,  req: 'atk' },
+  { id: 'gold',  n: '富のルーン',     g: 'ᚷ', col: '#ffd25e', d: '獲得ゴールド',     v: .025, pct: 1, max: 10, base: 90,  req: 'atk' },
   { id: 'aspd',  n: '疾風のルーン',   g: 'ᚱ', col: '#7ad8ff', d: '攻撃速度',         v: .01,  pct: 1, max: 10, base: 160, req: 'hp' },
   { id: 'kheal', n: '生命のルーン',   g: 'ᛒ', col: '#7dffa8', d: '敵を倒すとHP回復', v: .005,  pct: 1, max: 10, base: 200, req: 'hp' },
   { id: 'xp',    n: '知恵のルーン',   g: 'ᚨ', col: '#b8a0ff', d: '獲得経験値',       v: .03,  pct: 1, max: 10, base: 220, req: 'gold' },
