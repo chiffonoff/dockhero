@@ -422,7 +422,7 @@ body.mini #card{left:12px;right:12px}body.flip{bottom:auto;top:0;transform-origi
   <div id="pchat" class="page"></div>
 </div>
 <div id="card">
-  <div id="uipop" class="glass"><label>大きさ <input id="uik" type="range" min="0.55" max="1" step="0.05"></label><label>横幅 <input id="uiw" type="range" min="0.4" max="1" step="0.05"></label><label>不透明度 <input id="uio" type="range" min="0.25" max="1" step="0.05"></label><small>ダブルクリックで元に戻す</small></div>
+  <div id="uipop" class="glass"><label>大きさ <input id="uik" type="range" min="0.55" max="1" step="0.05"></label><label>横幅 <input id="uiw" type="range" min="0.6" max="1" step="0.05"></label><label>不透明度 <input id="uio" type="range" min="0.25" max="1" step="0.05"></label><small>ダブルクリックで元に戻す</small></div>
   <div id="mmchip"></div>
   <div id="nameov"><div class="glass"><b>ようこそ Dock Hero へ！</b><span>まずはプレイヤー名を決めてください（ランキングや対戦で表示されます）</span><div class="fld"><input id="nmin" maxlength="12" placeholder="プレイヤー名（12文字まで）"><button class="btn" id="nmok">はじめる</button></div></div></div>
   <canvas id="c"></canvas>
@@ -496,7 +496,7 @@ function fmt(n) { return Math.floor(n).toLocaleString('en-US'); }   // every dig
 function fmtPix(n) { return '' + Math.floor(n); }
 
 /* ---------- bridge to the macOS shell ---------- */
-const GAME_VERSION = '1.14.2', GAME_BUILD = 217;
+const GAME_VERSION = '1.14.3', GAME_BUILD = 218;
 const NATIVE = !!window.__DH_NATIVE || Q.has('nativeTest');
 if (window.__DH_OS === 'win') document.addEventListener('DOMContentLoaded', () => { const g = document.getElementById('grip'); if (g) g.title = 'ドラッグで移動／ダブルクリックでタスクバーの上に戻す'; });
 // page -> mac: the shell polls document.title. Keep the title short: big payloads (saves) are cut into chunks
@@ -827,7 +827,8 @@ function resize() {
 window.addEventListener('resize', () => { applyUI(true); resize(); });
 function applyUI(noResize) {
   if (!G.ui) G.ui = { k: 1, w: 1 }; const k = G.ui.k, w = G.ui.w, bs = document.body.style;
-  bs.setProperty('--k', k); bs.setProperty('--op', G.ui.o == null ? 1 : G.ui.o); bs.setProperty('--mx', (12 + (1 - w) * (innerWidth / k - 24) / 2) + 'px');
+  bs.setProperty('--k', k); bs.setProperty('--op', G.ui.o == null ? 1 : G.ui.o); const avail = innerWidth / k - 24, cw = Math.max(Math.min(avail, 760), avail * w);   // never so narrow that the buttons fall off the bar
+  bs.setProperty('--mx', (12 + (avail - cw) / 2) + 'px');
   if (!noResize) setTimeout(resize, 30);
 }
 $('uibtn').addEventListener('click', e => { e.stopPropagation(); const p = $('uipop'); p.classList.toggle('on'); $('uik').value = G.ui.k; $('uiw').value = G.ui.w; $('uio').value = G.ui.o == null ? 1 : G.ui.o; });
