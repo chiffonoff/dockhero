@@ -424,7 +424,7 @@ body.mini #card{left:12px;right:12px}body.flip{bottom:auto;top:0;transform-origi
 <div id="card">
   <div id="uipop" class="glass"><label>大きさ <input id="uik" type="range" min="0.55" max="1" step="0.05"></label><label>横幅 <input id="uiw" type="range" min="0.6" max="1" step="0.05"></label><label>不透明度 <input id="uio" type="range" min="0.25" max="1" step="0.05"></label><small>ダブルクリックで元に戻す</small></div>
   <div id="mmchip"></div>
-  <div id="nameov"><div class="glass"><b>ようこそ Dock Hero へ！</b><span>まずはプレイヤー名を決めてください（ランキングや対戦で表示されます）</span><div class="fld"><input id="nmin" maxlength="12" placeholder="プレイヤー名（12文字まで）"><button class="btn" id="nmok">はじめる</button></div></div></div>
+  <div id="nameov"><div class="glass"><b>ようこそ Dock Hero へ！</b><span>まずはプレイヤー名を決めてください（ランキングや対戦で表示されます）</span><div class="fld"><input id="nmin" maxlength="12" placeholder="プレイヤー名（12文字まで）"><button class="btn" id="nmok">はじめる</button></div><button class="btn sub" id="nmskip" style="margin-top:4px">名前なしではじめる（あとで変えられます）</button></div></div>
   <canvas id="c"></canvas>
   <canvas id="fx"></canvas>
   <div id="flash"></div>
@@ -496,7 +496,7 @@ function fmt(n) { return Math.floor(n).toLocaleString('en-US'); }   // every dig
 function fmtPix(n) { return '' + Math.floor(n); }
 
 /* ---------- bridge to the macOS shell ---------- */
-const GAME_VERSION = '1.14.3', GAME_BUILD = 218;
+const GAME_VERSION = '1.14.4', GAME_BUILD = 219;
 const NATIVE = !!window.__DH_NATIVE || Q.has('nativeTest');
 if (window.__DH_OS === 'win') document.addEventListener('DOMContentLoaded', () => { const g = document.getElementById('grip'); if (g) g.title = 'ドラッグで移動／ダブルクリックでタスクバーの上に戻す'; });
 // page -> mac: the shell polls document.title. Keep the title short: big payloads (saves) are cut into chunks
@@ -732,7 +732,7 @@ const hpMem = {};   // HP left on heroes who were swapped out
 function rebuildParty() {
   const prev = {}; party.forEach(m => { prev[m.key] = m; if (m.local && m.st) hpMem[m.cls] = m.down ? 0 : m.hp / m.st.maxHp; });
   const list = [];
-  for (const cls of localClasses()) list.push({ key: 'L:' + cls, cls, st: statsFor(cls), gr: gearRar(heroData(cls).gear), name: G.name || 'あなた', local: true, el: (heroData(cls).gear.weapon || {}).el || null });
+  for (const cls of localClasses()) list.push({ key: 'L:' + cls, cls, st: statsFor(cls), gr: gearRar(heroData(cls).gear), name: pName(), local: true, el: (heroData(cls).gear.weapon || {}).el || null });
   if (grp.active) for (const pr of Object.values(grp.peers)) (pr.heroes || []).slice(0, perPlayer()).forEach((h, j) => { if (h && CLASSES[h.cls] && h.st) list.push({ key: 'R:' + pr.pid + ':' + j, cls: h.cls, st: h.st, gr: h.gr || {}, name: pr.name || 'なかま', remote: true, lv: pr.lv }); });
   list.sort((a, b) => (MELEE[CLASSES[a.cls].type] ? 0 : 1) - (MELEE[CLASSES[b.cls].type] ? 0 : 1));
   party = list.map((d, i) => {
@@ -2633,7 +2633,7 @@ function renderParty() {
     h += '</div><div class="fhint" style="text-align:left">・キャラを押すと出し入れできます<br>・近接職（騎士・双剣士・鉄槌士）が自動で前に出ます<br>・装備はキャラごとに別々です（バッグ画面で切り替え）</div>';
 
   } else {
-    const nm = G.name || window.__DH_USER || '';
+    const nm = G.name || '';
     h += '<div class="lbl">あなたの名前</div><div class="fld"><input id="gname" maxlength="12" placeholder="なまえ" value="' + nm.replace(/"/g, '') + '"></div>';
     if (!grp.active) {
       h += '<div class="fld" style="margin-top:10px"><button class="btn" data-g="create" style="flex:1">グループを作る</button></div>';
@@ -2652,6 +2652,7 @@ function renderParty() {
   $('pparty').innerHTML = h;
   document.querySelectorAll('#pparty canvas[data-cls]').forEach(cv2 => drawPortrait(cv2, cv2.dataset.cls, gearRar(heroData(cv2.dataset.cls).gear)));
 }
+function pName() { return G.name || 'プレイヤー'; }
 function setName(v) { v = (v || '').trim().slice(0, 12); if (v && v !== G.name) { G.name = v; rebuildParty(); save(); if (grp.active) grpPublish(); } }
 $('pparty').addEventListener('change', e => { if (e.target.id === 'gname') setName(e.target.value); });
 $('panel').addEventListener('change', e => { if (e.target.id === 'giftsel' && e.target.value) { const it = sel && findItem(sel); if (it && !isEquipped(it)) giftTo(it, e.target.value); } });
@@ -2670,8 +2671,7 @@ $('pparty').addEventListener('click', e => {
     }
     rebuildParty(); updGear(); save(); if (grp.active) grpPublish(); renderParty(); renderPanel(); return;
   }
-  const g = t.dataset.g, nameEl = $('gname'); if (nameEl) setName(nameEl.value || window.__DH_USER || 'プレイヤー');
-  if (!G.name) G.name = window.__DH_USER || 'プレイヤー';
+  const g = t.dataset.g, nameEl = $('gname'); if (nameEl) setName(nameEl.value);
   if (g === 'create') grpJoin(newCode(), true);
   else if (g === 'join') { const v = ($('gcode').value || '').toUpperCase().replace(/[^A-Z0-9]/g, ''); if (v.length !== 6) return toast('コードは6文字です', '#ff8fa8'); grpJoin(v, false); }
   else if (g === 'paste') { if (!native({ t: 'paste' })) { try { navigator.clipboard.readText().then(DH.onPaste); } catch (e) { } } }
@@ -2724,7 +2724,7 @@ let soc = null, socStatus = 'off', rankTab = 'power', rankScope = 'all';
 const MIN_BUILD = 201;   // profiles from before the last season reset are ignored
 const profiles = {};
 function myProfile() {
-  return { uid: G.uid, name: G.name || 'プレイヤー', title: titleName(G.title), b: GAME_BUILD, best: G.best || 0, loop: G.loop, power: Math.round(ST.power), top: topLv(), kills: G.kills || 0, party: G.party.slice(0, slotsUnlocked()), team: G.party.slice(0, slotsUnlocked()).map(c => { const st = statsFor(c), r2 = v => Math.round(v * 100) / 100; return { cls: c, lv: heroLv(c), st: { atk: r2(st.atk), maxHp: r2(st.maxHp), aps: r2(st.aps), crit: r2(st.crit), critMul: r2(st.critMul), ls: r2(st.ls), power: Math.round(st.power) } }; }), rate: Math.round(G.pvp.rate), pw: G.pvp.w, pl: G.pvp.l, ts: Date.now() };
+  return { uid: G.uid, name: pName(), title: titleName(G.title), b: GAME_BUILD, best: G.best || 0, loop: G.loop, power: Math.round(ST.power), top: topLv(), kills: G.kills || 0, party: G.party.slice(0, slotsUnlocked()), team: G.party.slice(0, slotsUnlocked()).map(c => { const st = statsFor(c), r2 = v => Math.round(v * 100) / 100; return { cls: c, lv: heroLv(c), st: { atk: r2(st.atk), maxHp: r2(st.maxHp), aps: r2(st.aps), crit: r2(st.crit), critMul: r2(st.critMul), ls: r2(st.ls), power: Math.round(st.power) } }; }), rate: Math.round(G.pvp.rate), pw: G.pvp.w, pl: G.pvp.l, ts: Date.now() };
 }
 function socPublish() { if (soc) soc.publish(UTOPIC(G.uid), JSON.stringify(myProfile()), true); }
 function socStart() {
@@ -2855,7 +2855,7 @@ function giftTo(it, uid) {
   if (!soc || socStatus !== 'on') return toast('つながっていないので送れません', '#ff8fa8');
   const i = G.bag.indexOf(it); if (i < 0) return;
   const id = Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
-  const pay = { id, rv: 2, from: G.name || 'フレンド', fromUid: G.uid, item: Object.assign({}, it, { nw: 1 }) };
+  const pay = { id, rv: 2, from: pName(), fromUid: G.uid, item: Object.assign({}, it, { nw: 1 }) };
   soc.publish(GTOPIC(uid) + '/' + id, JSON.stringify(pay), true);
   G.bag.splice(i, 1); sel = null; save(); renderPanel();
   const f = G.friends.find(x => x.uid === uid);
@@ -2878,7 +2878,7 @@ function onGift(topic, txt) {
 const EMOTES = ['👍', '🔥', '🎉', '😂', '💪', '🙏', 'GG', 'ナイス！'];
 function sendEmote(e) {
   if (!grp.active || !mq) return;
-  mq.publish(TOPIC(grp.code) + '/e', JSON.stringify({ pid: grp.pid, name: G.name || 'あなた', e }));
+  mq.publish(TOPIC(grp.code) + '/e', JSON.stringify({ pid: grp.pid, name: pName(), e }));
   showBubble('L', e, G.name || 'あなた');
 }
 const bubbles = [];
@@ -3053,7 +3053,7 @@ function mmStart() {
 function mmStop(quiet) { mm.on = false; clearInterval(mm.beat); mm.out = mm.lock = null; renderRank(); updMMChip(); if (!quiet) toast('対戦相手さがしをやめました', '#9b8cff'); }
 function mmBeat() {
   if (!mm.on) return;
-  soc.publish(MMQ, JSON.stringify({ uid: G.uid, name: G.name, rate: Math.round(G.pvp.rate), b: GAME_BUILD }), false);
+  soc.publish(MMQ, JSON.stringify({ uid: G.uid, name: pName(), rate: Math.round(G.pvp.rate), b: GAME_BUILD }), false);
   const now = Date.now();
   for (const k in mm.seen) if (now - mm.seen[k].at > 5000) delete mm.seen[k];
   if (mm.out && now - mm.out.at > 3500) mm.out = null;
@@ -3064,7 +3064,7 @@ function mmBeat() {
   if (!cands.length) { updMMChip(); return; }
   const c = cands[0], id = Math.random().toString(36).slice(2, 10);
   mm.out = { uid: c.uid, id, at: now, team: myTeam(), seed: (Math.random() * 2 ** 31) | 0 };
-  mmSend(c.uid, { k: 'inv', id, name: G.name, rate: Math.round(G.pvp.rate), team: mm.out.team, seed: mm.out.seed });
+  mmSend(c.uid, { k: 'inv', id, name: pName(), rate: Math.round(G.pvp.rate), team: mm.out.team, seed: mm.out.seed });
   updMMChip();
 }
 function handicaps(hostTeam, guestTeam) {
@@ -3079,7 +3079,7 @@ function onMM(topic, d) {
     if (!mm.on || arena.on || mm.out || mm.lock || !Array.isArray(d.team)) return mmSend(d.from, { k: 'no', id: d.id });
     const team = myTeam(), h = handicaps(d.team, team);
     mm.lock = { id: d.id, at: Date.now(), from: d.from, setup: { seed: d.seed | 0, host: false, hostTeam: d.team, guestTeam: team, hH: h.hH, hG: h.hG, opp: { uid: d.from, name: d.name || 'プレイヤー', rate: d.rate || 1000 } } };
-    return mmSend(d.from, { k: 'acc', id: d.id, name: G.name, rate: Math.round(G.pvp.rate), team, hH: h.hH, hG: h.hG });
+    return mmSend(d.from, { k: 'acc', id: d.id, name: pName(), rate: Math.round(G.pvp.rate), team, hH: h.hH, hG: h.hG });
   }
   if (d.k === 'acc') {   // my invite was accepted
     if (!mm.on || !mm.out || mm.out.id !== d.id || arena.on || !Array.isArray(d.team)) return mmSend(d.from, { k: 'no', id: d.id });
@@ -3215,8 +3215,8 @@ function sendChat(x) {
   if (!G.name) return askName();
   if (Date.now() - lastChatSend < 3000) return toast('少し待ってから送ってください', '#ff8fa8');
   lastChatSend = Date.now();
-  const me = chatAll[G.uid] || { name: G.name, msgs: [] }; me.name = G.name; me.title = titleName(G.title); me.msgs = me.msgs.concat([{ t: Date.now(), x }]).slice(-10); chatAll[G.uid] = me;
-  soc.publish(CHAT_T(G.uid), JSON.stringify({ uid: G.uid, name: G.name, title: me.title, msgs: me.msgs }), true);
+  const me = chatAll[G.uid] || { name: pName(), msgs: [] }; me.name = pName(); me.title = titleName(G.title); me.msgs = me.msgs.concat([{ t: Date.now(), x }]).slice(-10); chatAll[G.uid] = me;
+  soc.publish(CHAT_T(G.uid), JSON.stringify({ uid: G.uid, name: pName(), title: me.title, msgs: me.msgs }), true);
   renderChat();
 }
 function sendVoice(x) {
@@ -3225,8 +3225,8 @@ function sendVoice(x) {
   if (voiceLeft() <= 0) return toast('みんなの声は1日5通までです。また明日！', '#ff8fa8');
   if (G.voiceDay !== todayKey()) { G.voiceDay = todayKey(); G.voiceN = 0; }
   G.voiceN++;
-  const me = voiceAll[G.uid] || { name: G.name, msgs: [] }; me.name = G.name; me.msgs = me.msgs.concat([{ t: Date.now(), x }]).slice(-20); voiceAll[G.uid] = me;
-  soc.publish(VOICE_T(G.uid), JSON.stringify({ uid: G.uid, name: G.name, msgs: me.msgs }), true);
+  const me = voiceAll[G.uid] || { name: pName(), msgs: [] }; me.name = pName(); me.msgs = me.msgs.concat([{ t: Date.now(), x }]).slice(-20); voiceAll[G.uid] = me;
+  soc.publish(VOICE_T(G.uid), JSON.stringify({ uid: G.uid, name: pName(), msgs: me.msgs }), true);
   save(); toast('みんなの声を送りました（今日あと ' + voiceLeft() + ' 通）', '#7dffa8'); renderChat();
 }
 const hhmm = t => { const d = new Date(t), n = new Date(); return (d.toDateString() === n.toDateString() ? '' : (d.getMonth() + 1) + '/' + d.getDate() + ' ') + d.getHours() + ':' + String(d.getMinutes()).padStart(2, '0'); };
@@ -3285,8 +3285,8 @@ const ITEMS = {
   box5: { n: 'ミシック装備箱', ic: 'box', c: '#ff5c7a', d: '開けるとミシック装備が1つ出る', box: 5 },
   core: { n: '魔石', ic: 'crystal', c: '#b46cff', mat: 1, d: 'ショップで使う通貨。強い敵（エリート）やボスが落とす' } };
 // shop currencies: 魔石 (from adventuring) and バトルメダル (from ranked matches). Gold can't buy anything here.
-const SHOP_C = [['luck', 6], ['wise', 6], ['box3', 40], ['box4', 120]];
-const SHOP_M = [['luck', 3], ['wise', 3], ['box3', 15], ['box4', 45], ['box5', 120]];
+const SHOP_C = [['luck', 20], ['wise', 20], ['box3', 40], ['box4', 120]];
+const SHOP_M = [['luck', 8], ['wise', 8], ['box3', 15], ['box4', 45], ['box5', 120]];
 const FOE_JP = { slime: 'スライム', mush: 'キノコ', bat: 'コウモリ', golem: 'ゴーレム', ghost: 'ゴースト', wolf: 'オオカミ', skel: 'スケルトン', imp: 'インプ', eye: 'めだま', crab: 'カニ', scorp: 'サソリ', yeti: 'イエティ', stump: 'きりかぶ', wisp: 'ウィスプ' };
 const IIC = {};
 function itemIcon(id) {
@@ -3417,7 +3417,7 @@ let mq = null, pubT = 0;
 function grpState() {
   const r2 = v => Math.round(v * 1000) / 1000;
   const heroes = localClasses().map(c => { const st = statsFor(c); return { cls: c, lv: heroLv(c), gr: gearRar(heroData(c).gear), st: { atk: r2(st.atk), maxHp: r2(st.maxHp), aps: r2(st.aps), crit: r2(st.crit), critMul: r2(st.critMul), gm: 1, regen: r2(st.regen), ls: r2(st.ls), power: 0 } }; });
-  return JSON.stringify({ pid: grp.pid, b: GAME_BUILD, name: G.name || 'プレイヤー', cls: heroes[0].cls, heroes, lv: topLv(), uid: G.uid, at: (G.region + 1) + '-' + G.stage });
+  return JSON.stringify({ pid: grp.pid, b: GAME_BUILD, name: pName(), cls: heroes[0].cls, heroes, lv: topLv(), uid: G.uid, at: (G.region + 1) + '-' + G.stage });
 }
 function grpPublish() { if (mq && grp.active) mq.publish(TOPIC(grp.code) + '/p/' + grp.pid, grpState()); }
 function grpJoin(code, created) {
@@ -3484,6 +3484,7 @@ native({ t: 'hello' });
 function askName() { $('nameov').classList.add('on'); $('nmin').value = ''; }
 function nameDone(v) { v = String(v || '').trim().slice(0, 12); if (!v) return toast('名前を入れてください', '#ff8fa8'); setName(v); $('nameov').classList.remove('on'); renderParty(); toast('よろしく、<b>' + esc(v) + '</b>！', '#7dffa8'); }
 $('nmok').addEventListener('click', () => nameDone($('nmin').value));
+$('nmskip').addEventListener('click', () => { G.skipName = true; save(); $('nameov').classList.remove('on'); renderParty(); });
 $('nmin').addEventListener('keydown', e => { if (e.key === 'Enter') nameDone($('nmin').value); });
 $('nmin').addEventListener('mousedown', e => { if (NATIVE) { e.preventDefault(); native({ t: 'prompt', kind: 'name', label: 'プレイヤー名（12文字まで）', value: '' }); } });
 $('mmchip').addEventListener('click', e => { if (e.target.dataset.mm === 'stop') mmStop(); });
@@ -3507,8 +3508,7 @@ function frame(now) {
   update(step); render(); updHud();
   saveT += step; if (saveT > 15) { saveT = 0; save(); }
 }
-load(); G.loop = Math.min(DMAX, G.loop || 0); if (!G.name) askName(); $('itemic').src = itemIcon('luck'); if (G.inv) for (const k in G.inv) if (!ITEMS[k]) delete G.inv[k]; if (G.buffs) { delete G.buffs.pow; delete G.buffs.guard; } G.dex = G.dex || { f: {}, g: {} }; G.bag.forEach(dexGear); for (const c in G.heroes) for (const k of SLOTS) if (G.heroes[c].gear[k]) dexGear(G.heroes[c].gear[k]); G.ui = Object.assign({ k: 1, w: 1, o: 1 }, G.ui || {}); applyUI(true); resize(); updGear(); updHud(true);
-if (!G.name) G.name = window.__DH_USER || '';
+load(); if (G.name && window.__DH_USER && G.name === String(window.__DH_USER).trim().slice(0, 12)) { G.name = ''; save(); } G.loop = Math.min(DMAX, G.loop || 0); if (!G.name && !G.skipName) askName(); $('itemic').src = itemIcon('luck'); if (G.inv) for (const k in G.inv) if (!ITEMS[k]) delete G.inv[k]; if (G.buffs) { delete G.buffs.pow; delete G.buffs.guard; } G.dex = G.dex || { f: {}, g: {} }; G.bag.forEach(dexGear); for (const c in G.heroes) for (const k of SLOTS) if (G.heroes[c].gear[k]) dexGear(G.heroes[c].gear[k]); G.ui = Object.assign({ k: 1, w: 1, o: 1 }, G.ui || {}); applyUI(true); resize(); updGear(); updHud(true);
 if (G._refund) { const b = G._refund; delete G._refund; setTimeout(() => toast('強化ボタン廃止のため <b style="color:#ffe08a">' + fmtG(b) + ' G</b> を返却しました。ルーン（ᚱ）に使えます', '#ffd25e'), 2500); }
 if (G.grp && G.grp.code) setTimeout(() => grpJoin(G.grp.code, false), 1200);
 setTimeout(socStart, 2000);
