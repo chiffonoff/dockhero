@@ -349,6 +349,43 @@ body.mini #card{left:12px;right:12px}body.flip{bottom:auto;top:0;transform-origi
 #mmchip{position:absolute;left:50%;bottom:8px;transform:translateX(-50%);z-index:7;display:none;align-items:center;gap:6px;padding:3px 4px 3px 10px;border-radius:10px;background:rgba(18,8,40,.75);font-size:10px;font-weight:800;color:#ffd6f5;white-space:nowrap}
 #mmchip i{width:6px;height:6px;border-radius:50%;background:#ff8ce0;box-shadow:0 0 6px #ff8ce0;animation:pulse .6s infinite alternate}
 #mmchip button{font-size:9.5px;font-weight:800;padding:2px 8px;border-radius:7px;background:rgba(255,255,255,.12);color:#fff}
+/* ===== dopamine: fever, hype, slot, login ===== */
+#fev{display:flex;align-items:center;gap:3px;font-size:8px;font-weight:900;color:#ffb46b;letter-spacing:.04em;font-style:normal}
+#fev em{font-style:normal}
+#fev .fg{position:relative;width:30px;height:5px;border-radius:3px;background:rgba(0,0,0,.45);overflow:hidden;box-shadow:inset 0 0 0 1px rgba(255,255,255,.08)}
+#fev .fg i{position:absolute;left:0;top:0;bottom:0;background:linear-gradient(90deg,#ff7a3c,#ffd25e);border-radius:3px;transition:width .2s}
+#fev.on{color:#fff;animation:fevp .3s infinite alternate}
+#fev.on .fg i{background:linear-gradient(90deg,#ff5c7a,#ffd25e,#7ff4ff)}
+@keyframes fevp{to{filter:drop-shadow(0 0 4px #ff9a3c) brightness(1.35)}}
+body.mini #fev{display:none!important}
+#fevtint{position:absolute;inset:0;pointer-events:none;opacity:0;transition:opacity .5s;border-radius:inherit;box-shadow:inset 0 0 26px rgba(255,130,60,.7)}
+#fevtint.on{opacity:1;animation:fevt .45s infinite alternate}
+@keyframes fevt{to{box-shadow:inset 0 0 42px rgba(255,90,150,.95)}}
+#hype{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;pointer-events:none;z-index:30;opacity:0}
+#hype.show{animation:hype 2.3s cubic-bezier(.2,1.2,.3,1) forwards}
+#hype h2{margin:0;font-size:26px;font-weight:900;letter-spacing:.1em;color:var(--hc);text-shadow:0 0 14px var(--hc),0 2px 0 #14081f,0 0 3px #fff}
+#hype small{font-size:11px;font-weight:800;color:#fff;text-shadow:0 0 8px var(--hc),0 1px 0 #000;margin-top:1px}
+#hype.rb h2{background:linear-gradient(90deg,#ff5c7a,#ffd25e,#7dffa8,#7ff4ff,#b46cff,#ff5c7a);background-size:200% 100%;-webkit-background-clip:text;background-clip:text;color:transparent;animation:rbw .8s linear infinite;text-shadow:none;filter:drop-shadow(0 0 6px rgba(255,255,255,.9))}
+@keyframes rbw{to{background-position:200% 0}}
+@keyframes hype{0%{opacity:0;transform:scale(2.4)}12%{opacity:1;transform:scale(.92)}20%{transform:scale(1.05)}28%{transform:scale(1)}78%{opacity:1}100%{opacity:0;transform:scale(1.08)}}
+body.mini #hype{display:none}
+#toasts{transition:opacity .25s}body.hyping #toasts{opacity:0}
+#hype::before{content:'';position:absolute;left:0;right:0;top:50%;height:58px;transform:translateY(-50%);background:linear-gradient(90deg,transparent,rgba(12,4,26,.6) 25%,rgba(12,4,26,.6) 75%,transparent);z-index:-1}
+#dhov{position:absolute;inset:0;z-index:21;display:none;place-items:center;background:rgba(10,4,24,.55)}#dhov.on{display:grid}
+#dhov>div{display:flex;align-items:center;gap:12px;padding:8px 14px;border-radius:14px;color:#e6dcff;font-size:11px;animation:tin .35s cubic-bezier(.2,1.4,.4,1)}
+#dhov .tx{display:flex;flex-direction:column;gap:2px;white-space:nowrap}#dhov .tx b{font-size:13px;color:#fff}#dhov .tx span{font-size:10px;color:#b9addb}
+#dhov .tx .amt{font-size:15px;font-weight:900;color:#ffe08a;text-shadow:0 0 8px rgba(255,190,60,.7)}
+.reel{width:66px;height:40px;border-radius:10px;background:linear-gradient(#0b0517,#2a1648 50%,#0b0517);border:1px solid rgba(255,210,94,.55);display:grid;place-items:center;font-size:20px;font-weight:900;color:#ffd25e;text-shadow:0 0 10px #ffb02e;box-shadow:inset 0 0 12px rgba(0,0,0,.8)}
+.reel.spin{color:#fff;filter:blur(.5px);transform:translateY(1px)}
+.reel.hit{animation:reelhit .5s}.reel.big{color:#ff8cf0;border-color:#ff8cf0;text-shadow:0 0 12px #ff5cd0}
+@keyframes reelhit{0%{transform:scale(1.45)}100%{transform:scale(1)}}
+.lgrid{display:flex;gap:4px}
+.lday{width:40px;height:44px;border-radius:9px;background:rgba(0,0,0,.35);border:1px solid rgba(255,255,255,.1);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;font-size:8px;color:#b9addb;font-weight:800;white-space:nowrap}
+.lday img{width:16px;height:16px;image-rendering:pixelated}.lday .coin{width:13px;height:13px}
+.lday.got{opacity:.4}.lday.got::after{content:'✓';position:absolute;font-size:16px;color:#7dffa8}
+.lday{position:relative}
+.lday.now{border-color:#ffd25e;color:#fff;box-shadow:0 0 10px rgba(255,210,94,.6);animation:fevp .5s infinite alternate}
+.lday.d7{background:radial-gradient(circle,rgba(255,201,77,.25),rgba(0,0,0,.35) 70%)}
 #nameov{position:absolute;inset:0;z-index:20;display:none;place-items:center;background:rgba(10,4,24,.55)}#nameov.on{display:grid}
 #nameov>div{display:flex;flex-direction:column;gap:4px;padding:10px 16px;border-radius:14px;min-width:340px;color:#e6dcff;font-size:11px}#nameov b{font-size:13px;color:#fff}#nameov span{color:#b9addb;font-size:10px}
 #nameov .fld{display:flex;gap:6px;margin-top:4px}#nameov input{flex:1;height:26px;border-radius:8px;border:1px solid rgba(255,255,255,.18);background:rgba(0,0,0,.35);color:#fff;padding:0 8px;font:inherit;font-size:12px;font-weight:800}
@@ -428,10 +465,11 @@ body.mini #card{left:12px;right:12px}body.flip{bottom:auto;top:0;transform-origi
   <canvas id="c"></canvas>
   <canvas id="fx"></canvas>
   <div id="flash"></div>
+  <div id="fevtint"></div>
   <div id="hud">
     <div id="left" class="glass">
       <div id="grip" title="ドラッグで移動／ダブルクリックでDockの上に戻す"><i></i></div>
-      <div id="lvbox"><span>Lv</span><b id="lv">1</b></div><span id="buffs"></span>
+      <div id="lvbox"><span>Lv</span><b id="lv">1</b></div><span id="fev" title="フィーバーゲージ：敵を倒すとたまり、満タンで20秒間ゴールド2倍＆攻撃スピードUP"><em>FEVER</em><span class="fg"><i></i></span></span><span id="buffs"></span>
       <span id="grpchip" style="display:none"></span>
       <div class="bars">
         <div class="bar hp"><i id="hpb"></i><em id="hpt"></em></div>
@@ -459,6 +497,8 @@ body.mini #card{left:12px;right:12px}body.flip{bottom:auto;top:0;transform-origi
   <div id="bubbles"></div>
   <div id="chain"></div>
   <div id="vs"></div>
+  <div id="hype"></div>
+  <div id="dhov"></div>
   <div id="title"><small id="tsub">CHAPTER I</small><h1 id="tmain"></h1><div class="rule"></div></div>
 </div>
 
@@ -496,7 +536,7 @@ function fmt(n) { return Math.floor(n).toLocaleString('en-US'); }   // every dig
 function fmtPix(n) { return '' + Math.floor(n); }
 
 /* ---------- bridge to the macOS shell ---------- */
-const GAME_VERSION = '1.14.4', GAME_BUILD = 219;
+const GAME_VERSION = '1.15.0', GAME_BUILD = 220;
 const NATIVE = !!window.__DH_NATIVE || Q.has('nativeTest');
 if (window.__DH_OS === 'win') document.addEventListener('DOMContentLoaded', () => { const g = document.getElementById('grip'); if (g) g.title = 'ドラッグで移動／ダブルクリックでタスクバーの上に戻す'; });
 // page -> mac: the shell polls document.title. Keep the title short: big payloads (saves) are cut into chunks
@@ -803,8 +843,8 @@ function load() {
   if (s && !reset && away > 90) {
     const sec = Math.min(away, 8 * 3600), t = Math.max(0, tier() - 1);
     const kills = sec * 0.22, gold = kills * goldOf(t) * ST.gm * 0.6, xp = kills * xpOf(t) * 0.5;
-    G.gold += gold; addXp(xp, true); const vo = villageOffline(sec);
-    setTimeout(() => toast('おかえり！ 離れていた' + fmtTime(sec) + (away > 8 * 3600 ? '（報酬は最大8時間分）' : '') + 'で <b style="color:#ffe08a">+' + fmtG(gold + vo.g) + ' G</b>' + (vo.n ? '　魔石 +' + vo.n : ''), '#ffd25e'), 900);
+    addXp(xp, true); const vo = villageOffline(sec);
+    const pa = G.pendAway || { g: 0, sec: 0 }; G.pendAway = { g: pa.g + gold, sec: pa.sec + sec, cap: away > 8 * 3600, vg: vo.g, vn: vo.n };
   }
 }
 function fmtTime(s) { const h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60); return h ? h + '時間' + (m ? m + '分' : '') : Math.max(1, m) + '分'; }
@@ -1828,6 +1868,7 @@ function spawnEnemy() {
     cd: 1, lunge: 0, flash: 0, dying: 0, kb: 0, seed: rnd(10), walk: 0, hopT: 0, hb: 0, el: regionElem()
   });
   const e = enemies[enemies.length - 1]; e.hp = e.max; spawned++;
+  if (!boss && !arena.on) { G.gpity = (G.gpity || 0) + 1; if (G.gpity > 350 || Math.random() < GOLD_P) makeGolden(e); }
   if (boss) { toast('<b style="color:#ff7a95">BOSS</b> ' + def.name + ' があらわれた！', '#ff5c7f'); }
 }
 const chain = { n: 0, t: -9, o: '' };
@@ -1847,15 +1888,15 @@ function damageEnemy(e, m, mult, opt = {}) {
 }
 function killEnemy(e) {
   e.dying = .001; killed++; G.kills++;
-  const t = tier(), gold = goldOf(t) * (e.boss ? 12 : e.elite ? 3 : 1) * ST.gm * itemGold() * rnd(.85, 1.15), xp = xpOf(t) * (e.boss ? 8 : e.elite ? 2.5 : 1) * ST.xm * itemXp() * (1 + .04 * vLv('tavern'));
-  dexFoe(e); dropMats(e);
-  const n = e.boss ? 14 : 3 + Math.floor(rnd(3));
+  const t = tier(), gold = goldOf(t) * (e.boss ? 12 : e.elite ? 3 : e.golden ? GOLD_G : 1) * ST.gm * itemGold() * fevGold() * rnd(.85, 1.15), xp = xpOf(t) * (e.boss ? 8 : e.elite ? 2.5 : e.golden ? 6 : 1) * ST.xm * itemXp() * (1 + .04 * vLv('tavern'));
+  dexFoe(e); dropMats(e); fevKill(e); if (e.golden) goldenKill(e, gold);
+  const n = e.boss ? 14 : e.golden ? 40 : 3 + Math.floor(rnd(3));
   for (let i = 0; i < n; i++) coins.push({ x: e.x, y: GROUND - 6, vx: rnd(-18, 22), vy: rnd(-45, -25), t: 0, v: gold / n, phase: 0 });
   burst(e.x, GROUND - 6, e.boss ? 40 : 14, e.c, 50); burst(e.x, GROUND - 6, 6, '#ffffff', 30);
   parts.push({ x: e.x, y: GROUND - 8, vx: 0, vy: -10, life: 1.2, max: 1.2, col: '#e6dcff', soul: 1, g: 0 });
   addXp(xp);
   if (runeLv('kheal')) for (const m of party) if (!m.down) m.hp = Math.min(m.st.maxHp, m.hp + m.st.maxHp * runeVal('kheal'));
-  if (e.boss || Math.random() < (e.elite ? .45 : .14) + runeVal('chest') + .01 * vLv('tower')) chests.push({ x: e.x + 6, y: GROUND - 20, vy: -20, land: 0, openT: 0, rar: rollRarity(e.boss), opened: false, done: 0 });
+  if (e.boss || e.golden || Math.random() < (e.elite ? .45 : .14) + runeVal('chest') + .01 * vLv('tower')) chests.push({ x: e.x + 6, y: GROUND - 20, vy: -20, land: 0, openT: 0, rar: e.golden ? Math.max(3, rollRarity(false)) : rollRarity(e.boss), opened: false, done: 0 });
   if (e.boss) { shake = .5; flashT = .25; }
 }
 function rollRarity(boss) { const rb = runeVal('rare'); if (boss) { const x = Math.random() + rb * 3; return x > .95 ? 5 : x > .5 ? 4 : 3; } const r = Math.random() + Math.min(.08, G.loop * .03 + G.region * .01) + rb; return r > .997 ? 3 : r > .965 ? 2 : r > .8 ? 1 : 0; }
@@ -1922,6 +1963,7 @@ function openChest(ch) {
   const it = makeItem(SLOTS[Math.floor(rnd(SLOTS.length))], ch.rar, tier()), col = RARITY[it.r].c;
   burst(ch.x - camX, GROUND - 5, 18 + it.r * 10, col, 40);
   if (it.r >= 3) { flashT = .15; shake = .15; }
+  if (it.r >= 4) rareHype(it, ch.x);
   gainItem(it, true);
 }
 function itemHtml(it) { return '<span style="color:' + RARITY[it.r].c + '">【' + RARITY[it.r].n + '】' + itemName(it) + (it.lv ? ' +' + it.lv : '') + '</span>' + (it.el ? ' <b style="color:' + ELEM[it.el].c + '">[' + ELEM[it.el].n + ']</b>' : ''); }
@@ -2045,7 +2087,7 @@ function projHit(pj, e) {
   else { damageEnemy(e, pj.m, 1); star(e.x - 2, GROUND - 8, '#fff2d0'); }
 }
 function update(dt) {
-  T += dt; villageTick(dt); G.playT = (G.playT || 0) + dt; if (G.dayKey !== todayKey()) { G.dayKey = todayKey(); G.days = (G.days || 0) + 1; }
+  T += dt; villageTick(dt); G.playT = (G.playT || 0) + dt; if (G.dayKey !== todayKey()) { G.dayKey = todayKey(); G.days = (G.days || 0) + 1; setTimeout(loginCheck, 1500); }
   if (arena.on) { arenaUpdate(dt); for (const p of parts) { p.life -= dt; p.vy += (p.g || 0) * dt; p.x += p.vx * dt; p.y += p.vy * dt; } parts = parts.filter(p => p.life > 0); for (const p of pops) p.t += dt; pops = pops.filter(p => p.t < .9); shake = Math.max(0, shake - dt); flashT = Math.max(0, flashT - dt); updAmb(dt); updFx(dt); updBubbles(dt); return; }
   if (fade > 0) { // chapter transition
     fade += dt * 1.6;
@@ -2062,9 +2104,9 @@ function update(dt) {
   if (hero.dead) { hero.deadT += dt; if (hero.deadT > 2.4) respawn(); }
   else {
     const block = front && lead && front.x - (hero.x - lead.off) < (front.boss ? 28 : 17);
-    if (!block && ch && ch.x - hero.x < 7) openChest(ch);
+    if (!block && ch && ch.x - hero.x < 7) { if (ch.rar >= 4 && !(ch.tease > 1.3)) { if (!ch.tease) { ch.tease = .001; toast('……！？ 宝箱のようすがおかしい', RARITY[ch.rar].c); } } else openChest(ch); }
     else if (!block && (fade === 0 || fade > 1.2)) {
-      hero.walking = true; hero.x += 34 * (1 + runeVal('move')) * dt; hero.phase += dt * 19;
+      hero.walking = true; hero.x += 34 * (1 + runeVal('move')) * fevSpd() * dt; hero.phase += dt * 19;
       for (const m of party) {
         if (m.down) continue;
         m.dust = (m.dust || 0) - dt; if (m.dust <= 0) { m.dust = .28 + rnd(.1); parts.push({ x: hero.x - m.off - 2, y: GROUND - 1, vx: -rnd(4, 10), vy: -rnd(2, 6), life: .4, max: .4, col: REG.grassL, g: 0 }); }
@@ -2079,7 +2121,7 @@ function update(dt) {
         const hurt = party.filter(x => !x.down && x.hp < x.st.maxHp * .92).sort((a, b) => a.hp / a.st.maxHp - b.hp / b.st.maxHp)[0];
         if (hurt) target = { heal: hurt }; else if (front && front.x - mx < C.range && front.x - camX < IW + 4) target = front;
       } else if (front && front.x - mx < C.range + (MELEE[C.type] ? m.off + (front.boss ? 16 : 5) : 0) && front.x - camX < IW + 4) target = front;
-      if (target && m.swing < 0 && m.cd <= 0) { m.swing = 0; m.hit = false; m.tgt = target; m.swingDur = Math.max(.14, .36 / Math.max(1, m.st.aps / 1.1)); m.cd = 1 / m.st.aps; }
+      if (target && m.swing < 0 && m.cd <= 0) { m.swing = 0; m.hit = false; m.tgt = target; m.swingDur = Math.max(.14, .36 / Math.max(1, m.st.aps * fevSpd() / 1.1)); m.cd = 1 / (m.st.aps * fevSpd()); }
       if (m.swing >= 0) {
         m.swing += dt / m.swingDur;
         if (!m.hit && m.swing >= .5) {
@@ -2122,6 +2164,13 @@ function update(dt) {
     e.flash = Math.max(0, e.flash - dt * 6);
     if (e.kb > 0) { e.x += e.kb * dt * 8; e.kb = Math.max(0, e.kb - dt * 25); }
     if (e.dying) { e.dying += dt; continue; }
+    if (e.golden) {
+      if (Math.random() < .35) parts.push({ x: e.x + rnd(-4, 4), y: GROUND - rnd(1, 9), vx: 0, vy: -rnd(4, 12), life: .5, max: .5, col: Math.random() < .5 ? '#fff6c4' : '#ffd23a', g: 0 });
+      if (e.life <= 0) { if (!e.esc) { e.esc = 1; toast('ゴールデンスライムに逃げられた…', '#c9a24a'); } e.x += 75 * dt; e.hopT += dt * 16; if (e.x > camX + IW + 16) e.gone = 1; continue; }
+      const d2 = e.x - (tgtM ? hero.x - tgtM.off : hero.x);
+      if (d2 > 14) e.x -= Math.max(55, e.spd * 3) * dt; else if (!hero.dead) e.life -= dt;
+      e.hopT += dt * (e.life < 2 ? 16 : 9); continue;
+    }
     const tx = tgtM ? hero.x - tgtM.off : hero.x;
     const dist = e.x - tx;
     const reachE = e.boss ? 26 : 15;
@@ -2143,11 +2192,12 @@ function update(dt) {
     }
     if (e.lunge > 0) { e.lunge -= dt; if (!e.hb && e.lunge < .15) { e.hb = 1; const t2 = party.find(m => !m.down); if (t2 && e.x - (hero.x - t2.off) < (e.boss ? 30 : 19) + (e.stop || 0)) hurtMember(t2, e.atk * rnd(.85, 1.15)); } }
   }
-  enemies = enemies.filter(e => !(e.dying > .45));
+  enemies = enemies.filter(e => !(e.dying > .45) && !e.gone);
   // chests
   for (const c of chests) {
     if (!c.land) { c.vy += 160 * dt; c.y += c.vy * dt; if (c.y >= GROUND) { c.y = GROUND; c.land = 1; burst(c.x - camX, GROUND, 6, '#c9b3a0', 20); } }
     if (c.openT > 0) c.openT += dt;
+    if (c.tease > 0 && !c.opened) { c.tease += dt; shake = Math.max(shake, .05 + c.tease * .08); for (let i = 0; i < 2; i++) parts.push({ x: c.x + rnd(-5, 5), y: GROUND - rnd(0, 5), vx: 0, vy: -rnd(20, 45), life: .55, max: .55, col: Math.random() < .5 ? RARITY[c.rar].c : '#ffffff', g: 0 }); }
   }
   chests = chests.filter(c => !(c.openT > 2.2) && c.x > camX - 20);
   // coins (screen space after pop)
@@ -2165,6 +2215,7 @@ function update(dt) {
   const back = party.length ? party[party.length - 1].off : 0;
   const want = hero.x - Math.max(IW * (document.body.classList.contains('mini') ? .35 : .3), back + 16);
   camX = lerp(camX, want, Math.min(1, dt * 6));
+  fevTick(dt);
   shake = Math.max(0, shake - dt); flashT = Math.max(0, flashT - dt);
   updAmb(dt); updFx(dt); updBubbles(dt); waveFx = Math.max(0, waveFx - dt);
 }
@@ -2175,8 +2226,9 @@ function render() {
   drawBG();
   // chests
   for (const c of (arena.on ? [] : chests)) {
-    const x = c.x - camX, col = RARITY[c.rar].c;
-    glow(x, GROUND - 4, 6 + c.rar * 2 + Math.sin(T * 4) * 1, col, .45 + c.rar * .1);
+    const tz = c.tease > 0 && !c.opened ? c.tease : 0, x = c.x - camX + (tz ? Math.round(Math.sin(T * 70) * Math.min(1.5, tz * 1.6)) : 0), col = RARITY[c.rar].c;
+    glow(x, GROUND - 4, 6 + c.rar * 2 + Math.sin(T * 4) * 1 + tz * 14, col, .45 + c.rar * .1 + tz * .4);
+    if (tz) { ctx.globalAlpha = Math.min(.8, tz * .7); R(ctx, x, 0, 1, GROUND - 5, col); ctx.globalAlpha = 1; }
     if (c.openT > 0) { const k = clamp(1 - (c.openT - .1) / 2, 0, 1); ctx.globalAlpha = k * .55; for (let i = 0; i < 3; i++) R(ctx, x - 1 + i, 0, 1, GROUND - 5, col); ctx.globalAlpha = k; R(ctx, x, 0, 1, GROUND - 5, '#ffffff'); ctx.globalAlpha = 1; glow(x, GROUND - 14, 16, col, k * .7); }
     blit((c2, ox, oy) => dChest(c2, ox, oy, c), x, c.y, {});
   }
@@ -2190,6 +2242,7 @@ function render() {
     blit((c2, ox, oy) => { top = DRAW[e.k](c2, ox, oy, e.c, T, e); if (e.boss) dCrown(c2, ox - 1, top); }, x + lungeX, GROUND, { scale: e.boss ? 2 : 1, flash: e.flash, alpha: a, rim: REG.rim, rimA: .35 });
     if (e.dying && !e.sh) { e.sh = 1; shatter(e, x + lungeX); }
     if (e.boss) glow(x, GROUND - 10, 22, e.c, .25 + .08 * Math.sin(T * 3));
+    if (e.golden && !e.dying) { glow(x, GROUND - 6, 13 + 2 * Math.sin(T * 9), '#ffd23a', .6); if (!e.esc && e.life < 3 && Math.sin(T * 14) > 0) R(ctx, x, GROUND - 16, 1, 3, '#ff5c7a'); }
     if (e.k === 'golem' || e.k === 'mush' && G.region === 1) glow(x - 1, GROUND - (e.boss ? 24 : 12), 5, e.k === 'golem' ? REG.accent : e.c, .45);
     if (e.k === 'eye' || e.k === 'wisp') glow(x, GROUND - 11, 9, e.c, .4);
     if (e.k === 'ghost') glow(x, GROUND - (e.boss ? 18 : 9), e.boss ? 16 : 8, e.c, .35);
@@ -2283,6 +2336,7 @@ function updHud(force) {
   if (Math.floor(G.gold) !== shownGold) { shownGold = Math.floor(G.gold); $('gold').textContent = fmtG(G.gold); }
 
   $('auto').classList.toggle('on', !!G.auto);
+  updFev();
 }
 let bumpT = 0;
 function bumpGold() { const now = performance.now(); if (now - bumpT < 200) return; bumpT = now; const g = $('goldbox'); g.classList.remove('bump'); void g.offsetWidth; g.classList.add('bump'); }
@@ -2530,12 +2584,13 @@ function doEnh() {
   const cs = 2 * (it.lv + 1) * (it.r + 1), cg = goldOf(it.t) * (it.lv + 1) * 2;
   if (G.shards < cs || G.gold < cg) return;
   G.shards -= cs; G.gold -= cg;
-  const ok = Math.random() < ENH_RATE[it.lv];
-  if (ok) it.lv++;
+  const ok = Math.random() < ENH_RATE[it.lv], great = ok && it.lv + 2 <= ENH_MAX && Math.random() < GREAT_P;
+  if (ok) it.lv += great ? 2 : 1;
   if (isEquipped(it)) afterGearChange();
   renderPanel();
   const alt = $('altar'); alt.classList.add(ok ? 'ok' : 'ng');
-  if (ok) { const rays = $('rays'); rays.style.setProperty('--rc', '#ffd25e'); rays.classList.add('go'); toast('強化成功！ ' + itemHtml(it), '#ffd25e'); }
+  if (great) { const rays = $('rays'); rays.style.setProperty('--rc', '#ff8cf0'); rays.classList.add('go'); hype('大成功！！', '一気に2段階アップ → +' + it.lv, '#ffd25e', true); flashT = .25; toast('<b style="color:#ff8cf0">大成功！</b> ' + itemHtml(it), '#ff8cf0'); }
+  else if (ok) { const rays = $('rays'); rays.style.setProperty('--rc', '#ffd25e'); rays.classList.add('go'); toast('強化成功！ ' + itemHtml(it), '#ffd25e'); }
   else toast('強化失敗… 素材だけ消えました', '#8a7ab0');
   save();
 }
@@ -3315,7 +3370,7 @@ function dropMats(e) {
 function useItem(id) {
   const I = ITEMS[id]; if (!I || !inv(id) || I.mat) return false;
   if (I.buff) { G.buffs = G.buffs || {}; G.buffs[I.buff] = Math.max(Date.now(), G.buffs[I.buff] || 0) + I.dur * 1000; hero.aura = Math.max(hero.aura, .6); }
-  else if (I.box != null) { const it = makeItem(SLOTS[Math.floor(Math.random() * SLOTS.length)], I.box, tier()); addInv(id, -1); toast(ITEMS[id].n + ' から ' + itemHtml(it) + ' が出た！', RARITY[it.r].c); gainItem(it); save(); renderItems(); return true; }
+  else if (I.box != null) { const it = makeItem(SLOTS[Math.floor(Math.random() * SLOTS.length)], I.box, tier()); addInv(id, -1); if (it.r >= 4) rareHype(it); toast(ITEMS[id].n + ' から ' + itemHtml(it) + ' が出た！', RARITY[it.r].c); gainItem(it); save(); renderItems(); return true; }
   addInv(id, -1); toast(I.n + ' を使った', I.c); updBuffs(); save(); renderItems(); return true;
 }
 function updBuffs() {
@@ -3498,6 +3553,121 @@ window.addEventListener('hashchange', () => {
   if (q.has('update')) { toast('新しいバージョン <b>v' + q.get('update') + '</b> に更新します…', '#7dffa8'); save(); setTimeout(() => native({ t: 'reload' }), 400); }
 });
 
+/* ===================== dopamine: golden slime, fever, homecoming slot, login bonus, big moments ===================== */
+const GOLD_P = 1 / 150, GOLD_G = 60, GREAT_P = .1, FEV_T = 20;
+let hitstop = 0;
+function hype(t, sub, col, rb) {
+  const h = $('hype'); h.style.setProperty('--hc', col); h.classList.toggle('rb', !!rb);
+  h.innerHTML = '<h2>' + t + '</h2>' + (sub ? '<small>' + sub + '</small>' : '');
+  h.classList.remove('show'); void h.offsetWidth; h.classList.add('show'); document.body.classList.add('hyping'); clearTimeout(hype._t); hype._t = setTimeout(() => document.body.classList.remove('hyping'), 2000);
+}
+function makeGolden(e) {
+  G.gpity = 0; e.golden = 1; e.k = 'slime'; e.c = '#ffd23a'; e.elite = false; e.el = null; e.atk = 0; const dps = party.filter(m => !m.down).reduce((t, m) => t + m.st.atk * m.st.aps * (1 + m.st.crit * (m.st.critMul - 1)), 0) * atkBuff() * itemAtk(); e.max = Math.max(e.max, dps * rnd(1.5, 2)); e.hp = e.max; e.life = 5.5; e.spd = (FOE.slime || [1, 9])[1] * 1.3;
+  hype('GOLDEN SLIME!', '逃げられる前に倒せ！', '#ffd23a'); toast('<b style="color:#ffe08a">ゴールデンスライム</b> があらわれた！', '#ffd23a');
+}
+function goldenKill(e, gold) {
+  const nc = 3 + Math.floor(Math.random() * 3); addInv('core', nc);
+  hype('JACKPOT!!', '+' + fmtG(gold) + ' G　魔石 +' + nc, '#ffd23a');
+  pops.push({ x: e.x, y: GROUND - 24, t: 0, s: '+' + fmtPix(gold), c: '#ffe08a', crit: 1 });
+  flashT = .3; shake = .4; hitstop = .18; hero.aura = 1.2;
+  for (let i = 0; i < 3; i++) setTimeout(() => ring(e.x, GROUND - 6, 22 + i * 8, '#ffd23a', .5), i * 120);
+  for (let i = 0; i < 40; i++) parts.push({ x: e.x, y: GROUND - 6, vx: rnd(-50, 50), vy: -rnd(20, 70), life: 1, max: 1, col: Math.random() < .5 ? '#ffd23a' : '#fff6c4', g: 110 });
+}
+function rareHype(it, wx) {
+  const R0 = RARITY[it.r];
+  hitstop = .45; flashT = .35; shake = .4; hero.aura = 1.2;
+  hype(R0.n + '！！', itemName(it), R0.c, it.r >= 6);
+  const x = wx != null ? wx : hero.x + 10;
+  for (let i = 0; i < 3; i++) setTimeout(() => ring(x, GROUND - 6, 20 + i * 10, R0.c, .6), 450 + i * 140);
+}
+/* fever */
+const fev = { g: 0, t: 0, idle: 0 };
+const fevOn = () => fev.t > 0;
+const fevGold = () => fevOn() ? 2 : 1;
+const fevSpd = () => fevOn() ? 1.35 : 1;
+function fevKill(e) {
+  if (fevOn() || arena.on) return;
+  fev.idle = 0; fev.g = Math.min(100, fev.g + (e.golden ? 40 : e.boss ? 30 : e.elite ? 6 : 2.2));
+  if (fev.g >= 100) {
+    fev.g = 0; fev.t = FEV_T; hype('FEVER!!', FEV_T + '秒間 ゴールド2倍・攻撃スピードUP', '#ff9a3c', true);
+    flashT = .25; shake = .25; hero.aura = 1.2; ring(hero.x, GROUND - 6, 30, '#ff9a3c', .5);
+  }
+}
+function fevTick(dt) {
+  if (fev.t > 0) {
+    fev.t -= dt;
+    if (Math.random() < .6) parts.push({ x: hero.x - rnd(0, 30), y: GROUND - rnd(0, 4), vx: -rnd(5, 15), vy: -rnd(15, 35), life: .6, max: .6, col: ['#ff9a3c', '#ffd25e', '#ff5c7a'][Math.floor(Math.random() * 3)], g: 0 });
+    if (fev.t <= 0) { fev.t = 0; toast('フィーバー終了！', '#ff9a3c'); }
+  } else { fev.idle += dt; if (fev.idle > 6) fev.g = Math.max(0, fev.g - dt * 1.2); }
+}
+function updFev() {
+  const f = $('fev'); if (!f) return; const on = fevOn();
+  f.classList.toggle('on', on); f.querySelector('i').style.width = (on ? fev.t / FEV_T * 100 : fev.g).toFixed(1) + '%';
+  const em = f.querySelector('em'), tx = on ? 'FEVER ' + Math.ceil(fev.t) : 'FEVER'; if (em.textContent !== tx) em.textContent = tx;
+  $('fevtint').classList.toggle('on', on);
+}
+/* popups shown one at a time */
+const dq = []; let dqOn = false;
+function dqPush(fn) { dq.push(fn); dqPump(); }
+function dqPump() {
+  if (dqOn || !dq.length) return;
+  if ($('nameov').classList.contains('on') || document.body.classList.contains('mini') || arena.on) return void setTimeout(dqPump, 1500);
+  dqOn = true; dq.shift()();
+}
+function dqShow(html) { const o = $('dhov'); o.innerHTML = '<div class="glass">' + html + '</div>'; o.classList.add('on'); }
+function dqClose() { $('dhov').classList.remove('on'); dqOn = false; setTimeout(dqPump, 500); }
+/* homecoming slot */
+const SLOT_M = [[1, 40], [1.5, 26], [2, 18], [3, 9], [5, 5], [10, 2]];
+function slotRoll() { let r = Math.random() * SLOT_M.reduce((a, m) => a + m[1], 0); for (const [m, w] of SLOT_M) { if ((r -= w) < 0) return m; } return 1; }
+function showAway() {
+  const pa = G.pendAway; if (!pa) return dqClose();
+  dqShow('<div class="tx"><b>おかえり！</b><span>離れていた ' + fmtTime(pa.sec) + (pa.cap ? '（最大8時間分）' : '') + ' の報酬</span><span class="amt" id="awamt">+' + fmtG(pa.g) + ' G</span>' + (pa.vg || pa.vn ? '<span>村から +' + fmtG(pa.vg || 0) + ' G' + (pa.vn ? '　魔石 +' + pa.vn : '') + '（受け取り済み）</span>' : '') + '</div><div class="reel" id="reel">×?</div><button class="btn" id="spinbtn">スロットを回す</button>');
+  $('spinbtn').onclick = () => {
+    const b = $('spinbtn'); b.disabled = true; b.textContent = '回転中…';
+    const m = slotRoll(), reel = $('reel'), labels = SLOT_M.map(x => '×' + x[0]); let i = 0, delay = 45, el = 0;
+    reel.classList.add('spin');
+    const step = () => {
+      reel.textContent = labels[i++ % labels.length]; el += delay;
+      if (el < 900) setTimeout(step, delay); else if (delay < 260) { delay *= 1.28; setTimeout(step, delay); } else land();
+    };
+    const land = () => {
+      reel.classList.remove('spin'); reel.textContent = '×' + m; reel.classList.add('hit'); if (m >= 5) reel.classList.add('big');
+      const base = pa.g, total = base * m, t0 = performance.now(), amt = $('awamt');
+      const count = () => { const k = Math.min(1, (performance.now() - t0) / 900); amt.textContent = '+' + fmtG(base + (total - base) * ease(k)) + ' G'; if (k < 1) requestAnimationFrame(count); };
+      count();
+      G.gold += total; delete G.pendAway; bumpGold(); updHud(true); save();
+      if (m >= 5) { hype('×' + m + ' JACKPOT!!', '+' + fmtG(total) + ' G', '#ff8cf0', true); flashT = .3; }
+      else if (m >= 2) { hype('×' + m + '！', '+' + fmtG(total) + ' G', '#ffd25e'); }
+      for (let j = 0; j < Math.min(40, 8 * m); j++) coins.push({ x: hero.x + rnd(-20, 30), y: GROUND - 6, vx: rnd(-18, 22), vy: rnd(-45, -25), t: 0, v: 0, phase: 0 });
+      b.disabled = false; b.textContent = 'OK'; b.onclick = dqClose; setTimeout(() => { if ($('dhov').contains(b)) dqClose(); }, 4000);
+    };
+    step();
+  };
+}
+/* login bonus */
+const LOGIN = [{ k: 'core', n: 3, l: '魔石×3' }, { k: 'gold', n: 150, l: 'ゴールド' }, { k: 'luck', n: 1, l: '金運の秘薬' }, { k: 'core', n: 6, l: '魔石×6' }, { k: 'wise', n: 1, l: '知恵の書' }, { k: 'gold', n: 400, l: 'ゴールド大' }, { k: 'box4', n: 1, l: 'レジェンド箱' }];
+function dayKeyOff(off) { const d = new Date(); d.setDate(d.getDate() + off); return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate(); }
+let loginQ = '';
+function loginCheck() {
+  const L = G.login || {}, tk = todayKey();
+  if (L.k === tk || loginQ === tk) return; loginQ = tk;
+  dqPush(() => {
+    const n = L.k === dayKeyOff(-1) ? (L.n || 0) + 1 : 1, idx = (n - 1) % 7, r = LOGIN[idx];
+    const ic = x => x.k === 'gold' ? '<span class="coin"></span>' : '<img src="' + itemIcon(x.k) + '">';
+    let h = '<div class="tx"><b>ログインボーナス</b><span>' + (n > 1 ? n + '日連続ログイン！' : '毎日ログインで豪華に') + '</span><span>7日目は <b style="font-size:10px;color:#ffc94d">レジェンド箱</b></span></div><div class="lgrid">';
+    LOGIN.forEach((x, i) => { h += '<div class="lday' + (i < idx ? ' got' : '') + (i === idx ? ' now' : '') + (i === 6 ? ' d7' : '') + '">' + ic(x) + '<span>' + (i + 1) + '日目</span></div>'; });
+    dqShow(h + '</div><button class="btn" id="lgbtn">受け取る</button>');
+    $('lgbtn').onclick = () => {
+      let got = r.l;
+      if (r.k === 'gold') { const g = goldOf(tier()) * r.n; G.gold += g; got = fmtG(g) + ' G'; bumpGold(); } else addInv(r.k, r.n);
+      G.login = { k: tk, n }; save(); updHud(true);
+      if (idx === 6) hype('DAY 7！！', got + ' を手に入れた', '#ffc94d', true); else hype('LOGIN BONUS', got + ' を手に入れた', '#7dffa8');
+      toast('ログインボーナス：<b>' + got + '</b>', '#7dffa8'); dqClose();
+    };
+  });
+}
+function dopaStart() { if (G.pendAway) dqPush(showAway); loginCheck(); }
+
 /* ---------- loop ---------- */
 let last = performance.now(), acc = 0, saveT = 0;
 function frame(now) {
@@ -3505,6 +3675,7 @@ function frame(now) {
   let dt = (now - last) / 1000; last = now; if (dt > .25) dt = .25;
   acc += dt; if (acc < 1 / 31) return;
   const step = Math.min(acc, .1); acc = 0;
+  if (hitstop > 0) { hitstop -= step; render(); return; }
   update(step); render(); updHud();
   saveT += step; if (saveT > 15) { saveT = 0; save(); }
 }
@@ -3512,6 +3683,7 @@ load(); if (G.name && window.__DH_USER && G.name === String(window.__DH_USER).tr
 if (G._refund) { const b = G._refund; delete G._refund; setTimeout(() => toast('強化ボタン廃止のため <b style="color:#ffe08a">' + fmtG(b) + ' G</b> を返却しました。ルーン（ᚱ）に使えます', '#ffd25e'), 2500); }
 if (G.grp && G.grp.code) setTimeout(() => grpJoin(G.grp.code, false), 1200);
 setTimeout(socStart, 2000);
+setTimeout(dopaStart, 1400);
 hero.x = 0; camX = hero.x - IW * .3;
 setTimeout(chapterTitle, 250);
 requestAnimationFrame(frame);
