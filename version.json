@@ -1,1 +1,1 @@
-{"version": "1.13.0", "build": 213, "minShell": 3, "sha256": "0394dc3a64e919f0e5a9cfd3a27be0564a0a8729850be1cc72f58caae9a4e1cc", "notes": "難易度5段階追加と属性／村づくり／称号／倉庫（蔵のルーン）／移動速度ルーン／数字を全桁表示"}
+{"version": "1.13.1", "build": 214, "minShell": 3, "sha256": "900d46a50d98d74cf16acfeafd2c86bf6386d327e1eed61ccd3a19c3191d0558", "notes": "長い数字でバーの表示が崩れないように"}

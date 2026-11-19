@@ -375,6 +375,7 @@ body.mini #card{left:12px;right:12px}body.flip{bottom:auto;top:0;transform-origi
 .dtabs{display:flex;gap:3px}.dtabs button{font-size:9.5px;font-weight:900;padding:3px 7px;border-radius:7px;color:var(--sub);background:rgba(255,255,255,.05)}.dtabs button.on{color:#1b0f33;background:var(--dc)}.dtabs button[disabled]{opacity:.4}
 .ttl{display:inline-block;margin-right:4px;padding:0 5px;border-radius:5px;font-size:9px;font-weight:900;color:#ffe08a;background:rgba(255,210,94,.14)}
 #storebtn.on{background:#e0c08a;color:#1b0f33}
+#stagebox,#goldbox,#stagebox *{white-space:nowrap}#mid{min-width:0;flex-shrink:1}#goldbox{flex-shrink:0}
 </style>
 </head>
 <body>
@@ -485,7 +486,7 @@ function fmt(n) { return Math.floor(n).toLocaleString('en-US'); }   // every dig
 function fmtPix(n) { return '' + Math.floor(n); }
 
 /* ---------- bridge to the macOS shell ---------- */
-const GAME_VERSION = '1.13.0', GAME_BUILD = 213;
+const GAME_VERSION = '1.13.1', GAME_BUILD = 214;
 const NATIVE = !!window.__DH_NATIVE || Q.has('nativeTest');
 if (window.__DH_OS === 'win') document.addEventListener('DOMContentLoaded', () => { const g = document.getElementById('grip'); if (g) g.title = 'ドラッグで移動／ダブルクリックでタスクバーの上に戻す'; });
 // page -> mac: the shell polls document.title. Keep the title short: big payloads (saves) are cut into chunks
