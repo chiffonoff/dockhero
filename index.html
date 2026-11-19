@@ -431,6 +431,15 @@ body.raid #mid{visibility:hidden}body.raid #pips .bossbar{display:none}
 .ngl{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}.ngl span{font-size:9.5px;padding:1px 6px;border-radius:6px;background:rgba(255,255,255,.08)}.ngl b{cursor:pointer;color:#ff8fa8;margin-left:4px}
 .lvc1{color:#7dffa8}.lvc2{color:#5aa9ff}.lvc3{color:#c99bff}.lvc4{color:#ffd25e}
 #padmin .rrow span{white-space:nowrap}
+/* every panel column scrolls instead of being cut off */
+.page{grid-template-rows:minmax(0,1fr)}.page>.pcol{min-height:0;overflow-y:auto;overflow-x:hidden}
+#pchat .pcol:first-child{overflow:hidden}#pchat .clog{min-height:60px}
+.rune .rlv{position:absolute;right:5px;top:3px;font-style:normal;font-size:9px;font-weight:900;color:var(--rc);background:rgba(0,0,0,.35);padding:0 4px;border-radius:5px}
+.rune.max .rlv{color:#7dffa8}#prune .rune b{padding-right:42px}
+.dcell.got{background:color-mix(in srgb,var(--rc,#7dffa8) 26%,rgba(255,255,255,.04));border:1px solid var(--rc,#7dffa8);box-shadow:0 0 6px color-mix(in srgb,var(--rc,#7dffa8) 45%,transparent)}
+.dcell.un{opacity:.5;border:1px dashed rgba(255,255,255,.18);background:rgba(0,0,0,.25)}
+.dgrid .dcell.got{--rc:#7dffa8}.dgrid .dcell.boss.got{--rc:#ff8fa8}
+.dgear{display:grid;grid-template-columns:78px repeat(5,26px);gap:4px;align-items:center}.drk{font-size:9.5px;font-weight:900;white-space:nowrap}
 </style>
 </head>
 <body>
@@ -552,7 +561,7 @@ function fmt(n) { return Math.floor(n).toLocaleString('en-US'); }   // every dig
 function fmtPix(n) { return '' + Math.floor(n); }
 
 /* ---------- bridge to the macOS shell ---------- */
-const GAME_VERSION = '1.16.0', GAME_BUILD = 221;
+const GAME_VERSION = '1.16.1', GAME_BUILD = 222;
 const NATIVE = !!window.__DH_NATIVE || Q.has('nativeTest');
 if (window.__DH_OS === 'win') document.addEventListener('DOMContentLoaded', () => { const g = document.getElementById('grip'); if (g) g.title = 'ドラッグで移動／ダブルクリックでタスクバーの上に戻す'; });
 // page -> mac: the shell polls document.title. Keep the title short: big payloads (saves) are cut into chunks
@@ -734,10 +743,10 @@ const CLASSES = {
   knight: { n: '騎士', role: '前衛・守り', desc: '硬くて頼れる剣士。いちばん前で仲間を守る。', atk: 1, hp: 1.35, aps: 1, range: 13, type: 'melee', col: '#8a4dff' },
   archer: { n: '弓使い', role: '遠距離・会心', desc: '後ろから矢を放つ。会心が出やすい。', atk: 1.05, hp: .8, aps: 1.05, crit: .06, range: 360, type: 'arrow', col: '#4fbf7a' },
   mage: { n: '魔導士', role: '範囲攻撃', desc: '星の魔弾で、近くの敵をまとめて攻撃。', atk: 1.25, hp: .7, aps: .7, range: 186, type: 'magic', col: '#5b6cff' },
-  healer: { n: 'ヒーラー', role: '回復', desc: '傷ついた仲間を癒やす。攻撃は控えめ。', atk: .6, hp: .95, aps: .8, range: 56, type: 'heal', col: '#7fe7ff' },
+  healer: { n: 'ヒーラー', role: '回復', desc: 'HPが減った仲間を癒やす（回復したあとは少し休む）。攻撃は控えめ。', atk: .6, hp: .95, aps: .8, range: 56, type: 'heal', col: '#7fe7ff' },
   rogue: { n: '双剣士', role: '連撃', desc: '二本の短剣ですばやく斬る。会心ダメージが高い。', atk: .62, hp: .9, aps: 1.75, critd: .4, range: 13, type: 'dagger', col: '#ff5c6c' },
   smith: { n: '鉄槌士', role: '重撃・範囲', desc: '大槌の一撃で、周りの敵もまとめて叩く。', atk: 1.8, hp: 1.2, aps: .55, range: 14, type: 'hammer', col: '#ff9a3d' },
-  bard: { n: '吟遊詩人', role: '応援', desc: 'ギターの演奏で、仲間全員の攻撃力アップ。', atk: .7, hp: .9, aps: .9, range: 62, type: 'bard', col: '#ff6bd0' },
+  bard: { n: '吟遊詩人', role: '応援・支援', desc: 'ギターの演奏で仲間全員の攻撃力+12%・攻撃速度+10%。10秒ごとの歌で全員のHPを少し回復。', atk: .7, hp: .9, aps: .9, range: 62, type: 'bard', col: '#ff6bd0' },
 };
 const CLS_ORDER = Object.keys(CLASSES);
 const MELEE = { melee: 1, dagger: 1, hammer: 1 };
@@ -813,6 +822,13 @@ function partyStats() {
 function stats() { return partyStats(); }
 const partyHp = () => party.reduce((a, m) => a + Math.max(0, m.hp), 0);
 const atkBuff = () => 1 + .12 * party.filter(m => m.cls === 'bard' && !m.down).length;
+const bardSpd = () => 1 + .1 * party.filter(m => m.cls === 'bard' && !m.down).length;
+function bardSong(dt) {
+  for (const b of party) { if (b.cls !== 'bard' || b.down || hero.dead) continue; b.song = (b.song || 0) + dt; if (b.song < 10) continue; b.song = 0;
+    const bx = hero.x - b.off; ring(bx, GROUND - 8, 40, '#ff8ee0', .55); ring(bx, GROUND - 8, 26, '#ffd6f5', .4);
+    for (let i = 0; i < 10; i++) parts.push({ x: bx + rnd(-30, 30), y: GROUND - rnd(4, 26), vx: rnd(-4, 4), vy: -rnd(8, 18), life: 1.1, max: 1.1, col: i % 2 ? '#ff8ee0' : '#ffe08a', g: 0 });
+    for (const m of party) if (!m.down) { const a = m.st.maxHp * .05; m.hp = Math.min(m.st.maxHp, m.hp + a); pops.push({ x: hero.x - m.off + 1, y: GROUND - 30, t: 0, s: '♪+' + fmtPix(a), c: '#ff9ae6' }); } }
+}
 function migrate() {
   if ((G.v || 1) < 2) {
     const old = G.gear || {}; G.gear = {};
@@ -2080,7 +2096,7 @@ function drawFx() {
 }
 function memberAct(m, front) {
   const C = CLASSES[m.cls], mx = hero.x - m.off, wc = m.gr && m.gr.weapon >= 0 ? RARITY[m.gr.weapon].metal : '#e8f4ff';
-  if (C.type === 'heal' && front && front.heal) { healMember(m, front.heal, m.st.atk * 2.4); return; }
+  if (C.type === 'heal' && front && front.heal) { healMember(m, front.heal, m.st.atk * 1.4); m.cd = Math.max(m.cd, 2 / m.st.aps); return; }
   if (!front || front.dying) return;
   const y0 = GROUND - 9;
   switch (C.type) {
@@ -2106,7 +2122,7 @@ function projHit(pj, e) {
   else { damageEnemy(e, pj.m, 1); star(e.x - 2, GROUND - 8, '#fff2d0'); }
 }
 function update(dt) {
-  T += dt; villageTick(dt); G.playT = (G.playT || 0) + dt; if (G.dayKey !== todayKey()) { G.dayKey = todayKey(); G.days = (G.days || 0) + 1; setTimeout(loginCheck, 1500); }
+  T += dt; villageTick(dt); if (!arena.on) bardSong(dt); G.playT = (G.playT || 0) + dt; if (G.dayKey !== todayKey()) { G.dayKey = todayKey(); G.days = (G.days || 0) + 1; setTimeout(loginCheck, 1500); }
   if (arena.on) { arenaUpdate(dt); for (const p of parts) { p.life -= dt; p.vy += (p.g || 0) * dt; p.x += p.vx * dt; p.y += p.vy * dt; } parts = parts.filter(p => p.life > 0); for (const p of pops) p.t += dt; pops = pops.filter(p => p.t < .9); shake = Math.max(0, shake - dt); flashT = Math.max(0, flashT - dt); updAmb(dt); updFx(dt); updBubbles(dt); return; }
   if (fade > 0) { // chapter transition
     fade += dt * 1.6;
@@ -2137,10 +2153,10 @@ function update(dt) {
       m.cd -= dt;
       let target = null;
       if (C.type === 'heal') {
-        const hurt = party.filter(x => !x.down && x.hp < x.st.maxHp * .92).sort((a, b) => a.hp / a.st.maxHp - b.hp / b.st.maxHp)[0];
+        const hurt = party.filter(x => !x.down && x.hp < x.st.maxHp * .75).sort((a, b) => a.hp / a.st.maxHp - b.hp / b.st.maxHp)[0];
         if (hurt) target = { heal: hurt }; else if (front && front.x - mx < C.range && front.x - camX < IW + 4) target = front;
       } else if (front && front.x - mx < C.range + (MELEE[C.type] ? m.off + (front.boss ? 16 : 5) : 0) && front.x - camX < IW + 4) target = front;
-      if (target && m.swing < 0 && m.cd <= 0) { m.swing = 0; m.hit = false; m.tgt = target; m.swingDur = Math.max(.14, .36 / Math.max(1, m.st.aps * fevSpd() / 1.1)); m.cd = 1 / (m.st.aps * fevSpd()); }
+      if (target && m.swing < 0 && m.cd <= 0) { m.swing = 0; m.hit = false; m.tgt = target; m.swingDur = Math.max(.14, .36 / Math.max(1, m.st.aps * fevSpd() / 1.1)); m.cd = 1 / (m.st.aps * fevSpd() * bardSpd()); }
       if (m.swing >= 0) {
         m.swing += dt / m.swingDur;
         if (!m.hit && m.swing >= .5) {
@@ -2894,8 +2910,8 @@ function renderRunes() {
     for (const r of RUNES) {
       const lv = runeLvP(P, r.id), open = runeOpen(P, r.id), max = lv >= r.max, c = runeCost(P, r.id), can = open && !max && G.gold >= c;
       h += '<div class="rune' + (open ? '' : ' lock') + (max ? ' max' : can ? '' : ' no') + '" data-rune="' + r.id + '" style="--rc:' + r.col + '" title="' + r.d + ' ' + runeTxt(r, 1) + '／Lv">' +
-        '<span class="rg">' + r.g + '</span><b>' + r.n + '<i>Lv' + lv + '/' + r.max + '</i></b><small>' + r.d + ' ' + runeTxt(r, lv) + (max ? '' : ' → ' + runeTxt(r, lv + 1)) + '</small>' +
-        '<span class="rc">' + (!open ? '🔒 ' + RUNE[r.req].n + ' Lv2' : max ? 'MAX' : '<span class="coin" style="width:10px;height:10px"></span>' + fmtG(c)) + '</span></div>';
+        '<span class="rg">' + r.g + '</span><i class="rlv">Lv' + lv + '/' + r.max + '</i><b>' + r.n.replace('のルーン', '') + '</b><small>' + r.d + ' ' + runeTxt(r, lv) + (max ? '' : ' → ' + runeTxt(r, lv + 1)) + '</small>' +
+        '<span class="rc">' + (!open ? '🔒 ' + RUNE[r.req].n.replace('のルーン', '') + ' Lv2' : max ? 'MAX' : '<span class="coin" style="width:10px;height:10px"></span>' + fmtG(c)) + '</span></div>';
     }
     h += '</div>';
   }
@@ -3052,7 +3068,7 @@ function arenaStep(dt) {
       if (!f.hit && f.swing >= .5) {
         f.hit = true; f.hits++;
         const allies = (f.side < 0 ? arena.A : arena.B).filter(o => !o.down);
-        if (f.type === 'heal') { const w = allies.slice().sort((a, b) => a.hp / a.max - b.hp / b.max)[0]; if (w && w.hp < w.max * .9) { const amt = f.atk * 2.4; w.hp = Math.min(w.max, w.hp + amt); pops.push({ x: ax(w.x), y: GROUND - 28, t: 0, s: '+' + fmtPix(amt), c: '#7dffa8' }); ring(ax(w.x), GROUND, 12, '#9dffc8', .5, true); } else arena.P.push({ x: f.x, y: -12, tg: f.tg, src: f, m: 1, col: '#bff6ff', k: 'holy' }); }
+        if (f.type === 'heal') { const w = allies.slice().sort((a, b) => a.hp / a.max - b.hp / b.max)[0]; if (w && w.hp < w.max * .75) { const amt = f.atk * 1.4; f.cd = Math.max(f.cd, 2 / f.aps); w.hp = Math.min(w.max, w.hp + amt); pops.push({ x: ax(w.x), y: GROUND - 28, t: 0, s: '+' + fmtPix(amt), c: '#7dffa8' }); ring(ax(w.x), GROUND, 12, '#9dffc8', .5, true); } else arena.P.push({ x: f.x, y: -12, tg: f.tg, src: f, m: 1, col: '#bff6ff', k: 'holy' }); }
         else if (f.type === 'arrow' || f.type === 'magic' || f.type === 'bard') arena.P.push({ x: f.x + dir * 4, y: -17, tg: f.tg, src: f, m: 1, col: f.type === 'magic' ? '#8fa0ff' : f.type === 'bard' ? '#ff8ee0' : '#fff2d0', k: f.type });
         else { aHit(f, f.tg, 1); if (f.type === 'hammer') { ring(ax(f.tg.x), GROUND, 24, '#ffcf8a', .45, true); for (const o of (f.side < 0 ? arena.B : arena.A)) if (o !== f.tg && !o.down && Math.abs(o.x - f.tg.x) < 14) aHit(f, o, .6); } if (f.type === 'dagger') slash(ax(f.tg.x), GROUND - 10, f.hits % 2 ? .8 : -.8, 6, '#ff9aa8'); }
       }
@@ -3574,10 +3590,10 @@ function renderItems() {
     const d = G.dex || { f: {}, g: {} }, nf = Object.keys(d.f || {}).length, ng = Object.keys(d.g || {}).length, totF = Object.keys(FOE_MAPS).length + REGIONS.length;
     h += '<div class="fhint" style="text-align:left;margin:0 0 6px">見つけた数 <b style="color:#fff">' + (nf + ng) + ' / ' + (totF + SLOTS.length * RARITY.length) + '</b>　図鑑ボーナス：攻撃力 <b style="color:#7dffa8">+' + (dexCount() * .2).toFixed(1) + '%</b>（1件につき+0.2%）</div>';
     h += '<div class="lbl" style="margin-top:0">モンスター（' + nf + '/' + totF + '）</div><div class="dgrid">';
-    for (const k of Object.keys(FOE_MAPS)) { const seen = (d.f || {})[k]; h += '<div class="dcell' + (seen ? '' : ' un') + '" title="' + (seen ? FOE_JP[k] + '（' + seen + '体）' : '？？？') + '"><img src="' + foeIcon(k, seen) + '"></div>'; }
-    REGIONS.forEach((Rg, i) => { const seen = (d.f || {})['B' + i]; h += '<div class="dcell boss' + (seen ? '' : ' un') + '" title="' + (seen ? Rg.boss.name : '？？？（ボス）') + '"><img src="' + foeIcon(Rg.boss.k, seen, Rg.boss.c) + '"></div>'; });
-    h += '</div><div class="lbl">装備（' + ng + '/' + SLOTS.length * RARITY.length + '）</div><div class="dgrid gear">';
-    for (let r = 0; r < RARITY.length; r++) for (const s of SLOTS) { const seen = (d.g || {})[s + ':' + r]; h += '<div class="dcell' + (seen ? '' : ' un') + '" title="' + (seen ? RARITY[r].n + '・' + SLOTNAME[s] : '？？？') + '" style="' + (seen ? '--rc:' + RARITY[r].c : '') + '"><img src="' + icon(s, seen ? r : -1, 'knight') + '"></div>'; }
+    for (const k of Object.keys(FOE_MAPS)) { const seen = (d.f || {})[k]; h += '<div class="dcell' + (seen ? ' got' : ' un') + '" title="' + (seen ? FOE_JP[k] + '（' + seen + '体）' : '？？？') + '"><img src="' + foeIcon(k, seen) + '"></div>'; }
+    REGIONS.forEach((Rg, i) => { const seen = (d.f || {})['B' + i]; h += '<div class="dcell boss' + (seen ? ' got' : ' un') + '" title="' + (seen ? Rg.boss.name : '？？？（ボス）') + '"><img src="' + foeIcon(Rg.boss.k, seen, Rg.boss.c) + '"></div>'; });
+    h += '</div><div class="lbl">装備（' + ng + '/' + SLOTS.length * RARITY.length + '）</div><div class="dgear">';
+    for (let r = 0; r < RARITY.length; r++) { const RC = RARITY[r].c; h += '<span class="drk" style="color:' + RC + '">' + RARITY[r].n + '</span>'; for (const s of SLOTS) { const seen = (d.g || {})[s + ':' + r]; h += '<div class="dcell' + (seen ? ' got' : ' un') + '" title="' + (seen ? RARITY[r].n + '・' + SLOTNAME[s] : '？？？（' + RARITY[r].n + '・' + SLOTNAME[s] + '）') + '" style="--rc:' + RC + '"><img src="' + icon(s, seen ? r : -1, 'knight') + '"></div>'; } }
     h += '</div>';
   }
   h += '</div><div class="pcol" style="padding-left:12px;border-left:1px solid rgba(255,255,255,.07)">';
