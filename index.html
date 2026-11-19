@@ -129,8 +129,8 @@ body.mini #bagbtn,body.mini #quit,body.mini #partybtn,body.mini #grpchip{display
 .page{position:absolute;inset:12px 14px;display:none;gap:14px}
 #pgear{grid-template-columns:230px minmax(0,1fr) 270px}
 #pparty{grid-template-columns:minmax(0,1fr) 300px}
-body.pg-gear #pgear,body.pg-party #pparty,body.pg-map #pmap,body.pg-rank #prank,body.pg-rune #prune{display:grid}
-#prune{grid-template-columns:minmax(0,1fr) 230px}
+body.pg-gear #pgear,body.pg-party #pparty,body.pg-map #pmap,body.pg-rank #prank,body.pg-rune #prune,body.pg-item #pitem{display:grid}
+#prune,#pitem{grid-template-columns:minmax(0,1fr) 230px}
 #runebtn{display:grid;place-items:center;width:34px;padding:0;font-size:17px;font-weight:900;color:#c9a8ff;text-shadow:0 0 8px rgba(180,130,255,.8)}
 #runebtn.on{background:linear-gradient(#e8d8ff,#b48bff);color:#2a1050;text-shadow:none}
 body.mini #runebtn{display:none}
@@ -343,6 +343,29 @@ body.mini #card{left:12px;right:12px}body.flip{bottom:auto;top:0;transform-origi
 #uipop{position:absolute;right:10px;top:44px;z-index:12;display:none;padding:10px 12px;border-radius:12px;width:210px;font-size:11px;color:#e6dcff}
 #uipop.on{display:block}#uipop label{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:4px 0;font-weight:800}
 #uipop input{width:120px;accent-color:#b48bff}#uipop small{display:block;color:#a99cc8;margin-top:4px;font-size:9px}
+#gear{display:none!important}
+#card{opacity:var(--op,1)}
+#buffs{display:flex;gap:4px;font-size:9px;font-weight:900;color:#fff}#buffs span{display:flex;align-items:center;gap:2px;padding:1px 4px;border-radius:6px;background:rgba(0,0,0,.35)}#buffs img{width:10px;height:10px;image-rendering:pixelated}
+#mmchip{position:absolute;left:50%;bottom:8px;transform:translateX(-50%);z-index:7;display:none;align-items:center;gap:6px;padding:3px 4px 3px 10px;border-radius:10px;background:rgba(18,8,40,.75);font-size:10px;font-weight:800;color:#ffd6f5;white-space:nowrap}
+#mmchip i{width:6px;height:6px;border-radius:50%;background:#ff8ce0;box-shadow:0 0 6px #ff8ce0;animation:pulse .6s infinite alternate}
+#mmchip button{font-size:9.5px;font-weight:800;padding:2px 8px;border-radius:7px;background:rgba(255,255,255,.12);color:#fff}
+#nameov{position:absolute;inset:0;z-index:20;display:none;place-items:center;background:rgba(10,4,24,.55)}#nameov.on{display:grid}
+#nameov>div{display:flex;flex-direction:column;gap:4px;padding:10px 16px;border-radius:14px;min-width:340px;color:#e6dcff;font-size:11px}#nameov b{font-size:13px;color:#fff}#nameov span{color:#b9addb;font-size:10px}
+#nameov .fld{display:flex;gap:6px;margin-top:4px}#nameov input{flex:1;height:26px;border-radius:8px;border:1px solid rgba(255,255,255,.18);background:rgba(0,0,0,.35);color:#fff;padding:0 8px;font:inherit;font-size:12px;font-weight:800}
+.rbox{display:flex;align-items:center;gap:10px;padding:6px 8px;border-radius:10px;background:rgba(255,255,255,.05)}.rbox small{display:block;color:var(--sub);font-size:9.5px}
+.tierb{min-width:58px;text-align:center;padding:5px 6px;border-radius:9px;font-size:11px;font-weight:900;color:#1b0f33;background:var(--tc);box-shadow:0 0 10px var(--tc)}
+#itembtn.on{background:linear-gradient(#e7d6ff,#b48bff)}
+.igrid{display:grid;grid-template-columns:repeat(auto-fill,40px);gap:6px;overflow:auto;align-content:start}
+.icell{position:relative;width:40px;height:40px;border-radius:10px;display:grid;place-items:center;cursor:pointer;background:rgba(255,255,255,.06);border:1px solid rgba(255,255,255,.1);flex:none}
+.icell.sel{outline:2px solid #fff;outline-offset:1px}.icell img{width:24px;height:24px;image-rendering:pixelated}.icell b{position:absolute;right:3px;bottom:1px;font-size:9.5px;font-weight:900;color:#fff;text-shadow:0 1px 2px #000}
+.slist{display:flex;flex-direction:column;gap:5px;overflow:auto;min-height:0}.srow{display:flex;align-items:center;gap:8px;padding:3px 6px 3px 3px;border-radius:10px;background:rgba(255,255,255,.04)}.srow .icell{width:32px;height:32px}.srow .icell img{width:20px;height:20px}
+.srow>span{flex:1;min-width:0;font-size:10.5px}.srow small{display:block;color:var(--sub);font-size:9px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.srow .btn{min-width:74px;display:flex;align-items:center;justify-content:center;gap:3px}
+.srow .btn[disabled]{opacity:.45}.ii{width:10px;height:10px;image-rendering:pixelated;vertical-align:-1px;margin-right:2px}
+#pitem .pcol:first-child{overflow:hidden}#pitem .pcol:first-child>.slist{overflow:visible;flex:none}
+.dgrid{display:grid;grid-template-columns:repeat(auto-fill,26px);gap:4px}.dcell{width:26px;height:26px;border-radius:7px;display:grid;place-items:center;background:rgba(255,255,255,.06);border:1px solid var(--rc,rgba(255,255,255,.1))}
+.dcell img{max-width:22px;max-height:22px;image-rendering:pixelated}.dcell.gear img{width:14px}.dcell.un{opacity:.55}.dcell.boss{border-color:#ff8fa8}
+#pitem .pcol:first-child{overflow-y:auto}
+.idet{display:flex;align-items:center;gap:8px;margin-bottom:6px}.idet img{width:36px;height:36px;image-rendering:pixelated;padding:4px;border-radius:10px;background:rgba(255,255,255,.06)}.idet small{display:block;color:var(--sub);font-size:9.5px}
 </style>
 </head>
 <body>
@@ -376,16 +399,19 @@ body.mini #card{left:12px;right:12px}body.flip{bottom:auto;top:0;transform-origi
   <div id="pmap" class="page"></div>
   <div id="prank" class="page"></div>
   <div id="prune" class="page"></div>
+  <div id="pitem" class="page"></div>
 </div>
 <div id="card">
-  <div id="uipop" class="glass"><label>大きさ <input id="uik" type="range" min="0.55" max="1" step="0.05"></label><label>横幅 <input id="uiw" type="range" min="0.4" max="1" step="0.05"></label><small>ダブルクリックで元に戻す</small></div>
+  <div id="uipop" class="glass"><label>大きさ <input id="uik" type="range" min="0.55" max="1" step="0.05"></label><label>横幅 <input id="uiw" type="range" min="0.4" max="1" step="0.05"></label><label>不透明度 <input id="uio" type="range" min="0.25" max="1" step="0.05"></label><small>ダブルクリックで元に戻す</small></div>
+  <div id="mmchip"></div>
+  <div id="nameov"><div class="glass"><b>ようこそ Dock Hero へ！</b><span>まずはプレイヤー名を決めてください（ランキングや対戦で表示されます）</span><div class="fld"><input id="nmin" maxlength="12" placeholder="プレイヤー名（12文字まで）"><button class="btn" id="nmok">はじめる</button></div></div></div>
   <canvas id="c"></canvas>
   <canvas id="fx"></canvas>
   <div id="flash"></div>
   <div id="hud">
     <div id="left" class="glass">
       <div id="grip" title="ドラッグで移動／ダブルクリックでDockの上に戻す"><i></i></div>
-      <div id="lvbox"><span>Lv</span><b id="lv">1</b></div>
+      <div id="lvbox"><span>Lv</span><b id="lv">1</b></div><span id="buffs"></span>
       <span id="grpchip" style="display:none"></span>
       <div class="bars">
         <div class="bar hp"><i id="hpb"></i><em id="hpt"></em></div>
@@ -398,6 +424,7 @@ body.mini #card{left:12px;right:12px}body.flip{bottom:auto;top:0;transform-origi
       <button id="rankbtn" class="tbtn glass" title="フレンドランキング"><svg viewBox="0 0 16 16"><path d="M4 1h8v2h3v2.5A3.5 3.5 0 0 1 11.7 9 4 4 0 0 1 9 11.2V13h2.5v2h-7v-2H7v-1.8A4 4 0 0 1 4.3 9 3.5 3.5 0 0 1 1 5.5V3h3zm8 3.5v3a2 2 0 0 0 1.5-2V4.5zM4 4.5H2.5v1a2 2 0 0 0 1.5 2z"/></svg></button>
       <button id="partybtn" class="tbtn glass" title="キャラクター・グループ"><svg viewBox="0 0 16 16"><path d="M5.5 7.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5zm6 .5a2 2 0 1 1 0-4 2 2 0 0 1 0 4zM1 13c0-2.5 2-4 4.5-4S10 10.5 10 13v1H1zm10 1v-1c0-1.3-.4-2.4-1.1-3.2.5-.2 1-.3 1.6-.3 2 0 3.5 1.2 3.5 3.3V14z"/></svg></button>
       <button id="runebtn" class="tbtn glass" title="ルーン（ゴールドで永続強化）"><span>ᚱ</span></button>
+      <button id="itembtn" class="tbtn glass" title="アイテム・ショップ・クラフト・図鑑"><img id="itemic" style="width:14px;height:14px;image-rendering:pixelated"></button>
       <button id="bagbtn" class="tbtn glass" title="装備・合成・強化"><svg viewBox="0 0 16 16"><path d="M5 5V4a3 3 0 0 1 6 0v1h2.2l.8 9.5H2L2.8 5zm1.5 0h3V4a1.5 1.5 0 0 0-3 0z"/></svg><i id="bagbadge"></i></button>
       <button id="auto" class="tbtn glass" title="ゴールドが貯まったら自動で強化" style="display:none">AUTO</button>
       <button id="uibtn" class="tbtn glass" title="バーの大きさ"><span>⚙&#xFE0E;</span></button>
@@ -453,7 +480,7 @@ function fmt(n) {
 function fmtPix(n) { n = Math.floor(n); if (n < 10000) return '' + n; if (n < 1e6) return Math.floor(n / 1000) + 'K'; if (n < 1e9) return Math.floor(n / 1e6) + 'M'; return Math.floor(n / 1e9) + 'B'; }
 
 /* ---------- bridge to the macOS shell ---------- */
-const GAME_VERSION = '1.11.7', GAME_BUILD = 210;
+const GAME_VERSION = '1.12.0', GAME_BUILD = 211;
 const NATIVE = !!window.__DH_NATIVE || Q.has('nativeTest');
 if (window.__DH_OS === 'win') document.addEventListener('DOMContentLoaded', () => { const g = document.getElementById('grip'); if (g) g.title = 'ドラッグで移動／ダブルクリックでタスクバーの上に戻す'; });
 // page -> mac: the shell polls document.title. Keep the title short: big payloads (saves) are cut into chunks
@@ -781,14 +808,15 @@ function resize() {
 window.addEventListener('resize', () => { applyUI(true); resize(); });
 function applyUI(noResize) {
   if (!G.ui) G.ui = { k: 1, w: 1 }; const k = G.ui.k, w = G.ui.w, bs = document.body.style;
-  bs.setProperty('--k', k); bs.setProperty('--mx', (12 + (1 - w) * (innerWidth / k - 24) / 2) + 'px');
+  bs.setProperty('--k', k); bs.setProperty('--op', G.ui.o == null ? 1 : G.ui.o); bs.setProperty('--mx', (12 + (1 - w) * (innerWidth / k - 24) / 2) + 'px');
   if (!noResize) setTimeout(resize, 30);
 }
-$('uibtn').addEventListener('click', e => { e.stopPropagation(); const p = $('uipop'); p.classList.toggle('on'); $('uik').value = G.ui.k; $('uiw').value = G.ui.w; });
-for (const id of ['uik', 'uiw']) {
-  $(id).addEventListener('input', e => { G.ui[id === 'uik' ? 'k' : 'w'] = +e.target.value; applyUI(); });
+$('uibtn').addEventListener('click', e => { e.stopPropagation(); const p = $('uipop'); p.classList.toggle('on'); $('uik').value = G.ui.k; $('uiw').value = G.ui.w; $('uio').value = G.ui.o == null ? 1 : G.ui.o; });
+for (const id of ['uik', 'uiw', 'uio']) {
+  const key = { uik: 'k', uiw: 'w', uio: 'o' }[id];
+  $(id).addEventListener('input', e => { G.ui[key] = +e.target.value; applyUI(key === 'o'); });
   $(id).addEventListener('change', () => save());
-  $(id).addEventListener('dblclick', e => { G.ui[id === 'uik' ? 'k' : 'w'] = 1; e.target.value = 1; applyUI(); save(); });
+  $(id).addEventListener('dblclick', e => { G.ui[key] = 1; e.target.value = 1; applyUI(); save(); });
 }
 document.addEventListener('mousedown', e => { if (!e.target.closest('#uipop,#uibtn')) $('uipop').classList.remove('on'); });
 
@@ -1787,7 +1815,7 @@ function damageEnemy(e, m, mult, opt = {}) {
   if (!e || e.dying) return;
   const owner = m.remote ? m.key.split(':')[1] : 'me';
   if (grp.active && Object.keys(grp.peers).length) { if (T - chain.t < 1.3) { if (owner !== chain.o) chain.n++; } else chain.n = 0; chain.t = T; chain.o = owner; }
-  const st = m.st, crit = Math.random() < st.crit; let dmg = st.atk * atkBuff() * mult * rnd(.9, 1.1) * (crit ? st.critMul : 1) * (1 + Math.min(.5, chain.n * .025));
+  const st = m.st, crit = Math.random() < st.crit; let dmg = st.atk * atkBuff() * itemAtk() * mult * rnd(.9, 1.1) * (crit ? st.critMul : 1) * (1 + Math.min(.5, chain.n * .025));
   if (st.ls && !m.down) m.hp = Math.min(st.maxHp, m.hp + dmg * st.ls);
   if (e.boss) dmg *= 1 + runeVal('boss');
   e.hp -= dmg; e.flash = 1; e.kb = opt.kb !== undefined ? opt.kb : (crit ? 4 : 2);
@@ -1799,7 +1827,8 @@ function damageEnemy(e, m, mult, opt = {}) {
 }
 function killEnemy(e) {
   e.dying = .001; killed++; G.kills++;
-  const t = tier(), gold = goldOf(t) * (e.boss ? 12 : e.elite ? 3 : 1) * ST.gm * rnd(.85, 1.15), xp = xpOf(t) * (e.boss ? 8 : e.elite ? 2.5 : 1) * ST.xm;
+  const t = tier(), gold = goldOf(t) * (e.boss ? 12 : e.elite ? 3 : 1) * ST.gm * itemGold() * rnd(.85, 1.15), xp = xpOf(t) * (e.boss ? 8 : e.elite ? 2.5 : 1) * ST.xm * itemXp();
+  dexFoe(e); dropMats(e);
   const n = e.boss ? 14 : 3 + Math.floor(rnd(3));
   for (let i = 0; i < n; i++) coins.push({ x: e.x, y: GROUND - 6, vx: rnd(-18, 22), vy: rnd(-45, -25), t: 0, v: gold / n, phase: 0 });
   burst(e.x, GROUND - 6, e.boss ? 40 : 14, e.c, 50); burst(e.x, GROUND - 6, 6, '#ffffff', 30);
@@ -1811,7 +1840,7 @@ function killEnemy(e) {
 }
 function rollRarity(boss) { const rb = runeVal('rare'); if (boss) { const x = Math.random() + rb * 3; return x > .95 ? 5 : x > .5 ? 4 : 3; } const r = Math.random() + Math.min(.08, G.loop * .03 + G.region * .01) + rb; return r > .997 ? 3 : r > .965 ? 2 : r > .8 ? 1 : 0; }
 function hurtMember(m, d) {
-  if (m.down) return;
+  if (m.down) return; d *= itemDef();
   m.hp -= d; m.hurt = .25;
   pops.push({ x: hero.x - m.off + 1, y: GROUND - 28, t: 0, s: '-' + fmtPix(d), c: '#ff7a95' });
   burst(hero.x - m.off, GROUND - 7, 5, '#ff7a95', 25);
@@ -1882,6 +1911,7 @@ function bestOwner(it) {
   return best;
 }
 function gainItem(it, fromChest) {
+  dexGear(it);
   const col = RARITY[it.r].c, who = G.fl.equip ? bestOwner(it) : null;
   if (who) {
     const gear = heroData(who).gear, old = gear[it.s]; it.nw = 0; gear[it.s] = it; if (old) { old.nw = 0; G.bag.push(old); }
@@ -2338,11 +2368,11 @@ function setPanel(on, page) {
   document.body.classList.toggle('pg-party', on && panelPage === 'party');
   document.body.classList.toggle('pg-map', on && panelPage === 'map');
   document.body.classList.toggle('pg-rank', on && panelPage === 'rank');
-  document.body.classList.toggle('pg-rune', on && panelPage === 'rune'); $('runebtn').classList.toggle('on', on && panelPage === 'rune');
+  document.body.classList.toggle('pg-rune', on && panelPage === 'rune'); document.body.classList.toggle('pg-item', on && panelPage === 'item'); $('itembtn').classList.toggle('on', on && panelPage === 'item'); $('runebtn').classList.toggle('on', on && panelPage === 'rune');
   $('rankbtn').classList.toggle('on', on && panelPage === 'rank');
   $('bagbtn').classList.toggle('on', on && panelPage === 'gear'); $('partybtn').classList.toggle('on', on && panelPage === 'party');
   if (on !== was) native({ t: 'panel', on });
-  if (on) { renderPanel(); renderParty(); renderMap(); renderRank(); renderRunes(); } else { G.bag.forEach(i => i.nw = 0); updGear(); save(); }
+  if (on) { renderPanel(); renderParty(); renderMap(); renderRank(); renderRunes(); renderItems(); } else { G.bag.forEach(i => i.nw = 0); updGear(); save(); }
 }
 function renderPanel() {
   updGear();
@@ -2663,11 +2693,13 @@ function socStart() {
   if (soc || !NATIVE && !Q.has('social')) return;
   soc = new MiniMQTT((topic, txt) => {
     if (topic.startsWith(GTOPIC(G.uid) + '/')) return onGift(topic, txt);
+    if (topic === MMQ || topic === MMU(G.uid)) { let d; try { d = JSON.parse(txt); } catch (e) { return; } if (d && topic === MMQ) d.from = d.uid; return onMM(topic, d); }
     let d; try { d = JSON.parse(txt); } catch (e) { return; }
     if (d && d.uid) { profiles[d.uid] = d; const f = G.friends.find(x => x.uid === d.uid); if (f && d.name) f.name = d.name; renderRank(); }
   }, st => { socStatus = st; renderRank(); });
   soc.onReady = () => { socPublish(); };
   soc.subscribe(GTOPIC(G.uid) + '/+');
+  soc.subscribe(MMQ); soc.subscribe(MMU(G.uid));
   soc.subscribe(UTOPIC('+'));   // everyone's retained profile: global ranking + population
   for (const f of G.friends) soc.subscribe(UTOPIC(f.uid));
   soc.connect();
@@ -2685,7 +2717,7 @@ function addFriend(code, name, quiet) {
 }
 function rankValue(p, k) { return k === 'rate' ? (p.rate || 1000) : k === 'power' ? p.power || 0 : k === 'stage' ? (p.loop || 0) * 1000 + (p.best || 0) : k === 'kills' ? p.kills || 0 : p.top || 0; }
 function rankLabel(p, k) {
-  if (k === 'rate') return (p.rate || 1000) + ' <small style="display:inline">' + (p.pw || 0) + '勝' + (p.pl || 0) + '敗</small>';
+  if (k === 'rate') return tierBadge(p.rate || 1000) + ' ' + (p.rate || 1000) + ' <small style="display:inline">' + (p.pw || 0) + '勝' + (p.pl || 0) + '敗</small>';
   if (k === 'power') return fmt(p.power || 0);
   if (k === 'stage') { const b = p.best || 0, R0 = REGIONS.length * 10; return (p.loop ? '★' + (p.loop + 1) + ' ' : '') + (Math.floor((b % R0) / 10) + 1) + '-' + (b % 10 + 1); }
   if (k === 'kills') return fmt(p.kills || 0) + '体';
@@ -2707,10 +2739,13 @@ function renderRank() {
   list.forEach((p, i) => {
     const isMe = p.uid === G.uid, cls = (p.party || [])[0], rk = isMe ? myRank : i + 1;
     h += '<div class="rrow' + (isMe ? ' me' : '') + '"><span class="no' + (rk <= 3 ? ' g' + rk : '') + '">' + rk + '</span><span>' + String(p.name || '').replace(/</g, '') + (isMe ? '（あなた）' : '') +
-      '<small>' + (p.party || []).map(c => (CLASSES[c] || {}).n || '').join('・') + '</small></span><span class="val">' + rankLabel(p, rankTab) + (isMe || !p.team ? '' : ' <button class="mini-btn" data-duel="' + p.uid + '" style="margin-left:6px">⚔ 対戦</button>') + '</span></div>';
+      '<small>' + (p.party || []).map(c => (CLASSES[c] || {}).n || '').join('・') + '</small></span><span class="val">' + rankLabel(p, rankTab) + '' + '</span></div>';
   });
   h += '</div></div><div class="pcol" style="padding-left:12px;border-left:1px solid rgba(255,255,255,.07)">';
-  h += '<div class="lbl" style="margin-top:0">対戦ルール</div><div class="seg" style="margin-right:0;margin-bottom:4px"><button data-dm="fair" class="' + (duelMode === 'fair' ? 'on' : '') + '">公平バトル</button><button data-dm="real" class="' + (duelMode === 'real' ? 'on' : '') + '">本気（ハンデ付き）</button></div><div class="fhint" style="text-align:left;margin-bottom:8px">' + (duelMode === 'fair' ? '全員が同じ強さ（Lv30・装備なし）で戦う。勝負はキャラの組み合わせ次第。' : 'いまの実力で戦う。弱い側には差に応じたハンデが付く。') + '</div>';
+  { const ti = tierOf(G.pvp.rate), T0 = PVP_TIERS[ti], nx = PVP_TIERS[ti + 1];
+    h += '<div class="lbl" style="margin-top:0">ランクマッチ</div><div class="rbox"><div class="tierb" style="--tc:' + T0.c + '">' + T0.n + '</div><div><b style="font-size:14px">' + Math.round(G.pvp.rate) + '</b> pt<small>' + (G.pvp.w || 0) + '勝 ' + (G.pvp.l || 0) + '敗' + (nx ? '　次の' + nx.n + 'まで ' + (nx.min - Math.round(G.pvp.rate)) + 'pt' : '') + '</small></div></div>';
+    h += mm.on ? '<button class="btn sub" data-mm="stop" style="width:100%;margin:6px 0 2px">さがすのをやめる（' + Object.keys(mm.seen).length + '人が待機中）</button>' : '<button class="btn" data-mm="go" style="width:100%;margin:6px 0 2px">⚔ 対戦相手をさがす</button>';
+    h += '<div class="fhint" style="text-align:left;margin-bottom:6px">同じ時間に対戦をさがしている人と、ポイントの近い順にマッチします。勝つと🏅バトルメダル（ショップで使える）とゴールド。ランクが上がると装備のごほうび。' + (nx && nx.rw ? '<br>次の報酬：<b style="color:' + nx.c + '">' + nx.n + '</b> → ' + RARITY[nx.rw.r].n + '装備＋🏅' + nx.rw.medal : '') + '</div>'; }
   h += '<div class="lbl">あなたのフレンドコード</div><div class="gcode"><span class="fcode">' + G.uid + '</span><button class="mini-btn" data-r="copy">コピー</button></div>';
   h += '<div class="lbl">フレンドを追加</div><div class="fld"><input id="fcode" maxlength="8" placeholder="8文字のコード" style="text-transform:uppercase"><button class="btn" data-r="add">追加</button></div>';
   h += '<div class="fhint" style="text-align:left;margin-top:8px">グループで一緒に遊んだ人は自動でフレンドになります。<br>' + ({ on: '<span style="color:#7dffa8">● ランキングにつながっています</span>', wait: '<span style="color:#ffd25e">● 接続中…</span>', err: '<span style="color:#ff8fa8">● つながりません</span>' }[socStatus] || '') + '</div>';
@@ -2720,6 +2755,7 @@ function renderRank() {
 }
 $('rankbtn').addEventListener('click', () => setPanel(!(panelOpen && panelPage === 'rank'), 'rank'));
 $('runebtn').addEventListener('click', () => setPanel(!(panelOpen && panelPage === 'rune'), 'rune'));
+$('itembtn').addEventListener('click', () => setPanel(!(panelOpen && panelPage === 'item'), 'item'));
 function runeTxt(r, lv) { const v = lv * r.v; return r.pct ? '+' + (v * 100).toFixed(r.v < .01 ? 1 : r.v < .1 ? 1 : 0).replace(/\.0$/, '') + '%' : '+' + v; }
 function renderRunes() {
   if (!panelOpen || panelPage !== 'rune') return;
@@ -2758,10 +2794,9 @@ $('prune').addEventListener('click', e => {
 });
 setInterval(() => { if (panelOpen && panelPage === 'rune') { const g = Math.floor(G.gold); if (g !== renderRunes._g) { renderRunes._g = g; renderRunes(); } } }, 500);
 $('prank').addEventListener('click', e => {
-  const t = e.target.closest('[data-rt],[data-rs],[data-r],[data-emo],[data-duel],[data-dm]'); if (!t) return;
+  const t = e.target.closest('[data-rt],[data-rs],[data-r],[data-emo],[data-mm]'); if (!t) return;
+  if (t.dataset.mm) { if (t.dataset.mm === 'go') mmStart(); else mmStop(); return; }
   if (t.dataset.rs) { rankScope = t.dataset.rs; return renderRank(); }
-  if (t.dataset.dm) { duelMode = t.dataset.dm; return renderRank(); }
-  if (t.dataset.duel) { const pr = profiles[t.dataset.duel]; if (pr) startDuel(pr); return; }
   if (t.dataset.rt) { rankTab = t.dataset.rt; renderRank(); }
   else if (t.dataset.r === 'copy') { if (!native({ t: 'copy', text: G.uid })) { try { navigator.clipboard.writeText(G.uid); } catch (e2) { } } toast('フレンドコード <b>' + G.uid + '</b> をコピーしました', '#7dffa8'); }
   else if (t.dataset.r === 'add') addFriend($('fcode').value);
@@ -2821,47 +2856,69 @@ function updBubbles(dt) {
 
 
 /* ===================== friend battles (async: you fight a snapshot of their team) ===================== */
-let duelMode = 'fair';
-const arena = { on: false, L: [], R: [], P: [], t: 0, end: 0, opp: null, done: false };
-function fairStats(cls) { const C = CLASSES[cls], LV = 30; const atk = (2 + LV * .7) * C.atk, maxHp = (22 + LV * 4) * C.hp; return { atk, maxHp, aps: .85 * C.aps, crit: .06 + (C.crit || 0), critMul: 2.2 + (C.critd || 0), ls: 0, power: atk * Math.sqrt(maxHp) }; }
+/* ===================== ranked battle: live matchmaking, deterministic auto-battle ===================== */
+// Both players run the same simulation (same seed, same teams, fixed time step, own RNG),
+// so each sees the same fight. The host (the player who sent the invite) has the final say on the result.
+const arena = { on: false, L: [], R: [], P: [], t: 0, end: 0, opp: null, done: false, acc: 0, mir: 1, cx: 0 };
+const PVP_TIERS = [
+  { n: 'ブロンズ', min: 0, c: '#d49a6a', rw: null },
+  { n: 'シルバー', min: 1100, c: '#d8dfee', rw: { r: 3, medal: 10 } },
+  { n: 'ゴールド', min: 1250, c: '#ffd25e', rw: { r: 4, medal: 20 } },
+  { n: 'プラチナ', min: 1400, c: '#7ff4e0', rw: { r: 5, medal: 40 } },
+  { n: 'ダイヤ', min: 1550, c: '#8fc4ff', rw: { r: 6, medal: 80 } },
+  { n: 'マスター', min: 1700, c: '#ff8cf0', rw: { r: 7, medal: 150 } }];
+const tierOf = rate => { let i = 0; PVP_TIERS.forEach((t, k) => { if (rate >= t.min) i = k; }); return i; };
+function tierBadge(rate) { const t = PVP_TIERS[tierOf(rate)]; return '<b style="color:' + t.c + '">' + t.n + '</b>'; }
 function teamPower(t) { return t.reduce((a, f) => a + (f.st.power || f.st.atk * f.st.aps * Math.sqrt(f.st.maxHp)), 0) || 1; }
-function startDuel(pr) {
+function myTeam() { return myProfile().team; }
+function mulberry(a) { return () => { a |= 0; a = a + 0x6D2B79F5 | 0; let t = Math.imul(a ^ a >>> 15, 1 | a); t = t + Math.imul(t ^ t >>> 7, 61 | t) ^ t; return ((t ^ t >>> 14) >>> 0) / 4294967296; }; }
+const ax = sx => arena.cx + sx * arena.mir;           // sim x → world x for drawing
+const AY = y => GROUND + y;                             // sim y (relative to the ground) → screen y
+// setup: { seed, host:bool, hostTeam, guestTeam, hH, hG, opp:{uid,name,rate} }
+function startMatch(m) {
   if (arena.on) return;
-  const mine = G.party.slice(0, slotsUnlocked()).map(c => ({ cls: c, st: duelMode === 'fair' ? fairStats(c) : statsFor(c) }));
-  const theirs = (pr.team || []).filter(f => CLASSES[f.cls]).map(f => ({ cls: f.cls, st: duelMode === 'fair' ? fairStats(f.cls) : f.st }));
-  if (!theirs.length) return toast('相手のチーム情報がまだ届いていません', '#ff8fa8');
-  // handicap: the weaker side is lifted toward the stronger one (not all the way)
-  let hL = 1, hR = 1;
-  if (duelMode === 'real') { const a = teamPower(mine), b = teamPower(theirs), r = Math.min(4, Math.pow(Math.max(a, b) / Math.min(a, b), .4)); if (a < b) hL = r; else hR = r; }
-  const cx = camX + IW * .5;
-  const mk = (f, i, side, h) => ({ cls: f.cls, side, x: cx + side * (24 + i * 13), hp: f.st.maxHp * h, max: f.st.maxHp * h, atk: f.st.atk * h, aps: Math.min(4.5, f.st.aps), crit: f.st.crit, critMul: f.st.critMul, type: CLASSES[f.cls].type, range: CLASSES[f.cls].range, cd: .6 + rnd(.6), swing: -1, hits: 0, down: false, downT: 0, hurt: 0, ph: rnd(6) });
-  arena.L = mine.map((f, i) => mk(f, i, -1, hL)); arena.R = theirs.map((f, i) => mk(f, i, 1, hR));
-  arena.P = []; arena.t = 0; arena.end = 0; arena.done = false; arena.on = true; arena.hL = hL; arena.hR = hR;
-  arena.opp = { uid: pr.uid, name: pr.name || 'フレンド', rate: pr.rate || 1000 };
+  arena.rng = mulberry(m.seed);
+  const R = arena.rng;
+  const mk = (f, i, side, h) => ({ cls: f.cls, side, x: side * (24 + i * 13), hp: f.st.maxHp * h, max: f.st.maxHp * h, atk: f.st.atk * h, aps: Math.min(4.5, f.st.aps), crit: f.st.crit, critMul: f.st.critMul, type: CLASSES[f.cls].type, range: CLASSES[f.cls].range, cd: .6 + R() * .6, swing: -1, hits: 0, down: false, downT: 0, hurt: 0, ph: (i * 1.7 + side) % 6 });
+  const H = m.hostTeam.filter(f => CLASSES[f.cls]).map((f, i) => mk(f, i, -1, m.hH)), Gt = m.guestTeam.filter(f => CLASSES[f.cls]).map((f, i) => mk(f, i, 1, m.hG));
+  arena.A = H; arena.B = Gt;                      // canonical order, identical on both machines
+  arena.L = m.host ? H : Gt; arena.R = m.host ? Gt : H;
+  arena.mir = m.host ? 1 : -1; arena.host = m.host; arena.cx = Math.round(camX + IW * .5);
+  arena.P = []; arena.t = 0; arena.end = 0; arena.done = false; arena.on = true; arena.acc = 0; arena.res = null; arena.steps = 0;
+  arena.opp = m.opp;
+  const myH = m.host ? m.hH : m.hG, opH = m.host ? m.hG : m.hH;
   setPanel(false);
-  const hz = (hL > 1 ? 'あなたにハンデ +' + Math.round((hL - 1) * 100) + '%' : hR > 1 ? '相手にハンデ +' + Math.round((hR - 1) * 100) + '%' : '');
-  $('vs').innerHTML = '<span>' + String(G.name || 'あなた').replace(/</g, '') + '</span><b>VS</b><span>' + String(arena.opp.name).replace(/</g, '') + '</span>' + (hz ? '<small>' + hz + '</small>' : '') + '<small>' + (duelMode === 'fair' ? '公平バトル' : '本気バトル') + '</small>';
+  const hz = myH > 1 ? 'あなたにハンデ +' + Math.round((myH - 1) * 100) + '%' : opH > 1 ? '相手にハンデ +' + Math.round((opH - 1) * 100) + '%' : '';
+  $('vs').innerHTML = '<span>' + esc(G.name || 'あなた') + '</span><b>VS</b><span>' + esc(arena.opp.name) + '</span><small>' + tierBadge(arena.opp.rate) + ' ' + arena.opp.rate + '</small>' + (hz ? '<small>' + hz + '</small>' : '');
   document.body.classList.add('duel');
+  sfxMatch();
 }
-function aTarget(f) { const foes = (f.side < 0 ? arena.R : arena.L).filter(o => !o.down); let b = null; for (const o of foes) if (!b || Math.abs(o.x - f.x) < Math.abs(b.x - f.x)) b = o; return b; }
+const esc = s => String(s == null ? '' : s).replace(/[<>&"]/g, c => ({ '<': '&lt;', '>': '&gt;', '&': '&amp;', '"': '&quot;' })[c]);
+function sfxMatch() { flashT = .15; for (let i = 0; i < 2; i++) setTimeout(() => ring(camX + IW / 2, GROUND - 14, 26, '#ff8ce0', .5), i * 160); }
+function aTarget(f) { const foes = (f.side < 0 ? arena.B : arena.A).filter(o => !o.down); let b = null; for (const o of foes) if (!b || Math.abs(o.x - f.x) < Math.abs(b.x - f.x)) b = o; return b; }
 function aHit(src, tgt, mult, col) {
   if (!tgt || tgt.down) return;
-  const buff = 1 + .12 * (src.side < 0 ? arena.L : arena.R).filter(o => o.cls === 'bard' && !o.down).length;
-  const crit = Math.random() < src.crit, d = src.atk * buff * mult * rnd(.9, 1.1) * (crit ? src.critMul : 1);
+  const R = arena.rng;
+  const buff = 1 + .12 * (src.side < 0 ? arena.A : arena.B).filter(o => o.cls === 'bard' && !o.down).length;
+  const crit = R() < src.crit, d = src.atk * buff * mult * (.9 + R() * .2) * (crit ? src.critMul : 1);
   tgt.hp -= d; tgt.hurt = .22;
-  pops.push({ x: tgt.x, y: GROUND - 32, t: 0, s: fmtPix(d) + (crit ? '!' : ''), c: crit ? '#ffd84d' : col || '#ffffff', crit });
-  star(tgt.x, GROUND - 10, crit ? '#ffe28a' : '#fff2d0', crit); if (crit) shake = Math.max(shake, .15);
-  if (tgt.hp <= 0) { tgt.hp = 0; tgt.down = true; tgt.downT = 0; burst(tgt.x, GROUND - 8, 18, CLASSES[tgt.cls].col, 40); }
+  pops.push({ x: ax(tgt.x), y: GROUND - 32, t: 0, s: fmtPix(d) + (crit ? '!' : ''), c: crit ? '#ffd84d' : col || '#ffffff', crit });
+  star(ax(tgt.x), GROUND - 10, crit ? '#ffe28a' : '#fff2d0', crit); if (crit) shake = Math.max(shake, .15);
+  if (tgt.hp <= 0) { tgt.hp = 0; tgt.down = true; tgt.downT = 0; burst(ax(tgt.x), GROUND - 8, 18, CLASSES[tgt.cls].col, 40); }
 }
+const ASTEP = 1 / 30;
 function arenaUpdate(dt) {
-  arena.t += dt;
-  if (arena.done) { arena.end += dt; if (arena.end > 3.2) endDuel(); }
-  for (const f of [...arena.L, ...arena.R]) {
+  if (arena.done) { arena.end += dt; for (const f of [...arena.A, ...arena.B]) { f.hurt = Math.max(0, f.hurt - dt); if (f.down) f.downT += dt; } arenaFinish(); return; }
+  arena.acc += Math.min(dt, .25);
+  while (arena.acc >= ASTEP && !arena.done) { arena.acc -= ASTEP; arenaStep(ASTEP); }
+}
+function arenaStep(dt) {
+  arena.t += dt; arena.steps++;
+  for (const f of [...arena.A, ...arena.B]) {
     f.hurt = Math.max(0, f.hurt - dt);
     if (f.down) { f.downT += dt; continue; }
-    if (arena.done) continue;
     const tg = aTarget(f); if (!tg) continue;
-    const dist = Math.abs(tg.x - f.x), dir = Math.sign(tg.x - f.x), reach = MELEE[f.type] ? 11 : f.range * .55;
+    const dist = Math.abs(tg.x - f.x), dir = Math.sign(tg.x - f.x), reach = MELEE[f.type] ? 11 : Math.min(90, f.range * .55);
     if (dist > reach) f.x += dir * (MELEE[f.type] ? 16 : 6) * dt;
     f.cd -= dt;
     if (f.swing < 0 && f.cd <= 0 && dist <= reach + 2) { f.swing = 0; f.hit = false; f.cd = 1 / f.aps; f.tg = tg; }
@@ -2869,51 +2926,272 @@ function arenaUpdate(dt) {
       f.swing += dt / Math.max(.16, .36 / Math.max(1, f.aps / 1.1));
       if (!f.hit && f.swing >= .5) {
         f.hit = true; f.hits++;
-        const allies = (f.side < 0 ? arena.L : arena.R).filter(o => !o.down);
-        if (f.type === 'heal') { const w = allies.sort((a, b) => a.hp / a.max - b.hp / b.max)[0]; if (w && w.hp < w.max * .9) { const amt = f.atk * 2.4; w.hp = Math.min(w.max, w.hp + amt); pops.push({ x: w.x, y: GROUND - 28, t: 0, s: '+' + fmtPix(amt), c: '#7dffa8' }); ring(w.x, GROUND, 12, '#9dffc8', .5, true); } else arena.P.push({ x: f.x, y: GROUND - 12, tg: f.tg, src: f, m: 1, col: '#bff6ff', k: 'holy' }); }
-        else if (f.type === 'arrow' || f.type === 'magic' || f.type === 'bard') arena.P.push({ x: f.x + dir * 4, y: GROUND - 17, tg: f.tg, src: f, m: 1, col: f.type === 'magic' ? '#8fa0ff' : f.type === 'bard' ? '#ff8ee0' : '#fff2d0', k: f.type });
-        else { aHit(f, f.tg, 1); if (f.type === 'hammer') { ring(f.tg.x, GROUND, 24, '#ffcf8a', .45, true); for (const o of (f.side < 0 ? arena.R : arena.L)) if (o !== f.tg && !o.down && Math.abs(o.x - f.tg.x) < 14) aHit(f, o, .6); } if (f.type === 'dagger') slash(f.tg.x, GROUND - 10, f.hits % 2 ? .8 : -.8, 6, '#ff9aa8'); }
+        const allies = (f.side < 0 ? arena.A : arena.B).filter(o => !o.down);
+        if (f.type === 'heal') { const w = allies.slice().sort((a, b) => a.hp / a.max - b.hp / b.max)[0]; if (w && w.hp < w.max * .9) { const amt = f.atk * 2.4; w.hp = Math.min(w.max, w.hp + amt); pops.push({ x: ax(w.x), y: GROUND - 28, t: 0, s: '+' + fmtPix(amt), c: '#7dffa8' }); ring(ax(w.x), GROUND, 12, '#9dffc8', .5, true); } else arena.P.push({ x: f.x, y: -12, tg: f.tg, src: f, m: 1, col: '#bff6ff', k: 'holy' }); }
+        else if (f.type === 'arrow' || f.type === 'magic' || f.type === 'bard') arena.P.push({ x: f.x + dir * 4, y: -17, tg: f.tg, src: f, m: 1, col: f.type === 'magic' ? '#8fa0ff' : f.type === 'bard' ? '#ff8ee0' : '#fff2d0', k: f.type });
+        else { aHit(f, f.tg, 1); if (f.type === 'hammer') { ring(ax(f.tg.x), GROUND, 24, '#ffcf8a', .45, true); for (const o of (f.side < 0 ? arena.B : arena.A)) if (o !== f.tg && !o.down && Math.abs(o.x - f.tg.x) < 14) aHit(f, o, .6); } if (f.type === 'dagger') slash(ax(f.tg.x), GROUND - 10, f.hits % 2 ? .8 : -.8, 6, '#ff9aa8'); }
       }
       if (f.swing >= 1) f.swing = -1;
     }
   }
   for (const pj of arena.P) {
     if (!pj.tg || pj.tg.down) { pj.dead = 1; continue; }
-    const dx = pj.tg.x - pj.x, dy = GROUND - 17 - pj.y, d = Math.hypot(dx, dy), sp = (pj.k === 'arrow' ? 150 : 90) * dt;
-    if (d <= sp + 1) { pj.dead = 1; aHit(pj.src, pj.tg, 1, pj.col); if (pj.k === 'magic') { ring(pj.tg.x, GROUND - 9, 14, '#b8c2ff', .35); for (const o of (pj.src.side < 0 ? arena.R : arena.L)) if (o !== pj.tg && !o.down && Math.abs(o.x - pj.tg.x) < 12) aHit(pj.src, o, .7); } }
-    else { pj.x += dx / d * sp; pj.y += dy / d * sp; glow(pj.x - camX, pj.y, 4, pj.col, .5); }
+    const dx = pj.tg.x - pj.x, dy = -17 - pj.y, d = Math.sqrt(dx * dx + dy * dy), sp = (pj.k === 'arrow' ? 150 : 90) * dt;
+    if (d <= sp + 1) { pj.dead = 1; aHit(pj.src, pj.tg, 1, pj.col); if (pj.k === 'magic') { ring(ax(pj.tg.x), GROUND - 9, 14, '#b8c2ff', .35); for (const o of (pj.src.side < 0 ? arena.B : arena.A)) if (o !== pj.tg && !o.down && Math.abs(o.x - pj.tg.x) < 12) aHit(pj.src, o, .7); } }
+    else { pj.x += dx / d * sp; pj.y += dy / d * sp; }
   }
   arena.P = arena.P.filter(p => !p.dead);
-  if (!arena.done) {
-    const aL = arena.L.some(f => !f.down), aR = arena.R.some(f => !f.down);
-    if (!aL || !aR || arena.t > 50) {
-      const pct = t => t.reduce((a, f) => a + Math.max(0, f.hp) / f.max, 0) / t.length;
-      arena.win = !aR || (aL && pct(arena.L) >= pct(arena.R)); arena.done = true;
-      const exp = 1 / (1 + Math.pow(10, (arena.opp.rate - G.pvp.rate) / 400)), K = 32, delta = Math.round(K * ((arena.win ? 1 : 0) - exp));
-      G.pvp.rate = Math.max(100, G.pvp.rate + delta); if (arena.win) G.pvp.w++; else G.pvp.l++;
-      arena.delta = delta;
-      $('vs').innerHTML = '<b style="font-size:22px;color:' + (arena.win ? '#ffe08a' : '#b8a8d8') + '">' + (arena.win ? 'WIN!' : 'LOSE…') + '</b><small>バトルポイント ' + (delta >= 0 ? '+' : '') + delta + '（' + G.pvp.rate + '）</small>';
-      if (arena.win) { for (let i = 0; i < 3; i++) setTimeout(() => ring(camX + IW / 2, GROUND - 14, 30, '#ffe08a', .6), i * 180); flashT = .2; }
-      save(); socPublish();
-    }
+  const aA = arena.A.some(f => !f.down), aB = arena.B.some(f => !f.down);
+  if (!aA || !aB || arena.steps >= 50 * 30) {
+    const pct = t => t.reduce((a, f) => a + Math.max(0, f.hp) / f.max, 0) / t.length;
+    const hostWin = !aB || (aA && pct(arena.A) >= pct(arena.B));
+    arena.done = true; arena.simHostWin = hostWin;
+    if (arena.host) { arena.res = hostWin; mmSend(arena.opp.uid, { k: 'res', id: arena.mid, hostWin }); }
   }
+}
+function arenaFinish() {
+  if (arena.res == null && arena.end > 3) arena.res = arena.simHostWin;   // host's word never came: trust our own (identical) simulation
+  if (arena.res != null && arena.delta == null) {
+    arena.win = arena.host ? arena.res : !arena.res;
+    const exp = 1 / (1 + Math.pow(10, (arena.opp.rate - G.pvp.rate) / 400)), K = 32, delta = Math.round(K * ((arena.win ? 1 : 0) - exp));
+    const before = tierOf(G.pvp.rate);
+    G.pvp.rate = Math.max(100, G.pvp.rate + delta); if (arena.win) G.pvp.w++; else G.pvp.l++;
+    arena.delta = delta;
+    const ti = tierOf(G.pvp.rate), medal = arena.win ? 3 + ti : 1, gold = arena.win ? goldOf(tier()) * 25 : goldOf(tier()) * 6;
+    G.medals = (G.medals || 0) + medal; G.gold += gold;
+    arena.rw = '<span style="color:#ffd25e">🏅' + medal + '</span>  <span class="coin" style="width:9px;height:9px"></span>' + fmtG(gold);
+    $('vs').innerHTML = '<b style="font-size:22px;color:' + (arena.win ? '#ffe08a' : '#b8a8d8') + '">' + (arena.win ? 'WIN!' : 'LOSE…') + '</b><small>バトルポイント ' + (delta >= 0 ? '+' : '') + delta + '（' + G.pvp.rate + '）</small><small>' + arena.rw + '</small>';
+    if (arena.win) { for (let i = 0; i < 3; i++) setTimeout(() => ring(camX + IW / 2, GROUND - 14, 30, '#ffe08a', .6), i * 180); flashT = .2; }
+    G.pvp.peak = Math.max(G.pvp.peak || 0, before);
+    if (ti > (G.pvp.peak || 0)) { for (let k = (G.pvp.peak || 0) + 1; k <= ti; k++) tierReward(k); G.pvp.peak = ti; }
+    save(); socPublish();
+  }
+  if (arena.delta != null && arena.end > 4.2) endDuel();
+}
+function tierReward(k) {
+  const T = PVP_TIERS[k]; if (!T || !T.rw) return;
+  G.medals = (G.medals || 0) + T.rw.medal;
+  const it = makeItem(SLOTS[Math.floor(Math.random() * SLOTS.length)], T.rw.r, tier());
+  setTimeout(() => { toast('🏆 <b style="color:' + T.c + '">' + T.n + '</b> に到達！ 報酬：🏅' + T.rw.medal + ' と ' + itemHtml(it), T.c); gainItem(it); }, 1800);
 }
 function arenaRender() {
   const all = [...arena.L, ...arena.R].sort((a, b) => a.down - b.down);
   for (const f of all) {
-    const x = f.x - camX;
+    if (f.down && f.downT > 1.1) continue;
+    const x = ax(f.x) - camX, mine = arena.L.includes(f);
     ctx.globalAlpha = .35; R(ctx, x - 5, GROUND, 11, 1, '#000'); ctx.globalAlpha = 1;
-    glow(x, GROUND - 9, 12, f.side < 0 ? '#9b6bff' : '#ff6b8b', .22);
-    drawHeroSprite(f, x, GROUND, -f.side, f.down ? f.downT : -1);
-    if (!f.down) { const w = 12, y = GROUND - 31; R(ctx, x - 6, y - 1, w + 2, 3, '#12071f'); R(ctx, x - 6 + 1, y, w, 1, '#3a1830'); R(ctx, x - 5, y, Math.max(1, Math.round(w * f.hp / f.max)), 1, f.side < 0 ? '#7dffa8' : '#ff8fa8'); }
+    glow(x, GROUND - 9, 12, mine ? '#9b6bff' : '#ff6b8b', .22);
+    drawHeroSprite(f, x, GROUND, -f.side * arena.mir, f.down ? f.downT : -1);
+    if (!f.down) { const w = 12, y = GROUND + 3; R(ctx, x - 6, y - 1, w + 2, 3, '#12071f'); R(ctx, x - 5, y, w, 1, '#3a1830'); R(ctx, x - 5, y, Math.max(1, Math.round(w * f.hp / f.max)), 1, mine ? '#7dffa8' : '#ff8fa8'); }
   }
-  for (const pj of arena.P) { const x = Math.round(pj.x - camX), y = Math.round(pj.y); R(ctx, x - 1, y - 1, 3, 3, pj.col); R(ctx, x, y, 1, 1, '#fff'); }
+  for (const pj of arena.P) { const x = Math.round(ax(pj.x) - camX), y = Math.round(AY(pj.y)); glow(x, y, 4, pj.col, .5); R(ctx, x - 1, y - 1, 3, 3, pj.col); R(ctx, x, y, 1, 1, '#fff'); }
 }
 function endDuel() {
   arena.on = false; document.body.classList.remove('duel');
-  toast(arena.win ? '<b style="color:#ffe08a">' + String(arena.opp.name).replace(/</g, '') + ' に勝利！</b> +' + arena.delta + 'pt' : String(arena.opp.name).replace(/</g, '') + ' に敗北… ' + arena.delta + 'pt', arena.win ? '#ffd25e' : '#9b8cff');
-  updHud(true);
+  toast(arena.win ? '<b style="color:#ffe08a">' + esc(arena.opp.name) + ' に勝利！</b> +' + arena.delta + 'pt  ' + arena.rw : esc(arena.opp.name) + ' に敗北… ' + arena.delta + 'pt  ' + arena.rw, arena.win ? '#ffd25e' : '#9b8cff');
+  arena.delta = null; updHud(true); renderRank();
 }
+
+/* ----- matchmaking over the same MQTT connection ----- */
+const MMQ = 'dockhero-mac/v1/mm/q', MMU = id => 'dockhero-mac/v1/mm/u/' + id;
+const mm = { on: false, t0: 0, seen: {}, out: null, lock: null, beat: null };
+function mmSend(uid, o) { if (soc) soc.publish(MMU(uid), JSON.stringify(Object.assign({ from: G.uid }, o)), false); }
+function mmStart() {
+  if (!soc || socStatus !== 'on') return toast('オンラインにつながっていません。少し待ってからもう一度押してください', '#ff8fa8');
+  if (arena.on || mm.on) return;
+  if (!G.name) return askName();
+  mm.on = true; mm.t0 = Date.now(); mm.seen = {}; mm.out = null; mm.lock = null;
+  mmBeat(); mm.beat = setInterval(mmBeat, 1500);
+  renderRank(); updMMChip();
+}
+function mmStop(quiet) { mm.on = false; clearInterval(mm.beat); mm.out = mm.lock = null; renderRank(); updMMChip(); if (!quiet) toast('対戦相手さがしをやめました', '#9b8cff'); }
+function mmBeat() {
+  if (!mm.on) return;
+  soc.publish(MMQ, JSON.stringify({ uid: G.uid, name: G.name, rate: Math.round(G.pvp.rate), b: GAME_BUILD }), false);
+  const now = Date.now();
+  for (const k in mm.seen) if (now - mm.seen[k].at > 5000) delete mm.seen[k];
+  if (mm.out && now - mm.out.at > 3500) mm.out = null;
+  if (mm.lock && now - mm.lock.at > 4500) mm.lock = null;
+  if (mm.out || mm.lock) return;
+  // the player with the smaller code proposes; pick whoever is closest in rate
+  const cands = Object.values(mm.seen).filter(c => c.uid > G.uid).sort((a, b) => Math.abs(a.rate - G.pvp.rate) - Math.abs(b.rate - G.pvp.rate));
+  if (!cands.length) { updMMChip(); return; }
+  const c = cands[0], id = Math.random().toString(36).slice(2, 10);
+  mm.out = { uid: c.uid, id, at: now, team: myTeam(), seed: (Math.random() * 2 ** 31) | 0 };
+  mmSend(c.uid, { k: 'inv', id, name: G.name, rate: Math.round(G.pvp.rate), team: mm.out.team, seed: mm.out.seed });
+  updMMChip();
+}
+function handicaps(hostTeam, guestTeam) {
+  const a = teamPower(hostTeam), b = teamPower(guestTeam), r = Math.round(Math.min(4, Math.pow(Math.max(a, b) / Math.min(a, b), .4)) * 1000) / 1000;
+  return a < b ? { hH: r, hG: 1 } : { hH: 1, hG: r };
+}
+function onMM(topic, d) {
+  if (!d || !d.from || d.from === G.uid) return;
+  if (topic === MMQ) { if (mm.on && d.b >= 211 && d.uid) mm.seen[d.uid] = { uid: d.uid, name: d.name, rate: d.rate || 1000, at: Date.now() }; return; }
+  if (d.k === 'res') { if (arena.on && !arena.host && arena.mid === d.id) arena.res = !!d.hostWin; return; }
+  if (d.k === 'inv') {   // someone wants to fight me
+    if (!mm.on || arena.on || mm.out || mm.lock || !Array.isArray(d.team)) return mmSend(d.from, { k: 'no', id: d.id });
+    const team = myTeam(), h = handicaps(d.team, team);
+    mm.lock = { id: d.id, at: Date.now(), from: d.from, setup: { seed: d.seed | 0, host: false, hostTeam: d.team, guestTeam: team, hH: h.hH, hG: h.hG, opp: { uid: d.from, name: d.name || 'プレイヤー', rate: d.rate || 1000 } } };
+    return mmSend(d.from, { k: 'acc', id: d.id, name: G.name, rate: Math.round(G.pvp.rate), team, hH: h.hH, hG: h.hG });
+  }
+  if (d.k === 'acc') {   // my invite was accepted
+    if (!mm.on || !mm.out || mm.out.id !== d.id || arena.on || !Array.isArray(d.team)) return mmSend(d.from, { k: 'no', id: d.id });
+    const o = mm.out; mmSend(d.from, { k: 'go', id: d.id }); mmStop(true);
+    arena.mid = d.id;
+    return startMatch({ seed: o.seed, host: true, hostTeam: o.team, guestTeam: d.team, hH: d.hH, hG: d.hG, opp: { uid: d.from, name: d.name || 'プレイヤー', rate: d.rate || 1000 } });
+  }
+  if (d.k === 'go') { if (mm.lock && mm.lock.id === d.id) { const s = mm.lock.setup; mmStop(true); arena.mid = d.id; startMatch(s); } return; }
+  if (d.k === 'no') { if (mm.out && mm.out.id === d.id) mm.out = null; if (mm.lock && mm.lock.id === d.id) mm.lock = null; }
+}
+function updMMChip() {
+  const c = $('mmchip'); if (!c) return;
+  if (!mm.on) { c.style.display = 'none'; return; }
+  const s = Math.floor((Date.now() - mm.t0) / 1000), n = Object.keys(mm.seen).length;
+  c.style.display = 'flex'; c.innerHTML = '<i></i>対戦相手をさがしています ' + Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0') + (n ? '（' + n + '人が待機中）' : '') + '<button data-mm="stop">やめる</button>';
+}
+setInterval(() => { if (mm.on) updMMChip(); }, 1000);
+
+/* ===================== items: consumables, materials, shop, crafting, collection ===================== */
+const IMAP = {
+  bottle: ['....kkkk....', '....kWGk....', '....kGGk....', '...kkGGkk...', '..kGWGGGGk..', '.kMLLLLLLMk.', '.kMLWLLLLDk.', '.kMLLLLLLDk.', '.kMLLLLLLDk.', '..kDMMMMDk..', '...kkkkkk...', '............'],
+  book: ['............', '.kkkkkkkkkk.', '.kMLLLLLLMk.', '.kMLYYYYLMk.', '.kMLLLLLLMk.', '.kMLYYYLLMk.', '.kMLLLLLLMk.', '.kMLLLLLLMk.', '.kDDDDDDDDk.', '.kWWWWWWWWk.', '.kkkkkkkkkk.', '............'],
+  feather: ['........kk..', '.......kLLk.', '......kLWMk.', '.....kLLMk..', '....kLLMk...', '...kLWMk....', '..kLMMk.....', '..kMMk......', '.kDkk.......', '.kk.........', 'k...........', '............'],
+  fang: ['............', '...kkkkkk...', '..kWLLLLMk..', '..kLLLLLMk..', '...kLLLMk...', '...kLLLMk...', '....kLMk....', '....kLMk....', '.....kMk....', '.....kk.....', '............', '............'],
+  crystal: ['............', '....kkkk....', '...kWLLMk...', '..kWLLLMDk..', '..kLLLMMDk..', '..kLLMMDDk..', '..kLMMMDDk..', '...kMMDDk...', '....kMDk....', '.....kk.....', '............', '............'],
+  scale: ['............', '...kkkkkk...', '..kLLLLLMk..', '.kLWLLLLMDk.', '.kLLLLLMMDk.', '.kLLLLMMDDk.', '..kLLMMDDk..', '...kMMDDk...', '....kDDk....', '.....kk.....', '............', '............'],
+  star: ['............', '.....kk.....', '....kLLk....', 'kkkkkLLkkkk.', 'kLLLLWLLLMk.', '.kMLLLLLMk..', '..kMLLLMk...', '..kMLkLMk...', '.kMk..kMk...', '.kk....kk...', '............', '............'],
+  box: ['............', '..kkkkkkkk..', '.kMLLLLLLMk.', '.kYYYYYYYYk.', '.kkkkYYkkkk.', '.kMLLYYLLMk.', '.kMLLYYLLMk.', '.kMLLLLLLMk.', '.kDDDDDDDDk.', '.kkkkkkkkkk.', '............', '............'],
+  medal: ['...k....k...', '...kR..Rk...', '....kRRk....', '....kkkk....', '...kYYYYk...', '..kYWYYYOk..', '..kYYYYYOk..', '..kYYYYYOk..', '...kOOOOk...', '....kkkk....', '............', '............'] };
+const ITEMS = {
+  potion: { n: '回復ポーション', ic: 'bottle', c: '#ff5c7a', d: '倒れていない仲間のHPを50%回復' },
+  feather: { n: 'ふっかつの羽', ic: 'feather', c: '#fff2b8', d: '倒れた仲間をすぐ復活させる（HP50%）' },
+  pow: { n: '力の秘薬', ic: 'bottle', c: '#ff8a3d', d: '5分間 攻撃力 +30%', buff: 'pow', dur: 300 },
+  guard: { n: '守りの秘薬', ic: 'bottle', c: '#5aa9ff', d: '5分間 受けるダメージ -30%', buff: 'guard', dur: 300 },
+  luck: { n: '金運の秘薬', ic: 'bottle', c: '#ffd25e', d: '10分間 獲得ゴールド +50%', buff: 'luck', dur: 600 },
+  wise: { n: '知恵の書', ic: 'book', c: '#b46cff', d: '10分間 獲得経験値 +50%', buff: 'wise', dur: 600 },
+  box3: { n: 'エピック装備箱', ic: 'box', c: '#b46cff', d: '開けるとエピック装備が1つ出る', box: 3 },
+  box4: { n: 'レジェンド装備箱', ic: 'box', c: '#ffc94d', d: '開けるとレジェンド装備が1つ出る', box: 4 },
+  box5: { n: 'ミシック装備箱', ic: 'box', c: '#ff5c7a', d: '開けるとミシック装備が1つ出る', box: 5 },
+  fang: { n: '魔物の牙', ic: 'fang', c: '#efe6d2', mat: 1, d: '素材：ふつうの敵がよく落とす' },
+  core: { n: '魔石', ic: 'crystal', c: '#b46cff', mat: 1, d: '素材：強い敵（エリート）が落とす' },
+  scale: { n: '竜のうろこ', ic: 'scale', c: '#4fdc9a', mat: 1, d: '素材：ボスが落とす' },
+  star: { n: '星のかけら', ic: 'star', c: '#ffe066', mat: 1, d: '素材：とてもまれ。ボスからたまに出る' } };
+const SHOP_G = [['potion', 40], ['pow', 150], ['guard', 150], ['luck', 200], ['wise', 200], ['feather', 400]];
+const SHOP_M = [['feather', 5], ['star', 8], ['box3', 15], ['box4', 45], ['box5', 120]];
+const RECIPES = [
+  { out: 'potion', n: 1, need: { fang: 4 } }, { out: 'pow', n: 1, need: { fang: 8, core: 1 } }, { out: 'guard', n: 1, need: { fang: 8, core: 1 } },
+  { out: 'luck', n: 1, need: { fang: 4, core: 2 } }, { out: 'wise', n: 1, need: { fang: 4, core: 2 } }, { out: 'feather', n: 1, need: { core: 3, scale: 1 } },
+  { out: 'box3', n: 1, need: { core: 6, scale: 2 } }, { out: 'box4', n: 1, need: { scale: 5, star: 2 } }, { out: 'box5', n: 1, need: { scale: 10, star: 6 } }];
+const FOE_JP = { slime: 'スライム', mush: 'キノコ', bat: 'コウモリ', golem: 'ゴーレム', ghost: 'ゴースト', wolf: 'オオカミ', skel: 'スケルトン', imp: 'インプ', eye: 'めだま', crab: 'カニ', scorp: 'サソリ', yeti: 'イエティ', stump: 'きりかぶ', wisp: 'ウィスプ' };
+const IIC = {};
+function itemIcon(id) {
+  if (IIC[id]) return IIC[id];
+  const I = ITEMS[id] || { ic: id === 'medal' ? 'medal' : 'box', c: '#ffcc4d' }, map = IMAP[I.ic], cv = document.createElement('canvas'); cv.width = cv.height = 12;
+  const c = cv.getContext('2d'), base = I.c;
+  const pal = { k: shade(base, -.72), L: shade(base, .25), M: base, D: shade(base, -.3), W: '#ffffff', G: '#d8ecff', Y: '#ffcc4d', O: '#c8892a', R: '#ff5c7a' };
+  map.forEach((row, y) => [...row].forEach((ch, x) => { if (pal[ch]) { c.fillStyle = pal[ch]; c.fillRect(x, y, 1, 1); } }));
+  return (IIC[id] = cv.toDataURL());
+}
+const inv = id => (G.inv && G.inv[id]) || 0;
+function addInv(id, n) { G.inv = G.inv || {}; G.inv[id] = Math.max(0, (G.inv[id] || 0) + n); }
+const buffOn = k => G.buffs && G.buffs[k] > Date.now();
+function dexCount() { const d = G.dex || {}; return Object.keys(d.f || {}).length + Object.keys(d.g || {}).length; }
+const itemAtk = () => (buffOn('pow') ? 1.3 : 1) * (1 + dexCount() * .002);
+const itemDef = () => buffOn('guard') ? .7 : 1;
+const itemGold = () => buffOn('luck') ? 1.5 : 1;
+const itemXp = () => buffOn('wise') ? 1.5 : 1;
+function dexFoe(e) { G.dex = G.dex || { f: {}, g: {} }; const k = e.boss ? 'B' + G.region : e.k; if (!G.dex.f[k]) { G.dex.f[k] = 0; toast('📖 図鑑に <b>' + (e.boss ? esc(e.name) : FOE_JP[e.k] || e.k) + '</b> が載りました', '#9bd2ff'); } G.dex.f[k]++; }
+function dexGear(it) { G.dex = G.dex || { f: {}, g: {} }; const k = it.s + ':' + it.r; if (!G.dex.g[k]) G.dex.g[k] = 1; }
+function dropMats(e) {
+  const got = [];
+  const roll = (id, p, n = 1) => { if (Math.random() < p) { addInv(id, n); got.push([id, n]); } };
+  if (e.boss) { roll('scale', 1, 2); roll('core', 1, 2); roll('star', .25); }
+  else if (e.elite) { roll('fang', 1); roll('core', .5); roll('star', .004); }
+  else { roll('fang', .25); roll('core', .02); roll('star', .002); }
+  got.forEach(([id, n], i) => pops.push({ x: e.x + i * 3, y: GROUND - 22 - i * 6, t: 0, s: ITEMS[id].n + (n > 1 ? '×' + n : ''), c: ITEMS[id].c }));
+  if (got.some(([id]) => id === 'star')) toast('✨ <b style="color:#ffe066">星のかけら</b> を手に入れた！', '#ffe066');
+}
+function useItem(id) {
+  const I = ITEMS[id]; if (!I || !inv(id) || I.mat) return false;
+  if (id === 'potion') { const alive = party.filter(m => !m.down && m.local !== false); if (!alive.length || alive.every(m => m.hp >= m.st.maxHp)) { toast('いまは回復しなくて大丈夫です', '#9b8cff'); return false; } alive.forEach(m => { const a = m.st.maxHp * .5; m.hp = Math.min(m.st.maxHp, m.hp + a); pops.push({ x: hero.x - m.off, y: GROUND - 28, t: 0, s: '+' + fmtPix(a), c: '#7dffa8' }); ring(hero.x - m.off - camX, GROUND, 12, '#9dffc8', .5, true); }); }
+  else if (id === 'feather') { const dn = party.filter(m => m.down && m.local !== false); if (!dn.length || hero.dead) { toast('倒れている仲間がいません', '#9b8cff'); return false; } dn.forEach(m => { m.down = false; m.downT = 0; m.hp = m.st.maxHp * .5; burst(hero.x - m.off, GROUND - 7, 14, '#fff2b8', 30); }); }
+  else if (I.buff) { G.buffs = G.buffs || {}; G.buffs[I.buff] = Math.max(Date.now(), G.buffs[I.buff] || 0) + I.dur * 1000; hero.aura = Math.max(hero.aura, .6); }
+  else if (I.box != null) { const it = makeItem(SLOTS[Math.floor(Math.random() * SLOTS.length)], I.box, tier()); addInv(id, -1); toast(ITEMS[id].n + ' から ' + itemHtml(it) + ' が出た！', RARITY[it.r].c); gainItem(it); save(); renderItems(); return true; }
+  addInv(id, -1); toast(I.n + ' を使った', I.c); updBuffs(); save(); renderItems(); return true;
+}
+function autoPotion() {
+  if (!G.fl || !G.fl.autopot || !inv('potion') || hero.dead || arena.on) return;
+  if ((T - (autoPotion.t || -99)) < 6) return;
+  if (party.some(m => !m.down && m.local !== false && m.hp < m.st.maxHp * .3)) { autoPotion.t = T; useItem('potion'); }
+}
+function updBuffs() {
+  const b = $('buffs'); if (!b) return; let h = '';
+  for (const id of ['pow', 'guard', 'luck', 'wise']) { const k = ITEMS[id].buff; if (buffOn(k)) { const s = Math.ceil((G.buffs[k] - Date.now()) / 1000); h += '<span title="' + ITEMS[id].n + '：' + ITEMS[id].d + '"><img src="' + itemIcon(id) + '">' + Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0') + '</span>'; } }
+  b.innerHTML = h;
+}
+setInterval(() => { updBuffs(); autoPotion(); }, 1000);
+let itab = 'bag', iSel = null;
+function shopPrice(g) { return Math.round(goldOf(tier()) * g); }
+function itemCell(id, n, extra) { const I = ITEMS[id]; return '<div class="icell' + (iSel === id ? ' sel' : '') + '" data-iid="' + id + '" title="' + I.n + '"' + (extra || '') + '><img src="' + itemIcon(id) + '">' + (n != null ? '<b>' + n + '</b>' : '') + '</div>'; }
+function renderItems() {
+  if (!panelOpen || panelPage !== 'item') return;
+  let h = '<div class="pcol"><div class="ph"><b>アイテム</b><span><img src="' + itemIcon('medal') + '" style="width:12px;height:12px;image-rendering:pixelated;vertical-align:-2px"> バトルメダル <b style="color:#ffd25e">' + (G.medals || 0) + '</b>　<span class="coin" style="width:9px;height:9px"></span> ' + fmtG(G.gold) + '</span></div>';
+  h += '<div class="tabs" style="margin-right:0">' + [['bag', '持ち物'], ['shop', 'ショップ'], ['craft', 'クラフト'], ['dex', '図鑑']].map(([k, n]) => '<button data-itab="' + k + '" class="' + (itab === k ? 'on' : '') + '">' + n + '</button>').join('') + '</div>';
+  if (itab === 'bag') {
+    const ids = Object.keys(ITEMS).filter(id => inv(id) > 0);
+    h += '<div class="igrid">' + (ids.length ? ids.map(id => itemCell(id, inv(id))).join('') : '<div class="fhint" style="grid-column:1/-1;margin-top:20px">まだアイテムがありません。<br>敵が落とす素材を集めたり、ショップで買ったりできます。</div>') + '</div>';
+  } else if (itab === 'shop') {
+    h += '<div class="lbl" style="margin-top:0">ゴールドで買う</div><div class="slist">' + SHOP_G.map(([id, g]) => { const p = shopPrice(g); return '<div class="srow">' + itemCell(id) + '<span><b>' + ITEMS[id].n + '</b><small>' + ITEMS[id].d + '</small></span><button class="btn sub" data-buy="' + id + '" data-cur="g"' + (G.gold >= p ? '' : ' disabled') + '><span class="coin" style="width:9px;height:9px"></span>' + fmtG(p) + '</button></div>'; }).join('') + '</div>';
+    h += '<div class="lbl">バトルメダルで買う</div><div class="slist">' + SHOP_M.map(([id, m]) => '<div class="srow">' + itemCell(id) + '<span><b>' + ITEMS[id].n + '</b><small>' + ITEMS[id].d + '</small></span><button class="btn sub" data-buy="' + id + '" data-cur="m"' + ((G.medals || 0) >= m ? '' : ' disabled') + '>🏅' + m + '</button></div>').join('') + '</div>';
+  } else if (itab === 'craft') {
+    h += '<div class="slist">' + RECIPES.map((r, i) => { const ok = Object.entries(r.need).every(([k, n]) => inv(k) >= n); return '<div class="srow">' + itemCell(r.out) + '<span><b>' + ITEMS[r.out].n + '</b><small>' + Object.entries(r.need).map(([k, n]) => '<img src="' + itemIcon(k) + '" class="ii">' + ITEMS[k].n + ' <b style="color:' + (inv(k) >= n ? '#7dffa8' : '#ff8fa8') + '">' + inv(k) + '/' + n + '</b>').join('　') + '</small></span><button class="btn' + (ok ? '' : ' sub') + '" data-craft="' + i + '"' + (ok ? '' : ' disabled') + '>作る</button></div>'; }).join('') + '</div>';
+  } else {
+    const d = G.dex || { f: {}, g: {} }, nf = Object.keys(d.f || {}).length, ng = Object.keys(d.g || {}).length, totF = Object.keys(FOE_MAPS).length + REGIONS.length;
+    h += '<div class="fhint" style="text-align:left;margin:0 0 6px">見つけた数 <b style="color:#fff">' + (nf + ng) + ' / ' + (totF + SLOTS.length * RARITY.length) + '</b>　図鑑ボーナス：攻撃力 <b style="color:#7dffa8">+' + (dexCount() * .2).toFixed(1) + '%</b>（1件につき+0.2%）</div>';
+    h += '<div class="lbl" style="margin-top:0">モンスター（' + nf + '/' + totF + '）</div><div class="dgrid">';
+    for (const k of Object.keys(FOE_MAPS)) { const seen = (d.f || {})[k]; h += '<div class="dcell' + (seen ? '' : ' un') + '" title="' + (seen ? FOE_JP[k] + '（' + seen + '体）' : '？？？') + '"><img src="' + foeIcon(k, seen) + '"></div>'; }
+    REGIONS.forEach((Rg, i) => { const seen = (d.f || {})['B' + i]; h += '<div class="dcell boss' + (seen ? '' : ' un') + '" title="' + (seen ? Rg.boss.name : '？？？（ボス）') + '"><img src="' + foeIcon(Rg.boss.k, seen, Rg.boss.c) + '"></div>'; });
+    h += '</div><div class="lbl">装備（' + ng + '/' + SLOTS.length * RARITY.length + '）</div><div class="dgrid gear">';
+    for (let r = 0; r < RARITY.length; r++) for (const s of SLOTS) { const seen = (d.g || {})[s + ':' + r]; h += '<div class="dcell' + (seen ? '' : ' un') + '" title="' + (seen ? RARITY[r].n + '・' + SLOTNAME[s] : '？？？') + '" style="' + (seen ? '--rc:' + RARITY[r].c : '') + '"><img src="' + icon(s, seen ? r : -1, 'knight') + '"></div>'; }
+    h += '</div>';
+  }
+  h += '</div><div class="pcol" style="padding-left:12px;border-left:1px solid rgba(255,255,255,.07)">';
+  const I = iSel && ITEMS[iSel];
+  if (I) {
+    h += '<div class="idet"><img src="' + itemIcon(iSel) + '"><div><b style="color:' + I.c + '">' + I.n + '</b><small>持っている数 ' + inv(iSel) + '</small></div></div><div class="fhint" style="text-align:left">' + I.d + '</div>';
+    if (!I.mat && inv(iSel)) h += '<button class="btn" data-use="' + iSel + '" style="width:100%;margin-top:6px">' + (I.box != null ? '開ける' : '使う') + '</button>';
+  } else h += '<div class="fhint" style="margin-top:30px">アイテムを選ぶと<br>くわしく見られます</div>';
+  h += '<div style="flex:1"></div><div class="toggles"><div class="tg' + (G.fl.autopot ? ' on' : '') + '" data-ifl="autopot"><span>HPが減ったら回復ポーションを自動で使う</span><i></i></div></div>';
+  h += '</div>';
+  $('pitem').innerHTML = h;
+}
+const FIC = {};
+function foeIcon(k, seen, col) {
+  const key = k + (seen ? 1 : 0) + (col || ''); if (FIC[key]) return FIC[key];
+  const src = foeSprite(k, col || (REGIONS.flatMap(r => r.foes).find(f => f.k === k) || { c: '#9b8cff' }).c), cv = document.createElement('canvas'); cv.width = src.width; cv.height = src.height;
+  const c = cv.getContext('2d'); c.drawImage(src, 0, 0);
+  if (!seen) { c.globalCompositeOperation = 'source-in'; c.fillStyle = '#54477a'; c.fillRect(0, 0, cv.width, cv.height); }
+  return (FIC[key] = cv.toDataURL());
+}
+$('pitem').addEventListener('click', e => {
+  const t = e.target.closest('[data-itab],[data-iid],[data-buy],[data-craft],[data-use],[data-ifl]'); if (!t) return;
+  if (t.dataset.itab) { itab = t.dataset.itab; return renderItems(); }
+  if (t.dataset.ifl) { G.fl[t.dataset.ifl] = !G.fl[t.dataset.ifl]; save(); return renderItems(); }
+  if (t.dataset.use) { useItem(t.dataset.use); return renderItems(); }
+  if (t.dataset.buy) {
+    const id = t.dataset.buy;
+    if (t.dataset.cur === 'g') { const p = shopPrice(SHOP_G.find(x => x[0] === id)[1]); if (G.gold < p) return; G.gold -= p; }
+    else { const m = SHOP_M.find(x => x[0] === id)[1]; if ((G.medals || 0) < m) return; G.medals -= m; }
+    addInv(id, 1); iSel = id; toast(ITEMS[id].n + ' を買いました', ITEMS[id].c); save(); updHud(true); return renderItems();
+  }
+  if (t.dataset.craft) {
+    const r = RECIPES[+t.dataset.craft]; if (!Object.entries(r.need).every(([k, n]) => inv(k) >= n)) return;
+    for (const [k, n] of Object.entries(r.need)) addInv(k, -n); addInv(r.out, r.n); iSel = r.out;
+    toast(ITEMS[r.out].n + ' を作った！', ITEMS[r.out].c); burst(camX + IW / 2, GROUND - 10, 14, ITEMS[r.out].c, 30); save(); return renderItems();
+  }
+  if (t.dataset.iid) { iSel = t.dataset.iid; renderItems(); }
+});
 
 /* ===================== group networking (MQTT over WebSocket, no server of our own) ===================== */
 const BROKERS = Q.get('broker') ? [Q.get('broker')] : ['wss://broker.hivemq.com:8884/mqtt', 'wss://broker.emqx.io:8084/mqtt', 'wss://test.mosquitto.org:8081/mqtt'];
@@ -3014,7 +3292,13 @@ $('mini').addEventListener('click', () => setMini(!mini));
 $('quit').addEventListener('click', () => { save(); native({ t: 'quit' }); toast('保存して終了します…', '#9b8cff'); });
 if (!NATIVE) $('quit').style.display = 'none';
 native({ t: 'hello' });
-window.DH = { saveNow: save, setMini, layout: f => { document.body.classList.toggle('flip', !!f); setTimeout(resize, 50); }, onPrompt: (k, v) => { if (k === 'name') { setName(v); renderParty(); } else if (k === 'friend') { addFriend(v); } else if (k === 'code') { DH.onPaste(v); const b = document.querySelector('[data-g=join]'); if (b && ($('gcode').value || '').length === 6) b.click(); } }, onPaste: t => { const el = $('gcode'); if (el && t) { el.value = String(t).toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 6); } } };
+function askName() { $('nameov').classList.add('on'); $('nmin').value = ''; }
+function nameDone(v) { v = String(v || '').trim().slice(0, 12); if (!v) return toast('名前を入れてください', '#ff8fa8'); setName(v); $('nameov').classList.remove('on'); renderParty(); toast('よろしく、<b>' + esc(v) + '</b>！', '#7dffa8'); }
+$('nmok').addEventListener('click', () => nameDone($('nmin').value));
+$('nmin').addEventListener('keydown', e => { if (e.key === 'Enter') nameDone($('nmin').value); });
+$('nmin').addEventListener('mousedown', e => { if (NATIVE) { e.preventDefault(); native({ t: 'prompt', kind: 'name', label: 'プレイヤー名（12文字まで）', value: '' }); } });
+$('mmchip').addEventListener('click', e => { if (e.target.dataset.mm === 'stop') mmStop(); });
+window.DH = { saveNow: save, setMini, layout: f => { document.body.classList.toggle('flip', !!f); setTimeout(resize, 50); }, onPrompt: (k, v) => { if (k === 'name') { if ($('nameov').classList.contains('on')) nameDone(v); else { setName(v); renderParty(); } } else if (k === 'friend') { addFriend(v); } else if (k === 'code') { DH.onPaste(v); const b = document.querySelector('[data-g=join]'); if (b && ($('gcode').value || '').length === 6) b.click(); } }, onPaste: t => { const el = $('gcode'); if (el && t) { el.value = String(t).toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 6); } } };
 window.addEventListener('beforeunload', save);
 window.addEventListener('hashchange', () => {
   const q = new URLSearchParams(location.hash.slice(1));
@@ -3034,7 +3318,7 @@ function frame(now) {
   update(step); render(); updHud();
   saveT += step; if (saveT > 15) { saveT = 0; save(); }
 }
-load(); G.ui = Object.assign({ k: 1, w: 1 }, G.ui || {}); applyUI(true); resize(); updGear(); updHud(true);
+load(); if (!G.name) askName(); $('itemic').src = itemIcon('potion'); G.dex = G.dex || { f: {}, g: {} }; G.bag.forEach(dexGear); for (const c in G.heroes) for (const k of SLOTS) if (G.heroes[c].gear[k]) dexGear(G.heroes[c].gear[k]); G.ui = Object.assign({ k: 1, w: 1, o: 1 }, G.ui || {}); applyUI(true); resize(); updGear(); updHud(true);
 if (!G.name) G.name = window.__DH_USER || '';
 if (G._refund) { const b = G._refund; delete G._refund; setTimeout(() => toast('強化ボタン廃止のため <b style="color:#ffe08a">' + fmtG(b) + ' G</b> を返却しました。ルーン（ᚱ）に使えます', '#ffd25e'), 2500); }
 if (G.grp && G.grp.code) setTimeout(() => grpJoin(G.grp.code, false), 1200);
