@@ -129,8 +129,8 @@ body.mini #bagbtn,body.mini #quit,body.mini #partybtn,body.mini #grpchip,body.mi
 .page{position:absolute;inset:12px 14px;display:none;gap:14px}
 #pgear{grid-template-columns:230px minmax(0,1fr) 270px}
 #pparty{grid-template-columns:minmax(0,1fr) 300px}
-body.pg-gear #pgear,body.pg-party #pparty,body.pg-map #pmap,body.pg-rank #prank,body.pg-rune #prune,body.pg-item #pitem,body.pg-village #pvillage,body.pg-chat #pchat{display:grid}
-#pitem,#pchat{grid-template-columns:minmax(0,1fr) 230px}#prune{grid-template-columns:minmax(0,1fr) 190px}
+body.pg-gear #pgear,body.pg-party #pparty,body.pg-map #pmap,body.pg-rank #prank,body.pg-rune #prune,body.pg-item #pitem,body.pg-village #pvillage,body.pg-chat #pchat,body.pg-admin #padmin{display:grid}
+#pitem,#pchat,#padmin{grid-template-columns:minmax(0,1fr) 230px}#prune{grid-template-columns:minmax(0,1fr) 190px}
 #runebtn{display:grid;place-items:center;width:34px;padding:0;font-size:17px;font-weight:900;color:#c9a8ff;text-shadow:0 0 8px rgba(180,130,255,.8)}
 #runebtn.on{background:linear-gradient(#e8d8ff,#b48bff);color:#2a1050;text-shadow:none}
 body.mini #runebtn{display:none}
@@ -421,6 +421,16 @@ body.mini #hype{display:none}
 .vmsg{padding:5px 7px;border-radius:8px;background:rgba(255,255,255,.05);font-size:10.5px;color:#fff}.vmsg div{display:flex;gap:6px;align-items:baseline}.vmsg b{color:#c9b3ff;font-size:10px}.vmsg small{font-size:8.5px;color:var(--sub)}.vmsg span{display:block;margin-top:2px;word-break:break-all;white-space:pre-wrap}
 #pchat .fld{display:flex;gap:6px}#pchat input,#voicein{flex:1;height:28px;border-radius:8px;border:1px solid rgba(255,255,255,.16);background:rgba(0,0,0,.3);color:#fff;padding:0 8px;font:inherit;font-size:11px}
 #voicein{width:100%;height:90px;padding:6px 8px;resize:none;box-sizing:border-box}
+#notice{position:absolute;left:10px;bottom:6px;z-index:6;max-width:46%;padding:2px 8px;border-radius:8px;background:rgba(18,8,40,.7);font-size:10px;font-weight:800;color:#ffe08a;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#raidbar{position:absolute;left:44%;top:8px;transform:translateX(-50%);z-index:6;display:none;align-items:center;gap:8px;padding:5px 12px;border-radius:12px;background:rgba(40,8,24,.8);font-size:10px;font-weight:800;color:#ffd6e0;white-space:nowrap;box-shadow:0 0 14px rgba(255,80,120,.4)}
+#raidbar b{color:#ff8fa8;font-size:11px}#raidbar .rn{color:#fff}.rhp{width:70px;height:7px;border-radius:4px;background:rgba(0,0,0,.5);overflow:hidden}.rhp i{display:block;height:100%;background:linear-gradient(90deg,#ff3d6e,#ff9a6b);box-shadow:0 0 8px #ff4d7a}
+body.raid #mid{visibility:hidden}body.raid #pips .bossbar{display:none}
+.mdel{flex:none;cursor:pointer;color:#ff8fa8;font-size:11px;padding:0 4px}.vmsg .mdel{margin-left:auto}
+.adrow{display:flex;align-items:center;gap:4px;margin:3px 0;font-size:10px}.adrow span{width:56px;color:var(--sub)}.adrow .mini-btn.on{background:#ffd25e;color:#1b0f33}
+#padmin .fld{display:flex;gap:6px}#padmin input{flex:1;height:26px;border-radius:8px;border:1px solid rgba(255,255,255,.16);background:rgba(0,0,0,.3);color:#fff;padding:0 8px;font:inherit;font-size:11px}
+.ngl{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}.ngl span{font-size:9.5px;padding:1px 6px;border-radius:6px;background:rgba(255,255,255,.08)}.ngl b{cursor:pointer;color:#ff8fa8;margin-left:4px}
+.lvc1{color:#7dffa8}.lvc2{color:#5aa9ff}.lvc3{color:#c99bff}.lvc4{color:#ffd25e}
+#padmin .rrow span{white-space:nowrap}
 </style>
 </head>
 <body>
@@ -457,10 +467,13 @@ body.mini #hype{display:none}
   <div id="pitem" class="page"></div>
   <div id="pvillage" class="page"></div>
   <div id="pchat" class="page"></div>
+  <div id="padmin" class="page"></div>
 </div>
 <div id="card">
-  <div id="uipop" class="glass"><label>大きさ <input id="uik" type="range" min="0.55" max="1" step="0.05"></label><label>横幅 <input id="uiw" type="range" min="0.6" max="1" step="0.05"></label><label>不透明度 <input id="uio" type="range" min="0.25" max="1" step="0.05"></label><small>ダブルクリックで元に戻す</small></div>
+  <div id="uipop" class="glass"><label>大きさ <input id="uik" type="range" min="0.55" max="1" step="0.05"></label><label>横幅 <input id="uiw" type="range" min="0.6" max="1" step="0.05"></label><label>不透明度 <input id="uio" type="range" min="0.25" max="1" step="0.05"></label><small>ダブルクリックで元に戻す</small><button class="mini-btn" id="adminbtn" style="margin-top:6px;width:100%">🔑 管理者</button></div>
   <div id="mmchip"></div>
+  <div id="notice" style="display:none"></div>
+  <div id="raidbar"></div>
   <div id="nameov"><div class="glass"><b>ようこそ Dock Hero へ！</b><span>まずはプレイヤー名を決めてください（ランキングや対戦で表示されます）</span><div class="fld"><input id="nmin" maxlength="12" placeholder="プレイヤー名（12文字まで）"><button class="btn" id="nmok">はじめる</button></div><button class="btn sub" id="nmskip" style="margin-top:4px">名前なしではじめる（あとで変えられます）</button></div></div>
   <canvas id="c"></canvas>
   <canvas id="fx"></canvas>
@@ -504,6 +517,9 @@ body.mini #hype{display:none}
 
 <script src="data:,"></script>
 
+<script>/* tweetnacl 1.0.3 (public domain) */
+!function(i){"use strict";var v=function(r){var t,n=new Float64Array(16);if(r)for(t=0;t<r.length;t++)n[t]=r[t];return n},h=function(){throw new Error("no PRNG")},o=new Uint8Array(16),n=new Uint8Array(32);n[0]=9;var s=v(),u=v([1]),p=v([56129,1]),c=v([30883,4953,19914,30187,55467,16705,2637,112,59544,30585,16505,36039,65139,11119,27886,20995]),y=v([61785,9906,39828,60374,45398,33411,5274,224,53552,61171,33010,6542,64743,22239,55772,9222]),e=v([54554,36645,11616,51542,42930,38181,51040,26924,56412,64982,57905,49316,21502,52590,14035,8553]),a=v([26200,26214,26214,26214,26214,26214,26214,26214,26214,26214,26214,26214,26214,26214,26214,26214]),l=v([41136,18958,6951,50414,58488,44335,6150,12099,55207,15867,153,11085,57099,20417,9344,11139]);function f(r,t,n,e){r[t]=n>>24&255,r[t+1]=n>>16&255,r[t+2]=n>>8&255,r[t+3]=255&n,r[t+4]=e>>24&255,r[t+5]=e>>16&255,r[t+6]=e>>8&255,r[t+7]=255&e}function w(r,t,n,e,o){var i,h=0;for(i=0;i<o;i++)h|=r[t+i]^n[e+i];return(1&h-1>>>8)-1}function b(r,t,n,e){return w(r,t,n,e,16)}function g(r,t,n,e){return w(r,t,n,e,32)}function A(r,t,n,e){!function(r,t,n,e){for(var o,i=255&e[0]|(255&e[1])<<8|(255&e[2])<<16|(255&e[3])<<24,h=255&n[0]|(255&n[1])<<8|(255&n[2])<<16|(255&n[3])<<24,a=255&n[4]|(255&n[5])<<8|(255&n[6])<<16|(255&n[7])<<24,f=255&n[8]|(255&n[9])<<8|(255&n[10])<<16|(255&n[11])<<24,s=255&n[12]|(255&n[13])<<8|(255&n[14])<<16|(255&n[15])<<24,u=255&e[4]|(255&e[5])<<8|(255&e[6])<<16|(255&e[7])<<24,c=255&t[0]|(255&t[1])<<8|(255&t[2])<<16|(255&t[3])<<24,y=255&t[4]|(255&t[5])<<8|(255&t[6])<<16|(255&t[7])<<24,l=255&t[8]|(255&t[9])<<8|(255&t[10])<<16|(255&t[11])<<24,w=255&t[12]|(255&t[13])<<8|(255&t[14])<<16|(255&t[15])<<24,v=255&e[8]|(255&e[9])<<8|(255&e[10])<<16|(255&e[11])<<24,p=255&n[16]|(255&n[17])<<8|(255&n[18])<<16|(255&n[19])<<24,b=255&n[20]|(255&n[21])<<8|(255&n[22])<<16|(255&n[23])<<24,g=255&n[24]|(255&n[25])<<8|(255&n[26])<<16|(255&n[27])<<24,A=255&n[28]|(255&n[29])<<8|(255&n[30])<<16|(255&n[31])<<24,_=255&e[12]|(255&e[13])<<8|(255&e[14])<<16|(255&e[15])<<24,U=i,d=h,E=a,x=f,M=s,m=u,B=c,S=y,k=l,K=w,Y=v,L=p,T=b,z=g,R=A,P=_,N=0;N<20;N+=2)U^=(o=(T^=(o=(k^=(o=(M^=(o=U+T|0)<<7|o>>>25)+U|0)<<9|o>>>23)+M|0)<<13|o>>>19)+k|0)<<18|o>>>14,m^=(o=(d^=(o=(z^=(o=(K^=(o=m+d|0)<<7|o>>>25)+m|0)<<9|o>>>23)+K|0)<<13|o>>>19)+z|0)<<18|o>>>14,Y^=(o=(B^=(o=(E^=(o=(R^=(o=Y+B|0)<<7|o>>>25)+Y|0)<<9|o>>>23)+R|0)<<13|o>>>19)+E|0)<<18|o>>>14,P^=(o=(L^=(o=(S^=(o=(x^=(o=P+L|0)<<7|o>>>25)+P|0)<<9|o>>>23)+x|0)<<13|o>>>19)+S|0)<<18|o>>>14,U^=(o=(x^=(o=(E^=(o=(d^=(o=U+x|0)<<7|o>>>25)+U|0)<<9|o>>>23)+d|0)<<13|o>>>19)+E|0)<<18|o>>>14,m^=(o=(M^=(o=(S^=(o=(B^=(o=m+M|0)<<7|o>>>25)+m|0)<<9|o>>>23)+B|0)<<13|o>>>19)+S|0)<<18|o>>>14,Y^=(o=(K^=(o=(k^=(o=(L^=(o=Y+K|0)<<7|o>>>25)+Y|0)<<9|o>>>23)+L|0)<<13|o>>>19)+k|0)<<18|o>>>14,P^=(o=(R^=(o=(z^=(o=(T^=(o=P+R|0)<<7|o>>>25)+P|0)<<9|o>>>23)+T|0)<<13|o>>>19)+z|0)<<18|o>>>14;U=U+i|0,d=d+h|0,E=E+a|0,x=x+f|0,M=M+s|0,m=m+u|0,B=B+c|0,S=S+y|0,k=k+l|0,K=K+w|0,Y=Y+v|0,L=L+p|0,T=T+b|0,z=z+g|0,R=R+A|0,P=P+_|0,r[0]=U>>>0&255,r[1]=U>>>8&255,r[2]=U>>>16&255,r[3]=U>>>24&255,r[4]=d>>>0&255,r[5]=d>>>8&255,r[6]=d>>>16&255,r[7]=d>>>24&255,r[8]=E>>>0&255,r[9]=E>>>8&255,r[10]=E>>>16&255,r[11]=E>>>24&255,r[12]=x>>>0&255,r[13]=x>>>8&255,r[14]=x>>>16&255,r[15]=x>>>24&255,r[16]=M>>>0&255,r[17]=M>>>8&255,r[18]=M>>>16&255,r[19]=M>>>24&255,r[20]=m>>>0&255,r[21]=m>>>8&255,r[22]=m>>>16&255,r[23]=m>>>24&255,r[24]=B>>>0&255,r[25]=B>>>8&255,r[26]=B>>>16&255,r[27]=B>>>24&255,r[28]=S>>>0&255,r[29]=S>>>8&255,r[30]=S>>>16&255,r[31]=S>>>24&255,r[32]=k>>>0&255,r[33]=k>>>8&255,r[34]=k>>>16&255,r[35]=k>>>24&255,r[36]=K>>>0&255,r[37]=K>>>8&255,r[38]=K>>>16&255,r[39]=K>>>24&255,r[40]=Y>>>0&255,r[41]=Y>>>8&255,r[42]=Y>>>16&255,r[43]=Y>>>24&255,r[44]=L>>>0&255,r[45]=L>>>8&255,r[46]=L>>>16&255,r[47]=L>>>24&255,r[48]=T>>>0&255,r[49]=T>>>8&255,r[50]=T>>>16&255,r[51]=T>>>24&255,r[52]=z>>>0&255,r[53]=z>>>8&255,r[54]=z>>>16&255,r[55]=z>>>24&255,r[56]=R>>>0&255,r[57]=R>>>8&255,r[58]=R>>>16&255,r[59]=R>>>24&255,r[60]=P>>>0&255,r[61]=P>>>8&255,r[62]=P>>>16&255,r[63]=P>>>24&255}(r,t,n,e)}function _(r,t,n,e){!function(r,t,n,e){for(var o,i=255&e[0]|(255&e[1])<<8|(255&e[2])<<16|(255&e[3])<<24,h=255&n[0]|(255&n[1])<<8|(255&n[2])<<16|(255&n[3])<<24,a=255&n[4]|(255&n[5])<<8|(255&n[6])<<16|(255&n[7])<<24,f=255&n[8]|(255&n[9])<<8|(255&n[10])<<16|(255&n[11])<<24,s=255&n[12]|(255&n[13])<<8|(255&n[14])<<16|(255&n[15])<<24,u=255&e[4]|(255&e[5])<<8|(255&e[6])<<16|(255&e[7])<<24,c=255&t[0]|(255&t[1])<<8|(255&t[2])<<16|(255&t[3])<<24,y=255&t[4]|(255&t[5])<<8|(255&t[6])<<16|(255&t[7])<<24,l=255&t[8]|(255&t[9])<<8|(255&t[10])<<16|(255&t[11])<<24,w=255&t[12]|(255&t[13])<<8|(255&t[14])<<16|(255&t[15])<<24,v=255&e[8]|(255&e[9])<<8|(255&e[10])<<16|(255&e[11])<<24,p=255&n[16]|(255&n[17])<<8|(255&n[18])<<16|(255&n[19])<<24,b=255&n[20]|(255&n[21])<<8|(255&n[22])<<16|(255&n[23])<<24,g=255&n[24]|(255&n[25])<<8|(255&n[26])<<16|(255&n[27])<<24,A=255&n[28]|(255&n[29])<<8|(255&n[30])<<16|(255&n[31])<<24,_=255&e[12]|(255&e[13])<<8|(255&e[14])<<16|(255&e[15])<<24,U=0;U<20;U+=2)i^=(o=(b^=(o=(l^=(o=(s^=(o=i+b|0)<<7|o>>>25)+i|0)<<9|o>>>23)+s|0)<<13|o>>>19)+l|0)<<18|o>>>14,u^=(o=(h^=(o=(g^=(o=(w^=(o=u+h|0)<<7|o>>>25)+u|0)<<9|o>>>23)+w|0)<<13|o>>>19)+g|0)<<18|o>>>14,v^=(o=(c^=(o=(a^=(o=(A^=(o=v+c|0)<<7|o>>>25)+v|0)<<9|o>>>23)+A|0)<<13|o>>>19)+a|0)<<18|o>>>14,_^=(o=(p^=(o=(y^=(o=(f^=(o=_+p|0)<<7|o>>>25)+_|0)<<9|o>>>23)+f|0)<<13|o>>>19)+y|0)<<18|o>>>14,i^=(o=(f^=(o=(a^=(o=(h^=(o=i+f|0)<<7|o>>>25)+i|0)<<9|o>>>23)+h|0)<<13|o>>>19)+a|0)<<18|o>>>14,u^=(o=(s^=(o=(y^=(o=(c^=(o=u+s|0)<<7|o>>>25)+u|0)<<9|o>>>23)+c|0)<<13|o>>>19)+y|0)<<18|o>>>14,v^=(o=(w^=(o=(l^=(o=(p^=(o=v+w|0)<<7|o>>>25)+v|0)<<9|o>>>23)+p|0)<<13|o>>>19)+l|0)<<18|o>>>14,_^=(o=(A^=(o=(g^=(o=(b^=(o=_+A|0)<<7|o>>>25)+_|0)<<9|o>>>23)+b|0)<<13|o>>>19)+g|0)<<18|o>>>14;r[0]=i>>>0&255,r[1]=i>>>8&255,r[2]=i>>>16&255,r[3]=i>>>24&255,r[4]=u>>>0&255,r[5]=u>>>8&255,r[6]=u>>>16&255,r[7]=u>>>24&255,r[8]=v>>>0&255,r[9]=v>>>8&255,r[10]=v>>>16&255,r[11]=v>>>24&255,r[12]=_>>>0&255,r[13]=_>>>8&255,r[14]=_>>>16&255,r[15]=_>>>24&255,r[16]=c>>>0&255,r[17]=c>>>8&255,r[18]=c>>>16&255,r[19]=c>>>24&255,r[20]=y>>>0&255,r[21]=y>>>8&255,r[22]=y>>>16&255,r[23]=y>>>24&255,r[24]=l>>>0&255,r[25]=l>>>8&255,r[26]=l>>>16&255,r[27]=l>>>24&255,r[28]=w>>>0&255,r[29]=w>>>8&255,r[30]=w>>>16&255,r[31]=w>>>24&255}(r,t,n,e)}var U=new Uint8Array([101,120,112,97,110,100,32,51,50,45,98,121,116,101,32,107]);function d(r,t,n,e,o,i,h){var a,f,s=new Uint8Array(16),u=new Uint8Array(64);for(f=0;f<16;f++)s[f]=0;for(f=0;f<8;f++)s[f]=i[f];for(;64<=o;){for(A(u,s,h,U),f=0;f<64;f++)r[t+f]=n[e+f]^u[f];for(a=1,f=8;f<16;f++)a=a+(255&s[f])|0,s[f]=255&a,a>>>=8;o-=64,t+=64,e+=64}if(0<o)for(A(u,s,h,U),f=0;f<o;f++)r[t+f]=n[e+f]^u[f];return 0}function E(r,t,n,e,o){var i,h,a=new Uint8Array(16),f=new Uint8Array(64);for(h=0;h<16;h++)a[h]=0;for(h=0;h<8;h++)a[h]=e[h];for(;64<=n;){for(A(f,a,o,U),h=0;h<64;h++)r[t+h]=f[h];for(i=1,h=8;h<16;h++)i=i+(255&a[h])|0,a[h]=255&i,i>>>=8;n-=64,t+=64}if(0<n)for(A(f,a,o,U),h=0;h<n;h++)r[t+h]=f[h];return 0}function x(r,t,n,e,o){var i=new Uint8Array(32);_(i,e,o,U);for(var h=new Uint8Array(8),a=0;a<8;a++)h[a]=e[a+16];return E(r,t,n,h,i)}function M(r,t,n,e,o,i,h){var a=new Uint8Array(32);_(a,i,h,U);for(var f=new Uint8Array(8),s=0;s<8;s++)f[s]=i[s+16];return d(r,t,n,e,o,f,a)}var m=function(r){var t,n,e,o,i,h,a,f;this.buffer=new Uint8Array(16),this.r=new Uint16Array(10),this.h=new Uint16Array(10),this.pad=new Uint16Array(8),this.leftover=0,t=255&r[this.fin=0]|(255&r[1])<<8,this.r[0]=8191&t,n=255&r[2]|(255&r[3])<<8,this.r[1]=8191&(t>>>13|n<<3),e=255&r[4]|(255&r[5])<<8,this.r[2]=7939&(n>>>10|e<<6),o=255&r[6]|(255&r[7])<<8,this.r[3]=8191&(e>>>7|o<<9),i=255&r[8]|(255&r[9])<<8,this.r[4]=255&(o>>>4|i<<12),this.r[5]=i>>>1&8190,h=255&r[10]|(255&r[11])<<8,this.r[6]=8191&(i>>>14|h<<2),a=255&r[12]|(255&r[13])<<8,this.r[7]=8065&(h>>>11|a<<5),f=255&r[14]|(255&r[15])<<8,this.r[8]=8191&(a>>>8|f<<8),this.r[9]=f>>>5&127,this.pad[0]=255&r[16]|(255&r[17])<<8,this.pad[1]=255&r[18]|(255&r[19])<<8,this.pad[2]=255&r[20]|(255&r[21])<<8,this.pad[3]=255&r[22]|(255&r[23])<<8,this.pad[4]=255&r[24]|(255&r[25])<<8,this.pad[5]=255&r[26]|(255&r[27])<<8,this.pad[6]=255&r[28]|(255&r[29])<<8,this.pad[7]=255&r[30]|(255&r[31])<<8};function B(r,t,n,e,o,i){var h=new m(i);return h.update(n,e,o),h.finish(r,t),0}function S(r,t,n,e,o,i){var h=new Uint8Array(16);return B(h,0,n,e,o,i),b(r,t,h,0)}function k(r,t,n,e,o){var i;if(n<32)return-1;for(M(r,0,t,0,n,e,o),B(r,16,r,32,n-32,r),i=0;i<16;i++)r[i]=0;return 0}function K(r,t,n,e,o){var i,h=new Uint8Array(32);if(n<32)return-1;if(x(h,0,32,e,o),0!==S(t,16,t,32,n-32,h))return-1;for(M(r,0,t,0,n,e,o),i=0;i<32;i++)r[i]=0;return 0}function Y(r,t){var n;for(n=0;n<16;n++)r[n]=0|t[n]}function L(r){var t,n,e=1;for(t=0;t<16;t++)n=r[t]+e+65535,e=Math.floor(n/65536),r[t]=n-65536*e;r[0]+=e-1+37*(e-1)}function T(r,t,n){for(var e,o=~(n-1),i=0;i<16;i++)e=o&(r[i]^t[i]),r[i]^=e,t[i]^=e}function z(r,t){var n,e,o,i=v(),h=v();for(n=0;n<16;n++)h[n]=t[n];for(L(h),L(h),L(h),e=0;e<2;e++){for(i[0]=h[0]-65517,n=1;n<15;n++)i[n]=h[n]-65535-(i[n-1]>>16&1),i[n-1]&=65535;i[15]=h[15]-32767-(i[14]>>16&1),o=i[15]>>16&1,i[14]&=65535,T(h,i,1-o)}for(n=0;n<16;n++)r[2*n]=255&h[n],r[2*n+1]=h[n]>>8}function R(r,t){var n=new Uint8Array(32),e=new Uint8Array(32);return z(n,r),z(e,t),g(n,0,e,0)}function P(r){var t=new Uint8Array(32);return z(t,r),1&t[0]}function N(r,t){var n;for(n=0;n<16;n++)r[n]=t[2*n]+(t[2*n+1]<<8);r[15]&=32767}function O(r,t,n){for(var e=0;e<16;e++)r[e]=t[e]+n[e]}function C(r,t,n){for(var e=0;e<16;e++)r[e]=t[e]-n[e]}function F(r,t,n){var e,o,i=0,h=0,a=0,f=0,s=0,u=0,c=0,y=0,l=0,w=0,v=0,p=0,b=0,g=0,A=0,_=0,U=0,d=0,E=0,x=0,M=0,m=0,B=0,S=0,k=0,K=0,Y=0,L=0,T=0,z=0,R=0,P=n[0],N=n[1],O=n[2],C=n[3],F=n[4],I=n[5],Z=n[6],G=n[7],q=n[8],D=n[9],V=n[10],X=n[11],j=n[12],H=n[13],J=n[14],Q=n[15];i+=(e=t[0])*P,h+=e*N,a+=e*O,f+=e*C,s+=e*F,u+=e*I,c+=e*Z,y+=e*G,l+=e*q,w+=e*D,v+=e*V,p+=e*X,b+=e*j,g+=e*H,A+=e*J,_+=e*Q,h+=(e=t[1])*P,a+=e*N,f+=e*O,s+=e*C,u+=e*F,c+=e*I,y+=e*Z,l+=e*G,w+=e*q,v+=e*D,p+=e*V,b+=e*X,g+=e*j,A+=e*H,_+=e*J,U+=e*Q,a+=(e=t[2])*P,f+=e*N,s+=e*O,u+=e*C,c+=e*F,y+=e*I,l+=e*Z,w+=e*G,v+=e*q,p+=e*D,b+=e*V,g+=e*X,A+=e*j,_+=e*H,U+=e*J,d+=e*Q,f+=(e=t[3])*P,s+=e*N,u+=e*O,c+=e*C,y+=e*F,l+=e*I,w+=e*Z,v+=e*G,p+=e*q,b+=e*D,g+=e*V,A+=e*X,_+=e*j,U+=e*H,d+=e*J,E+=e*Q,s+=(e=t[4])*P,u+=e*N,c+=e*O,y+=e*C,l+=e*F,w+=e*I,v+=e*Z,p+=e*G,b+=e*q,g+=e*D,A+=e*V,_+=e*X,U+=e*j,d+=e*H,E+=e*J,x+=e*Q,u+=(e=t[5])*P,c+=e*N,y+=e*O,l+=e*C,w+=e*F,v+=e*I,p+=e*Z,b+=e*G,g+=e*q,A+=e*D,_+=e*V,U+=e*X,d+=e*j,E+=e*H,x+=e*J,M+=e*Q,c+=(e=t[6])*P,y+=e*N,l+=e*O,w+=e*C,v+=e*F,p+=e*I,b+=e*Z,g+=e*G,A+=e*q,_+=e*D,U+=e*V,d+=e*X,E+=e*j,x+=e*H,M+=e*J,m+=e*Q,y+=(e=t[7])*P,l+=e*N,w+=e*O,v+=e*C,p+=e*F,b+=e*I,g+=e*Z,A+=e*G,_+=e*q,U+=e*D,d+=e*V,E+=e*X,x+=e*j,M+=e*H,m+=e*J,B+=e*Q,l+=(e=t[8])*P,w+=e*N,v+=e*O,p+=e*C,b+=e*F,g+=e*I,A+=e*Z,_+=e*G,U+=e*q,d+=e*D,E+=e*V,x+=e*X,M+=e*j,m+=e*H,B+=e*J,S+=e*Q,w+=(e=t[9])*P,v+=e*N,p+=e*O,b+=e*C,g+=e*F,A+=e*I,_+=e*Z,U+=e*G,d+=e*q,E+=e*D,x+=e*V,M+=e*X,m+=e*j,B+=e*H,S+=e*J,k+=e*Q,v+=(e=t[10])*P,p+=e*N,b+=e*O,g+=e*C,A+=e*F,_+=e*I,U+=e*Z,d+=e*G,E+=e*q,x+=e*D,M+=e*V,m+=e*X,B+=e*j,S+=e*H,k+=e*J,K+=e*Q,p+=(e=t[11])*P,b+=e*N,g+=e*O,A+=e*C,_+=e*F,U+=e*I,d+=e*Z,E+=e*G,x+=e*q,M+=e*D,m+=e*V,B+=e*X,S+=e*j,k+=e*H,K+=e*J,Y+=e*Q,b+=(e=t[12])*P,g+=e*N,A+=e*O,_+=e*C,U+=e*F,d+=e*I,E+=e*Z,x+=e*G,M+=e*q,m+=e*D,B+=e*V,S+=e*X,k+=e*j,K+=e*H,Y+=e*J,L+=e*Q,g+=(e=t[13])*P,A+=e*N,_+=e*O,U+=e*C,d+=e*F,E+=e*I,x+=e*Z,M+=e*G,m+=e*q,B+=e*D,S+=e*V,k+=e*X,K+=e*j,Y+=e*H,L+=e*J,T+=e*Q,A+=(e=t[14])*P,_+=e*N,U+=e*O,d+=e*C,E+=e*F,x+=e*I,M+=e*Z,m+=e*G,B+=e*q,S+=e*D,k+=e*V,K+=e*X,Y+=e*j,L+=e*H,T+=e*J,z+=e*Q,_+=(e=t[15])*P,h+=38*(d+=e*O),a+=38*(E+=e*C),f+=38*(x+=e*F),s+=38*(M+=e*I),u+=38*(m+=e*Z),c+=38*(B+=e*G),y+=38*(S+=e*q),l+=38*(k+=e*D),w+=38*(K+=e*V),v+=38*(Y+=e*X),p+=38*(L+=e*j),b+=38*(T+=e*H),g+=38*(z+=e*J),A+=38*(R+=e*Q),i=(e=(i+=38*(U+=e*N))+(o=1)+65535)-65536*(o=Math.floor(e/65536)),h=(e=h+o+65535)-65536*(o=Math.floor(e/65536)),a=(e=a+o+65535)-65536*(o=Math.floor(e/65536)),f=(e=f+o+65535)-65536*(o=Math.floor(e/65536)),s=(e=s+o+65535)-65536*(o=Math.floor(e/65536)),u=(e=u+o+65535)-65536*(o=Math.floor(e/65536)),c=(e=c+o+65535)-65536*(o=Math.floor(e/65536)),y=(e=y+o+65535)-65536*(o=Math.floor(e/65536)),l=(e=l+o+65535)-65536*(o=Math.floor(e/65536)),w=(e=w+o+65535)-65536*(o=Math.floor(e/65536)),v=(e=v+o+65535)-65536*(o=Math.floor(e/65536)),p=(e=p+o+65535)-65536*(o=Math.floor(e/65536)),b=(e=b+o+65535)-65536*(o=Math.floor(e/65536)),g=(e=g+o+65535)-65536*(o=Math.floor(e/65536)),A=(e=A+o+65535)-65536*(o=Math.floor(e/65536)),_=(e=_+o+65535)-65536*(o=Math.floor(e/65536)),i=(e=(i+=o-1+37*(o-1))+(o=1)+65535)-65536*(o=Math.floor(e/65536)),h=(e=h+o+65535)-65536*(o=Math.floor(e/65536)),a=(e=a+o+65535)-65536*(o=Math.floor(e/65536)),f=(e=f+o+65535)-65536*(o=Math.floor(e/65536)),s=(e=s+o+65535)-65536*(o=Math.floor(e/65536)),u=(e=u+o+65535)-65536*(o=Math.floor(e/65536)),c=(e=c+o+65535)-65536*(o=Math.floor(e/65536)),y=(e=y+o+65535)-65536*(o=Math.floor(e/65536)),l=(e=l+o+65535)-65536*(o=Math.floor(e/65536)),w=(e=w+o+65535)-65536*(o=Math.floor(e/65536)),v=(e=v+o+65535)-65536*(o=Math.floor(e/65536)),p=(e=p+o+65535)-65536*(o=Math.floor(e/65536)),b=(e=b+o+65535)-65536*(o=Math.floor(e/65536)),g=(e=g+o+65535)-65536*(o=Math.floor(e/65536)),A=(e=A+o+65535)-65536*(o=Math.floor(e/65536)),_=(e=_+o+65535)-65536*(o=Math.floor(e/65536)),i+=o-1+37*(o-1),r[0]=i,r[1]=h,r[2]=a,r[3]=f,r[4]=s,r[5]=u,r[6]=c,r[7]=y,r[8]=l,r[9]=w,r[10]=v,r[11]=p,r[12]=b,r[13]=g,r[14]=A,r[15]=_}function I(r,t){F(r,t,t)}function Z(r,t){var n,e=v();for(n=0;n<16;n++)e[n]=t[n];for(n=253;0<=n;n--)I(e,e),2!==n&&4!==n&&F(e,e,t);for(n=0;n<16;n++)r[n]=e[n]}function G(r,t){var n,e=v();for(n=0;n<16;n++)e[n]=t[n];for(n=250;0<=n;n--)I(e,e),1!==n&&F(e,e,t);for(n=0;n<16;n++)r[n]=e[n]}function q(r,t,n){var e,o,i=new Uint8Array(32),h=new Float64Array(80),a=v(),f=v(),s=v(),u=v(),c=v(),y=v();for(o=0;o<31;o++)i[o]=t[o];for(i[31]=127&t[31]|64,i[0]&=248,N(h,n),o=0;o<16;o++)f[o]=h[o],u[o]=a[o]=s[o]=0;for(a[0]=u[0]=1,o=254;0<=o;--o)T(a,f,e=i[o>>>3]>>>(7&o)&1),T(s,u,e),O(c,a,s),C(a,a,s),O(s,f,u),C(f,f,u),I(u,c),I(y,a),F(a,s,a),F(s,f,c),O(c,a,s),C(a,a,s),I(f,a),C(s,u,y),F(a,s,p),O(a,a,u),F(s,s,a),F(a,u,y),F(u,f,h),I(f,c),T(a,f,e),T(s,u,e);for(o=0;o<16;o++)h[o+16]=a[o],h[o+32]=s[o],h[o+48]=f[o],h[o+64]=u[o];var l=h.subarray(32),w=h.subarray(16);return Z(l,l),F(w,w,l),z(r,w),0}function D(r,t){return q(r,t,n)}function V(r,t){return h(t,32),D(r,t)}function X(r,t,n){var e=new Uint8Array(32);return q(e,n,t),_(r,o,e,U)}m.prototype.blocks=function(r,t,n){for(var e,o,i,h,a,f,s,u,c,y,l,w,v,p,b,g,A,_,U,d=this.fin?0:2048,E=this.h[0],x=this.h[1],M=this.h[2],m=this.h[3],B=this.h[4],S=this.h[5],k=this.h[6],K=this.h[7],Y=this.h[8],L=this.h[9],T=this.r[0],z=this.r[1],R=this.r[2],P=this.r[3],N=this.r[4],O=this.r[5],C=this.r[6],F=this.r[7],I=this.r[8],Z=this.r[9];16<=n;)y=c=0,y+=(E+=8191&(e=255&r[t+0]|(255&r[t+1])<<8))*T,y+=(x+=8191&(e>>>13|(o=255&r[t+2]|(255&r[t+3])<<8)<<3))*(5*Z),y+=(M+=8191&(o>>>10|(i=255&r[t+4]|(255&r[t+5])<<8)<<6))*(5*I),y+=(m+=8191&(i>>>7|(h=255&r[t+6]|(255&r[t+7])<<8)<<9))*(5*F),c=(y+=(B+=8191&(h>>>4|(a=255&r[t+8]|(255&r[t+9])<<8)<<12))*(5*C))>>>13,y&=8191,y+=(S+=a>>>1&8191)*(5*O),y+=(k+=8191&(a>>>14|(f=255&r[t+10]|(255&r[t+11])<<8)<<2))*(5*N),y+=(K+=8191&(f>>>11|(s=255&r[t+12]|(255&r[t+13])<<8)<<5))*(5*P),y+=(Y+=8191&(s>>>8|(u=255&r[t+14]|(255&r[t+15])<<8)<<8))*(5*R),l=c+=(y+=(L+=u>>>5|d)*(5*z))>>>13,l+=E*z,l+=x*T,l+=M*(5*Z),l+=m*(5*I),c=(l+=B*(5*F))>>>13,l&=8191,l+=S*(5*C),l+=k*(5*O),l+=K*(5*N),l+=Y*(5*P),c+=(l+=L*(5*R))>>>13,l&=8191,w=c,w+=E*R,w+=x*z,w+=M*T,w+=m*(5*Z),c=(w+=B*(5*I))>>>13,w&=8191,w+=S*(5*F),w+=k*(5*C),w+=K*(5*O),w+=Y*(5*N),v=c+=(w+=L*(5*P))>>>13,v+=E*P,v+=x*R,v+=M*z,v+=m*T,c=(v+=B*(5*Z))>>>13,v&=8191,v+=S*(5*I),v+=k*(5*F),v+=K*(5*C),v+=Y*(5*O),p=c+=(v+=L*(5*N))>>>13,p+=E*N,p+=x*P,p+=M*R,p+=m*z,c=(p+=B*T)>>>13,p&=8191,p+=S*(5*Z),p+=k*(5*I),p+=K*(5*F),p+=Y*(5*C),b=c+=(p+=L*(5*O))>>>13,b+=E*O,b+=x*N,b+=M*P,b+=m*R,c=(b+=B*z)>>>13,b&=8191,b+=S*T,b+=k*(5*Z),b+=K*(5*I),b+=Y*(5*F),g=c+=(b+=L*(5*C))>>>13,g+=E*C,g+=x*O,g+=M*N,g+=m*P,c=(g+=B*R)>>>13,g&=8191,g+=S*z,g+=k*T,g+=K*(5*Z),g+=Y*(5*I),A=c+=(g+=L*(5*F))>>>13,A+=E*F,A+=x*C,A+=M*O,A+=m*N,c=(A+=B*P)>>>13,A&=8191,A+=S*R,A+=k*z,A+=K*T,A+=Y*(5*Z),_=c+=(A+=L*(5*I))>>>13,_+=E*I,_+=x*F,_+=M*C,_+=m*O,c=(_+=B*N)>>>13,_&=8191,_+=S*P,_+=k*R,_+=K*z,_+=Y*T,U=c+=(_+=L*(5*Z))>>>13,U+=E*Z,U+=x*I,U+=M*F,U+=m*C,c=(U+=B*O)>>>13,U&=8191,U+=S*N,U+=k*P,U+=K*R,U+=Y*z,E=y=8191&(c=(c=((c+=(U+=L*T)>>>13)<<2)+c|0)+(y&=8191)|0),x=l+=c>>>=13,M=w&=8191,m=v&=8191,B=p&=8191,S=b&=8191,k=g&=8191,K=A&=8191,Y=_&=8191,L=U&=8191,t+=16,n-=16;this.h[0]=E,this.h[1]=x,this.h[2]=M,this.h[3]=m,this.h[4]=B,this.h[5]=S,this.h[6]=k,this.h[7]=K,this.h[8]=Y,this.h[9]=L},m.prototype.finish=function(r,t){var n,e,o,i,h=new Uint16Array(10);if(this.leftover){for(i=this.leftover,this.buffer[i++]=1;i<16;i++)this.buffer[i]=0;this.fin=1,this.blocks(this.buffer,0,16)}for(n=this.h[1]>>>13,this.h[1]&=8191,i=2;i<10;i++)this.h[i]+=n,n=this.h[i]>>>13,this.h[i]&=8191;for(this.h[0]+=5*n,n=this.h[0]>>>13,this.h[0]&=8191,this.h[1]+=n,n=this.h[1]>>>13,this.h[1]&=8191,this.h[2]+=n,h[0]=this.h[0]+5,n=h[0]>>>13,h[0]&=8191,i=1;i<10;i++)h[i]=this.h[i]+n,n=h[i]>>>13,h[i]&=8191;for(h[9]-=8192,e=(1^n)-1,i=0;i<10;i++)h[i]&=e;for(e=~e,i=0;i<10;i++)this.h[i]=this.h[i]&e|h[i];for(this.h[0]=65535&(this.h[0]|this.h[1]<<13),this.h[1]=65535&(this.h[1]>>>3|this.h[2]<<10),this.h[2]=65535&(this.h[2]>>>6|this.h[3]<<7),this.h[3]=65535&(this.h[3]>>>9|this.h[4]<<4),this.h[4]=65535&(this.h[4]>>>12|this.h[5]<<1|this.h[6]<<14),this.h[5]=65535&(this.h[6]>>>2|this.h[7]<<11),this.h[6]=65535&(this.h[7]>>>5|this.h[8]<<8),this.h[7]=65535&(this.h[8]>>>8|this.h[9]<<5),o=this.h[0]+this.pad[0],this.h[0]=65535&o,i=1;i<8;i++)o=(this.h[i]+this.pad[i]|0)+(o>>>16)|0,this.h[i]=65535&o;r[t+0]=this.h[0]>>>0&255,r[t+1]=this.h[0]>>>8&255,r[t+2]=this.h[1]>>>0&255,r[t+3]=this.h[1]>>>8&255,r[t+4]=this.h[2]>>>0&255,r[t+5]=this.h[2]>>>8&255,r[t+6]=this.h[3]>>>0&255,r[t+7]=this.h[3]>>>8&255,r[t+8]=this.h[4]>>>0&255,r[t+9]=this.h[4]>>>8&255,r[t+10]=this.h[5]>>>0&255,r[t+11]=this.h[5]>>>8&255,r[t+12]=this.h[6]>>>0&255,r[t+13]=this.h[6]>>>8&255,r[t+14]=this.h[7]>>>0&255,r[t+15]=this.h[7]>>>8&255},m.prototype.update=function(r,t,n){var e,o;if(this.leftover){for(n<(o=16-this.leftover)&&(o=n),e=0;e<o;e++)this.buffer[this.leftover+e]=r[t+e];if(n-=o,t+=o,this.leftover+=o,this.leftover<16)return;this.blocks(this.buffer,0,16),this.leftover=0}if(16<=n&&(o=n-n%16,this.blocks(r,t,o),t+=o,n-=o),n){for(e=0;e<n;e++)this.buffer[this.leftover+e]=r[t+e];this.leftover+=n}};var j=k,H=K;var J=[1116352408,3609767458,1899447441,602891725,3049323471,3964484399,3921009573,2173295548,961987163,4081628472,1508970993,3053834265,2453635748,2937671579,2870763221,3664609560,3624381080,2734883394,310598401,1164996542,607225278,1323610764,1426881987,3590304994,1925078388,4068182383,2162078206,991336113,2614888103,633803317,3248222580,3479774868,3835390401,2666613458,4022224774,944711139,264347078,2341262773,604807628,2007800933,770255983,1495990901,1249150122,1856431235,1555081692,3175218132,1996064986,2198950837,2554220882,3999719339,2821834349,766784016,2952996808,2566594879,3210313671,3203337956,3336571891,1034457026,3584528711,2466948901,113926993,3758326383,338241895,168717936,666307205,1188179964,773529912,1546045734,1294757372,1522805485,1396182291,2643833823,1695183700,2343527390,1986661051,1014477480,2177026350,1206759142,2456956037,344077627,2730485921,1290863460,2820302411,3158454273,3259730800,3505952657,3345764771,106217008,3516065817,3606008344,3600352804,1432725776,4094571909,1467031594,275423344,851169720,430227734,3100823752,506948616,1363258195,659060556,3750685593,883997877,3785050280,958139571,3318307427,1322822218,3812723403,1537002063,2003034995,1747873779,3602036899,1955562222,1575990012,2024104815,1125592928,2227730452,2716904306,2361852424,442776044,2428436474,593698344,2756734187,3733110249,3204031479,2999351573,3329325298,3815920427,3391569614,3928383900,3515267271,566280711,3940187606,3454069534,4118630271,4000239992,116418474,1914138554,174292421,2731055270,289380356,3203993006,460393269,320620315,685471733,587496836,852142971,1086792851,1017036298,365543100,1126000580,2618297676,1288033470,3409855158,1501505948,4234509866,1607167915,987167468,1816402316,1246189591];function Q(r,t,n,e){for(var o,i,h,a,f,s,u,c,y,l,w,v,p,b,g,A,_,U,d,E,x,M,m,B,S=new Int32Array(16),k=new Int32Array(16),K=r[0],Y=r[1],L=r[2],T=r[3],z=r[4],R=r[5],P=r[6],N=r[7],O=t[0],C=t[1],F=t[2],I=t[3],Z=t[4],G=t[5],q=t[6],D=t[7],V=0;128<=e;){for(_=0;_<16;_++)U=8*_+V,S[_]=n[U+0]<<24|n[U+1]<<16|n[U+2]<<8|n[U+3],k[_]=n[U+4]<<24|n[U+5]<<16|n[U+6]<<8|n[U+7];for(_=0;_<80;_++)if(o=Y,i=L,h=T,c=C,y=F,l=I,x=65535&(E=D),M=E>>>16,m=65535&(d=N),B=d>>>16,x+=65535&(E=((w=Z)>>>14|(a=z)<<18)^(Z>>>18|z<<14)^(z>>>9|Z<<23)),M+=E>>>16,m+=65535&(d=(z>>>14|Z<<18)^(z>>>18|Z<<14)^(Z>>>9|z<<23)),B+=d>>>16,x+=65535&(E=Z&(v=G)^~Z&(p=q)),M+=E>>>16,m+=65535&(d=z&(f=R)^~z&(s=P)),B+=d>>>16,d=J[2*_],x+=65535&(E=J[2*_+1]),M+=E>>>16,m+=65535&d,B+=d>>>16,d=S[_%16],M+=(E=k[_%16])>>>16,m+=65535&d,B+=d>>>16,m+=(M+=(x+=65535&E)>>>16)>>>16,x=65535&(E=A=65535&x|M<<16),M=E>>>16,m=65535&(d=g=65535&m|(B+=m>>>16)<<16),B=d>>>16,x+=65535&(E=(O>>>28|K<<4)^(K>>>2|O<<30)^(K>>>7|O<<25)),M+=E>>>16,m+=65535&(d=(K>>>28|O<<4)^(O>>>2|K<<30)^(O>>>7|K<<25)),B+=d>>>16,M+=(E=O&C^O&F^C&F)>>>16,m+=65535&(d=K&Y^K&L^Y&L),B+=d>>>16,u=65535&(m+=(M+=(x+=65535&E)>>>16)>>>16)|(B+=m>>>16)<<16,b=65535&x|M<<16,x=65535&(E=l),M=E>>>16,m=65535&(d=h),B=d>>>16,M+=(E=A)>>>16,m+=65535&(d=g),B+=d>>>16,Y=K,L=o,T=i,z=h=65535&(m+=(M+=(x+=65535&E)>>>16)>>>16)|(B+=m>>>16)<<16,R=a,P=f,N=s,K=u,C=O,F=c,I=y,Z=l=65535&x|M<<16,G=w,q=v,D=p,O=b,_%16==15)for(U=0;U<16;U++)d=S[U],x=65535&(E=k[U]),M=E>>>16,m=65535&d,B=d>>>16,d=S[(U+9)%16],x+=65535&(E=k[(U+9)%16]),M+=E>>>16,m+=65535&d,B+=d>>>16,g=S[(U+1)%16],x+=65535&(E=((A=k[(U+1)%16])>>>1|g<<31)^(A>>>8|g<<24)^(A>>>7|g<<25)),M+=E>>>16,m+=65535&(d=(g>>>1|A<<31)^(g>>>8|A<<24)^g>>>7),B+=d>>>16,g=S[(U+14)%16],M+=(E=((A=k[(U+14)%16])>>>19|g<<13)^(g>>>29|A<<3)^(A>>>6|g<<26))>>>16,m+=65535&(d=(g>>>19|A<<13)^(A>>>29|g<<3)^g>>>6),B+=d>>>16,B+=(m+=(M+=(x+=65535&E)>>>16)>>>16)>>>16,S[U]=65535&m|B<<16,k[U]=65535&x|M<<16;x=65535&(E=O),M=E>>>16,m=65535&(d=K),B=d>>>16,d=r[0],M+=(E=t[0])>>>16,m+=65535&d,B+=d>>>16,B+=(m+=(M+=(x+=65535&E)>>>16)>>>16)>>>16,r[0]=K=65535&m|B<<16,t[0]=O=65535&x|M<<16,x=65535&(E=C),M=E>>>16,m=65535&(d=Y),B=d>>>16,d=r[1],M+=(E=t[1])>>>16,m+=65535&d,B+=d>>>16,B+=(m+=(M+=(x+=65535&E)>>>16)>>>16)>>>16,r[1]=Y=65535&m|B<<16,t[1]=C=65535&x|M<<16,x=65535&(E=F),M=E>>>16,m=65535&(d=L),B=d>>>16,d=r[2],M+=(E=t[2])>>>16,m+=65535&d,B+=d>>>16,B+=(m+=(M+=(x+=65535&E)>>>16)>>>16)>>>16,r[2]=L=65535&m|B<<16,t[2]=F=65535&x|M<<16,x=65535&(E=I),M=E>>>16,m=65535&(d=T),B=d>>>16,d=r[3],M+=(E=t[3])>>>16,m+=65535&d,B+=d>>>16,B+=(m+=(M+=(x+=65535&E)>>>16)>>>16)>>>16,r[3]=T=65535&m|B<<16,t[3]=I=65535&x|M<<16,x=65535&(E=Z),M=E>>>16,m=65535&(d=z),B=d>>>16,d=r[4],M+=(E=t[4])>>>16,m+=65535&d,B+=d>>>16,B+=(m+=(M+=(x+=65535&E)>>>16)>>>16)>>>16,r[4]=z=65535&m|B<<16,t[4]=Z=65535&x|M<<16,x=65535&(E=G),M=E>>>16,m=65535&(d=R),B=d>>>16,d=r[5],M+=(E=t[5])>>>16,m+=65535&d,B+=d>>>16,B+=(m+=(M+=(x+=65535&E)>>>16)>>>16)>>>16,r[5]=R=65535&m|B<<16,t[5]=G=65535&x|M<<16,x=65535&(E=q),M=E>>>16,m=65535&(d=P),B=d>>>16,d=r[6],M+=(E=t[6])>>>16,m+=65535&d,B+=d>>>16,B+=(m+=(M+=(x+=65535&E)>>>16)>>>16)>>>16,r[6]=P=65535&m|B<<16,t[6]=q=65535&x|M<<16,x=65535&(E=D),M=E>>>16,m=65535&(d=N),B=d>>>16,d=r[7],M+=(E=t[7])>>>16,m+=65535&d,B+=d>>>16,B+=(m+=(M+=(x+=65535&E)>>>16)>>>16)>>>16,r[7]=N=65535&m|B<<16,t[7]=D=65535&x|M<<16,V+=128,e-=128}return e}function W(r,t,n){var e,o=new Int32Array(8),i=new Int32Array(8),h=new Uint8Array(256),a=n;for(o[0]=1779033703,o[1]=3144134277,o[2]=1013904242,o[3]=2773480762,o[4]=1359893119,o[5]=2600822924,o[6]=528734635,o[7]=1541459225,i[0]=4089235720,i[1]=2227873595,i[2]=4271175723,i[3]=1595750129,i[4]=2917565137,i[5]=725511199,i[6]=4215389547,i[7]=327033209,Q(o,i,t,n),n%=128,e=0;e<n;e++)h[e]=t[a-n+e];for(h[n]=128,h[(n=256-128*(n<112?1:0))-9]=0,f(h,n-8,a/536870912|0,a<<3),Q(o,i,h,n),e=0;e<8;e++)f(r,8*e,o[e],i[e]);return 0}function $(r,t){var n=v(),e=v(),o=v(),i=v(),h=v(),a=v(),f=v(),s=v(),u=v();C(n,r[1],r[0]),C(u,t[1],t[0]),F(n,n,u),O(e,r[0],r[1]),O(u,t[0],t[1]),F(e,e,u),F(o,r[3],t[3]),F(o,o,y),F(i,r[2],t[2]),O(i,i,i),C(h,e,n),C(a,i,o),O(f,i,o),O(s,e,n),F(r[0],h,a),F(r[1],s,f),F(r[2],f,a),F(r[3],h,s)}function rr(r,t,n){var e;for(e=0;e<4;e++)T(r[e],t[e],n)}function tr(r,t){var n=v(),e=v(),o=v();Z(o,t[2]),F(n,t[0],o),F(e,t[1],o),z(r,e),r[31]^=P(n)<<7}function nr(r,t,n){var e,o;for(Y(r[0],s),Y(r[1],u),Y(r[2],u),Y(r[3],s),o=255;0<=o;--o)rr(r,t,e=n[o/8|0]>>(7&o)&1),$(t,r),$(r,r),rr(r,t,e)}function er(r,t){var n=[v(),v(),v(),v()];Y(n[0],e),Y(n[1],a),Y(n[2],u),F(n[3],e,a),nr(r,n,t)}function or(r,t,n){var e,o=new Uint8Array(64),i=[v(),v(),v(),v()];for(n||h(t,32),W(o,t,32),o[0]&=248,o[31]&=127,o[31]|=64,er(i,o),tr(r,i),e=0;e<32;e++)t[e+32]=r[e];return 0}var ir=new Float64Array([237,211,245,92,26,99,18,88,214,156,247,162,222,249,222,20,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,16]);function hr(r,t){var n,e,o,i;for(e=63;32<=e;--e){for(n=0,o=e-32,i=e-12;o<i;++o)t[o]+=n-16*t[e]*ir[o-(e-32)],n=Math.floor((t[o]+128)/256),t[o]-=256*n;t[o]+=n,t[e]=0}for(o=n=0;o<32;o++)t[o]+=n-(t[31]>>4)*ir[o],n=t[o]>>8,t[o]&=255;for(o=0;o<32;o++)t[o]-=n*ir[o];for(e=0;e<32;e++)t[e+1]+=t[e]>>8,r[e]=255&t[e]}function ar(r){var t,n=new Float64Array(64);for(t=0;t<64;t++)n[t]=r[t];for(t=0;t<64;t++)r[t]=0;hr(r,n)}function fr(r,t,n,e){var o,i,h=new Uint8Array(64),a=new Uint8Array(64),f=new Uint8Array(64),s=new Float64Array(64),u=[v(),v(),v(),v()];W(h,e,32),h[0]&=248,h[31]&=127,h[31]|=64;var c=n+64;for(o=0;o<n;o++)r[64+o]=t[o];for(o=0;o<32;o++)r[32+o]=h[32+o];for(W(f,r.subarray(32),n+32),ar(f),er(u,f),tr(r,u),o=32;o<64;o++)r[o]=e[o];for(W(a,r,n+64),ar(a),o=0;o<64;o++)s[o]=0;for(o=0;o<32;o++)s[o]=f[o];for(o=0;o<32;o++)for(i=0;i<32;i++)s[o+i]+=a[o]*h[i];return hr(r.subarray(32),s),c}function sr(r,t,n,e){var o,i=new Uint8Array(32),h=new Uint8Array(64),a=[v(),v(),v(),v()],f=[v(),v(),v(),v()];if(n<64)return-1;if(function(r,t){var n=v(),e=v(),o=v(),i=v(),h=v(),a=v(),f=v();if(Y(r[2],u),N(r[1],t),I(o,r[1]),F(i,o,c),C(o,o,r[2]),O(i,r[2],i),I(h,i),I(a,h),F(f,a,h),F(n,f,o),F(n,n,i),G(n,n),F(n,n,o),F(n,n,i),F(n,n,i),F(r[0],n,i),I(e,r[0]),F(e,e,i),R(e,o)&&F(r[0],r[0],l),I(e,r[0]),F(e,e,i),R(e,o))return 1;P(r[0])===t[31]>>7&&C(r[0],s,r[0]),F(r[3],r[0],r[1])}(f,e))return-1;for(o=0;o<n;o++)r[o]=t[o];for(o=0;o<32;o++)r[o+32]=e[o];if(W(h,r,n),ar(h),nr(a,f,h),er(f,t.subarray(32)),$(a,f),tr(i,a),n-=64,g(t,0,i,0)){for(o=0;o<n;o++)r[o]=0;return-1}for(o=0;o<n;o++)r[o]=t[o+64];return n}function ur(r,t){if(32!==r.length)throw new Error("bad key size");if(24!==t.length)throw new Error("bad nonce size")}function cr(){for(var r=0;r<arguments.length;r++)if(!(arguments[r]instanceof Uint8Array))throw new TypeError("unexpected type, use Uint8Array")}function yr(r){for(var t=0;t<r.length;t++)r[t]=0}i.lowlevel={crypto_core_hsalsa20:_,crypto_stream_xor:M,crypto_stream:x,crypto_stream_salsa20_xor:d,crypto_stream_salsa20:E,crypto_onetimeauth:B,crypto_onetimeauth_verify:S,crypto_verify_16:b,crypto_verify_32:g,crypto_secretbox:k,crypto_secretbox_open:K,crypto_scalarmult:q,crypto_scalarmult_base:D,crypto_box_beforenm:X,crypto_box_afternm:j,crypto_box:function(r,t,n,e,o,i){var h=new Uint8Array(32);return X(h,o,i),j(r,t,n,e,h)},crypto_box_open:function(r,t,n,e,o,i){var h=new Uint8Array(32);return X(h,o,i),H(r,t,n,e,h)},crypto_box_keypair:V,crypto_hash:W,crypto_sign:fr,crypto_sign_keypair:or,crypto_sign_open:sr,crypto_secretbox_KEYBYTES:32,crypto_secretbox_NONCEBYTES:24,crypto_secretbox_ZEROBYTES:32,crypto_secretbox_BOXZEROBYTES:16,crypto_scalarmult_BYTES:32,crypto_scalarmult_SCALARBYTES:32,crypto_box_PUBLICKEYBYTES:32,crypto_box_SECRETKEYBYTES:32,crypto_box_BEFORENMBYTES:32,crypto_box_NONCEBYTES:24,crypto_box_ZEROBYTES:32,crypto_box_BOXZEROBYTES:16,crypto_sign_BYTES:64,crypto_sign_PUBLICKEYBYTES:32,crypto_sign_SECRETKEYBYTES:64,crypto_sign_SEEDBYTES:32,crypto_hash_BYTES:64,gf:v,D:c,L:ir,pack25519:z,unpack25519:N,M:F,A:O,S:I,Z:C,pow2523:G,add:$,set25519:Y,modL:hr,scalarmult:nr,scalarbase:er},i.randomBytes=function(r){var t=new Uint8Array(r);return h(t,r),t},i.secretbox=function(r,t,n){cr(r,t,n),ur(n,t);for(var e=new Uint8Array(32+r.length),o=new Uint8Array(e.length),i=0;i<r.length;i++)e[i+32]=r[i];return k(o,e,e.length,t,n),o.subarray(16)},i.secretbox.open=function(r,t,n){cr(r,t,n),ur(n,t);for(var e=new Uint8Array(16+r.length),o=new Uint8Array(e.length),i=0;i<r.length;i++)e[i+16]=r[i];return e.length<32||0!==K(o,e,e.length,t,n)?null:o.subarray(32)},i.secretbox.keyLength=32,i.secretbox.nonceLength=24,i.secretbox.overheadLength=16,i.scalarMult=function(r,t){if(cr(r,t),32!==r.length)throw new Error("bad n size");if(32!==t.length)throw new Error("bad p size");var n=new Uint8Array(32);return q(n,r,t),n},i.scalarMult.base=function(r){if(cr(r),32!==r.length)throw new Error("bad n size");var t=new Uint8Array(32);return D(t,r),t},i.scalarMult.scalarLength=32,i.scalarMult.groupElementLength=32,i.box=function(r,t,n,e){var o=i.box.before(n,e);return i.secretbox(r,t,o)},i.box.before=function(r,t){cr(r,t),function(r,t){if(32!==r.length)throw new Error("bad public key size");if(32!==t.length)throw new Error("bad secret key size")}(r,t);var n=new Uint8Array(32);return X(n,r,t),n},i.box.after=i.secretbox,i.box.open=function(r,t,n,e){var o=i.box.before(n,e);return i.secretbox.open(r,t,o)},i.box.open.after=i.secretbox.open,i.box.keyPair=function(){var r=new Uint8Array(32),t=new Uint8Array(32);return V(r,t),{publicKey:r,secretKey:t}},i.box.keyPair.fromSecretKey=function(r){if(cr(r),32!==r.length)throw new Error("bad secret key size");var t=new Uint8Array(32);return D(t,r),{publicKey:t,secretKey:new Uint8Array(r)}},i.box.publicKeyLength=32,i.box.secretKeyLength=32,i.box.sharedKeyLength=32,i.box.nonceLength=24,i.box.overheadLength=i.secretbox.overheadLength,i.sign=function(r,t){if(cr(r,t),64!==t.length)throw new Error("bad secret key size");var n=new Uint8Array(64+r.length);return fr(n,r,r.length,t),n},i.sign.open=function(r,t){if(cr(r,t),32!==t.length)throw new Error("bad public key size");var n=new Uint8Array(r.length),e=sr(n,r,r.length,t);if(e<0)return null;for(var o=new Uint8Array(e),i=0;i<o.length;i++)o[i]=n[i];return o},i.sign.detached=function(r,t){for(var n=i.sign(r,t),e=new Uint8Array(64),o=0;o<e.length;o++)e[o]=n[o];return e},i.sign.detached.verify=function(r,t,n){if(cr(r,t,n),64!==t.length)throw new Error("bad signature size");if(32!==n.length)throw new Error("bad public key size");var e,o=new Uint8Array(64+r.length),i=new Uint8Array(64+r.length);for(e=0;e<64;e++)o[e]=t[e];for(e=0;e<r.length;e++)o[e+64]=r[e];return 0<=sr(i,o,o.length,n)},i.sign.keyPair=function(){var r=new Uint8Array(32),t=new Uint8Array(64);return or(r,t),{publicKey:r,secretKey:t}},i.sign.keyPair.fromSecretKey=function(r){if(cr(r),64!==r.length)throw new Error("bad secret key size");for(var t=new Uint8Array(32),n=0;n<t.length;n++)t[n]=r[32+n];return{publicKey:t,secretKey:new Uint8Array(r)}},i.sign.keyPair.fromSeed=function(r){if(cr(r),32!==r.length)throw new Error("bad seed size");for(var t=new Uint8Array(32),n=new Uint8Array(64),e=0;e<32;e++)n[e]=r[e];return or(t,n,!0),{publicKey:t,secretKey:n}},i.sign.publicKeyLength=32,i.sign.secretKeyLength=64,i.sign.seedLength=32,i.sign.signatureLength=64,i.hash=function(r){cr(r);var t=new Uint8Array(64);return W(t,r,r.length),t},i.hash.hashLength=64,i.verify=function(r,t){return cr(r,t),0!==r.length&&0!==t.length&&(r.length===t.length&&0===w(r,0,t,0,r.length))},i.setPRNG=function(r){h=r},function(){var o="undefined"!=typeof self?self.crypto||self.msCrypto:null;if(o&&o.getRandomValues){i.setPRNG(function(r,t){var n,e=new Uint8Array(t);for(n=0;n<t;n+=65536)o.getRandomValues(e.subarray(n,n+Math.min(t-n,65536)));for(n=0;n<t;n++)r[n]=e[n];yr(e)})}else"undefined"!=typeof require&&(o=require("crypto"))&&o.randomBytes&&i.setPRNG(function(r,t){var n,e=o.randomBytes(t);for(n=0;n<t;n++)r[n]=e[n];yr(e)})}()}("undefined"!=typeof module&&module.exports?module.exports:self.nacl=self.nacl||{});
+</script>
 <script>
 "use strict";
 /* =========================================================
@@ -536,7 +552,7 @@ function fmt(n) { return Math.floor(n).toLocaleString('en-US'); }   // every dig
 function fmtPix(n) { return '' + Math.floor(n); }
 
 /* ---------- bridge to the macOS shell ---------- */
-const GAME_VERSION = '1.15.0', GAME_BUILD = 220;
+const GAME_VERSION = '1.16.0', GAME_BUILD = 221;
 const NATIVE = !!window.__DH_NATIVE || Q.has('nativeTest');
 if (window.__DH_OS === 'win') document.addEventListener('DOMContentLoaded', () => { const g = document.getElementById('grip'); if (g) g.title = 'ドラッグで移動／ダブルクリックでタスクバーの上に戻す'; });
 // page -> mac: the shell polls document.title. Keep the title short: big payloads (saves) are cut into chunks
@@ -740,6 +756,8 @@ const grp = { active: false, code: '', peers: {}, status: 'off', pid: Math.rando
 
 function heroData(cls) { const h = G.heroes[cls] || (G.heroes[cls] = { gear: {} }); if (!h.lv) { h.lv = 1; h.xp = 0; } return h; }
 const heroLv = cls => heroData(cls).lv;
+const LV_MAX = 500;
+const lvHtml = l => { const lap = Math.min(4, Math.floor((l - 1) / 100)); return '<span class="lvc' + lap + '">' + ((l - 1) % 100 + 1) + '</span>' + (lap ? '<sup class="lvc' + lap + '" style="font-size:8px">★' + (lap + 1) + '</sup>' : ''); };
 const topLv = () => Math.max(1, ...Object.keys(G.heroes).map(heroLv));
 const FAIR = {};
 function statsFor(cls, gear) {
@@ -814,7 +832,7 @@ let wave = 0, waveT = 0, waveLeft = 0, waveFx = 0;
 const waveCount = () => isBoss() ? 1 : Math.min(8, 2 + Math.floor(G.stage / 3) + Math.min(2, Math.floor((G.region + G.loop * REGIONS.length) / 2)));
 const waveSize = w => isBoss() ? 1 : Math.min(6, 2 + Math.floor(G.stage / 4) + (w === waveCount() ? 1 : 0));
 const stageCount = () => isBoss() ? 1 : 5 + Math.min(5, Math.floor(G.stage / 2));
-const xpNeed = l => Math.floor(30 * Math.pow(1.23, l - 1));
+const xpNeed = l => Math.floor(30 * Math.pow(1.23, Math.min(l, 60) - 1) * Math.pow(1.05, Math.max(0, l - 60)));   // gentler after Lv60 so the 5 laps (Lv500) stay reachable
 const upCost = k => Math.floor(5 * Math.pow(1.17, G.upg[k]) * (k === 'spd' ? 1.6 : 1));
 let ST = { maxHp: 1, power: 1, gm: 1, xm: 1 };
 
@@ -1879,7 +1897,7 @@ function damageEnemy(e, m, mult, opt = {}) {
   const st = m.st, crit = Math.random() < st.crit; let dmg = st.atk * atkBuff() * itemAtk() * elemMult(m.el, e.el) * mult * rnd(.9, 1.1) * (crit ? st.critMul : 1) * (1 + Math.min(.5, chain.n * .025));
   if (st.ls && !m.down) m.hp = Math.min(st.maxHp, m.hp + dmg * st.ls);
   if (e.boss) dmg *= 1 + runeVal('boss');
-  e.hp -= dmg; e.flash = 1; e.kb = opt.kb !== undefined ? opt.kb : (crit ? 4 : 2);
+  if (e.raid) raidHit(dmg); else e.hp -= dmg; e.flash = 1; e.kb = opt.kb !== undefined ? opt.kb : (crit ? 4 : 2);
   const top = e.boss ? 26 : 14;
   pops.push({ x: e.x + rnd(-2, 2), y: GROUND - top - 2 - (opt.small ? 0 : 0), t: 0, s: fmtPix(dmg) + (crit ? '!' : ''), c: crit ? '#ffd84d' : (opt.col || '#ffffff'), crit });
   burst(e.x - 3, GROUND - 6, crit ? 10 : 4, crit ? '#ffe28a' : e.c, 30);
@@ -1888,7 +1906,7 @@ function damageEnemy(e, m, mult, opt = {}) {
 }
 function killEnemy(e) {
   e.dying = .001; killed++; G.kills++;
-  const t = tier(), gold = goldOf(t) * (e.boss ? 12 : e.elite ? 3 : e.golden ? GOLD_G : 1) * ST.gm * itemGold() * fevGold() * rnd(.85, 1.15), xp = xpOf(t) * (e.boss ? 8 : e.elite ? 2.5 : e.golden ? 6 : 1) * ST.xm * itemXp() * (1 + .04 * vLv('tavern'));
+  const t = tier(), gold = goldOf(t) * (e.boss ? 12 : e.elite ? 3 : e.golden ? GOLD_G : 1) * ST.gm * itemGold() * fevGold() * (CFG.goldM || 1) * rnd(.85, 1.15), xp = xpOf(t) * (e.boss ? 8 : e.elite ? 2.5 : e.golden ? 6 : 1) * ST.xm * itemXp() * (1 + .04 * vLv('tavern')) * (CFG.xpM || 1);
   dexFoe(e); dropMats(e); fevKill(e); if (e.golden) goldenKill(e, gold);
   const n = e.boss ? 14 : e.golden ? 40 : 3 + Math.floor(rnd(3));
   for (let i = 0; i < n; i++) coins.push({ x: e.x, y: GROUND - 6, vx: rnd(-18, 22), vy: rnd(-45, -25), t: 0, v: gold / n, phase: 0 });
@@ -1896,7 +1914,7 @@ function killEnemy(e) {
   parts.push({ x: e.x, y: GROUND - 8, vx: 0, vy: -10, life: 1.2, max: 1.2, col: '#e6dcff', soul: 1, g: 0 });
   addXp(xp);
   if (runeLv('kheal')) for (const m of party) if (!m.down) m.hp = Math.min(m.st.maxHp, m.hp + m.st.maxHp * runeVal('kheal'));
-  if (e.boss || e.golden || Math.random() < (e.elite ? .45 : .14) + runeVal('chest') + .01 * vLv('tower')) chests.push({ x: e.x + 6, y: GROUND - 20, vy: -20, land: 0, openT: 0, rar: e.golden ? Math.max(3, rollRarity(false)) : rollRarity(e.boss), opened: false, done: 0 });
+  if (!e.raid && (e.boss || e.golden || Math.random() < ((e.elite ? .45 : .14) + runeVal('chest') + .01 * vLv('tower')) * (CFG.dropM || 1))) chests.push({ x: e.x + 6, y: GROUND - 20, vy: -20, land: 0, openT: 0, rar: e.golden ? Math.max(3, rollRarity(false)) : rollRarity(e.boss), opened: false, done: 0 });
   if (e.boss) { shake = .5; flashT = .25; }
 }
 function rollRarity(boss) { const rb = runeVal('rare'); if (boss) { const x = Math.random() + rb * 3; return x > .95 ? 5 : x > .5 ? 4 : 3; } const r = Math.random() + Math.min(.08, G.loop * .03 + G.region * .01) + rb; return r > .997 ? 3 : r > .965 ? 2 : r > .8 ? 1 : 0; }
@@ -1929,7 +1947,8 @@ function addXp(x, silent) {
   for (const m of locs) {
     const h = heroData(m.cls), bonus = h.lv < top - 2 ? 1.6 : 1;   // newcomers catch up a little faster
     h.xp += x * bonus; let up = 0;
-    while (h.xp >= xpNeed(h.lv)) { h.xp -= xpNeed(h.lv); h.lv++; up++; }
+    while (h.lv < LV_MAX && h.xp >= xpNeed(h.lv)) { h.xp -= xpNeed(h.lv); h.lv++; up++; if (h.lv % 100 === 1 && h.lv > 1) setTimeout(() => toast('🌟 ' + CLASSES[m.cls].n + ' が<b>' + (Math.floor((h.lv - 1) / 100) + 1) + '周目</b>に！ レベルの色が変わった', '#ffe08a'), 600); }
+    if (h.lv >= LV_MAX) h.xp = 0;
     if (up) {
       any = true;
       if (!silent) { ring(hero.x - m.off, GROUND, 14, '#ffe08a', .7, true); for (let i = 0; i < 8; i++) parts.push({ x: hero.x - m.off + rnd(-4, 4), y: GROUND - rnd(0, 6), vx: 0, vy: -rnd(18, 34), life: .9, max: .9, col: '#ffe8a8', g: 0 }); toast('<b style="color:#ffe08a">LEVEL UP!</b>  ' + CLASSES[m.cls].n + ' Lv ' + h.lv, '#ffd25e'); }
@@ -2151,7 +2170,7 @@ function update(dt) {
   }
   projs = projs.filter(p => !p.dead);
   // spawning
-  if (!hero.dead && fade === 0) {
+  if (!hero.dead && fade === 0 && !raid.on) {
     if (!alive.length && waveLeft <= 0) {
       if (wave >= waveCount()) { if (!chests.some(c => !c.opened)) stageClear(); }
       else { waveT += dt; if (wave === 0 || waveT > 1.2) { wave++; waveT = 0; waveLeft = waveSize(wave); if (waveCount() > 1) waveFx = 1.6; } }
@@ -2321,7 +2340,7 @@ let lastHud = 0, shownGold = -1;
 function updHud(force) {
   const now = performance.now(); if (!force && now - lastHud < 120) return; lastHud = now;
   const lead = localClasses()[0] || 'knight', lh = heroData(lead);
-  $('lv').textContent = lh.lv;
+  $('lv').innerHTML = lvHtml(lh.lv);
   const php = partyHp(), hp = php / Math.max(1, ST.maxHp);
   $('hpb').style.width = (hp * 100).toFixed(1) + '%'; $('hpb').classList.toggle('low', hp < .3);
   $('hpt').textContent = fmt(php) + ' / ' + fmt(ST.maxHp);
@@ -2443,11 +2462,11 @@ function setPanel(on, page) {
   document.body.classList.toggle('pg-party', on && panelPage === 'party');
   document.body.classList.toggle('pg-map', on && panelPage === 'map');
   document.body.classList.toggle('pg-rank', on && panelPage === 'rank');
-  document.body.classList.toggle('pg-rune', on && panelPage === 'rune'); document.body.classList.toggle('pg-item', on && panelPage === 'item'); document.body.classList.toggle('pg-village', on && panelPage === 'village'); $('vilbtn').classList.toggle('on', on && panelPage === 'village'); document.body.classList.toggle('pg-chat', on && panelPage === 'chat'); $('chatbtn').classList.toggle('on', on && panelPage === 'chat'); $('itembtn').classList.toggle('on', on && panelPage === 'item'); $('runebtn').classList.toggle('on', on && panelPage === 'rune');
+  document.body.classList.toggle('pg-rune', on && panelPage === 'rune'); document.body.classList.toggle('pg-item', on && panelPage === 'item'); document.body.classList.toggle('pg-village', on && panelPage === 'village'); $('vilbtn').classList.toggle('on', on && panelPage === 'village'); document.body.classList.toggle('pg-chat', on && panelPage === 'chat'); document.body.classList.toggle('pg-admin', on && panelPage === 'admin'); $('chatbtn').classList.toggle('on', on && panelPage === 'chat'); $('itembtn').classList.toggle('on', on && panelPage === 'item'); $('runebtn').classList.toggle('on', on && panelPage === 'rune');
   $('rankbtn').classList.toggle('on', on && panelPage === 'rank');
   $('bagbtn').classList.toggle('on', on && panelPage === 'gear'); $('partybtn').classList.toggle('on', on && panelPage === 'party');
   if (on !== was) native({ t: 'panel', on });
-  if (on) { renderPanel(); renderParty(); renderMap(); renderRank(); renderRunes(); renderItems(); renderVillage(); renderChat(); } else { G.bag.forEach(i => i.nw = 0); updGear(); save(); }
+  if (on) { renderPanel(); renderParty(); renderMap(); renderRank(); renderRunes(); renderItems(); renderVillage(); renderChat(); renderAdmin(); } else { G.bag.forEach(i => i.nw = 0); updGear(); save(); }
 }
 function renderPanel() {
   updGear();
@@ -2462,7 +2481,7 @@ function renderPanel() {
   });
   const H = statsFor(curHero());
   $('power').textContent = '総合力 ' + fmt(H.power);
-  $('herotabs').innerHTML = localClasses().map(c => '<button class="htab' + (c === curHero() ? ' on' : '') + '" data-hero="' + c + '" style="--cc:' + CLASSES[c].col + '">' + CLASSES[c].n + ' Lv' + heroLv(c) + '</button>').join('');
+  $('herotabs').innerHTML = localClasses().map(c => '<button class="htab' + (c === curHero() ? ' on' : '') + '" data-hero="' + c + '" style="--cc:' + CLASSES[c].col + '">' + CLASSES[c].n + ' Lv' + lvHtml(heroLv(c)) + '</button>').join('');
   const sl = [['攻撃', fmt(H.atk)], ['最大HP', fmt(H.maxHp)], ['攻撃速度', H.aps.toFixed(2) + '/秒'], ['会心率', (H.crit * 100).toFixed(1) + '%'], ['会心ダメ', '×' + H.critMul.toFixed(2)], ['ゴールド', '+' + Math.round((H.gm - 1) * 100) + '%'], ['吸血', (H.ls * 100).toFixed(1) + '%']];
   $('statlist').innerHTML = sl.map(([a, b]) => '<div>' + a + '<b>' + b + '</b></div>').join('');
   // bag
@@ -2682,7 +2701,7 @@ function renderParty() {
     for (let i = 0; i < 3; i++) {
       const c = i < slots ? G.party[i] : null;
       if (i >= slots) h += '<div class="pslot">🔒<small>' + i + '章のボスを倒すと解放</small></div>';
-      else if (c) h += '<div class="pslot f" style="--cc:' + CLASSES[c].col + '">' + CLASSES[c].n + ' Lv' + heroLv(c) + '<small>' + CLASSES[c].role + '</small></div>';
+      else if (c) h += '<div class="pslot f" style="--cc:' + CLASSES[c].col + '">' + CLASSES[c].n + ' Lv' + lvHtml(heroLv(c)) + '<small>' + CLASSES[c].role + '</small></div>';
       else h += '<div class="pslot">空き<small>左から選ぶ</small></div>';
     }
     h += '</div><div class="fhint" style="text-align:left">・キャラを押すと出し入れできます<br>・近接職（騎士・双剣士・鉄槌士）が自動で前に出ます<br>・装備はキャラごとに別々です（バッグ画面で切り替え）</div>';
@@ -2708,7 +2727,7 @@ function renderParty() {
   document.querySelectorAll('#pparty canvas[data-cls]').forEach(cv2 => drawPortrait(cv2, cv2.dataset.cls, gearRar(heroData(cv2.dataset.cls).gear)));
 }
 function pName() { return G.name || 'プレイヤー'; }
-function setName(v) { v = (v || '').trim().slice(0, 12); if (v && v !== G.name) { G.name = v; rebuildParty(); save(); if (grp.active) grpPublish(); } }
+function setName(v) { v = (v || '').trim().slice(0, 12); if (ngHit(v)) { toast('その名前は使えません', '#ff8fa8'); return; } if (v && v !== G.name) { G.name = v; rebuildParty(); save(); if (grp.active) grpPublish(); } }
 $('pparty').addEventListener('change', e => { if (e.target.id === 'gname') setName(e.target.value); });
 $('panel').addEventListener('change', e => { if (e.target.id === 'giftsel' && e.target.value) { const it = sel && findItem(sel); if (it && !isEquipped(it)) giftTo(it, e.target.value); } });
 $('pparty').addEventListener('mousedown', e => { if (NATIVE && e.target.tagName === 'INPUT') { e.preventDefault(); const k = e.target.id === 'gname' ? 'name' : 'code'; native({ t: 'prompt', kind: k, label: k === 'name' ? 'あなたの名前（12文字まで）' : '友達のグループコード（6文字）', value: e.target.value }); } });
@@ -2779,21 +2798,23 @@ let soc = null, socStatus = 'off', rankTab = 'power', rankScope = 'all';
 const MIN_BUILD = 201;   // profiles from before the last season reset are ignored
 const profiles = {};
 function myProfile() {
-  return { uid: G.uid, name: pName(), title: titleName(G.title), b: GAME_BUILD, best: G.best || 0, loop: G.loop, power: Math.round(ST.power), top: topLv(), kills: G.kills || 0, party: G.party.slice(0, slotsUnlocked()), team: G.party.slice(0, slotsUnlocked()).map(c => { const st = statsFor(c), r2 = v => Math.round(v * 100) / 100; return { cls: c, lv: heroLv(c), st: { atk: r2(st.atk), maxHp: r2(st.maxHp), aps: r2(st.aps), crit: r2(st.crit), critMul: r2(st.critMul), ls: r2(st.ls), power: Math.round(st.power) } }; }), rate: Math.round(G.pvp.rate), pw: G.pvp.w, pl: G.pvp.l, ts: Date.now() };
+  return { uid: G.uid, name: pName(), title: titleName(G.title), playT: Math.round(G.playT || 0), b: GAME_BUILD, best: G.best || 0, loop: G.loop, power: Math.round(ST.power), top: topLv(), kills: G.kills || 0, party: G.party.slice(0, slotsUnlocked()), team: G.party.slice(0, slotsUnlocked()).map(c => { const st = statsFor(c), r2 = v => Math.round(v * 100) / 100; return { cls: c, lv: heroLv(c), st: { atk: r2(st.atk), maxHp: r2(st.maxHp), aps: r2(st.aps), crit: r2(st.crit), critMul: r2(st.critMul), ls: r2(st.ls), power: Math.round(st.power) } }; }), rate: Math.round(G.pvp.rate), pw: G.pvp.w, pl: G.pvp.l, ts: Date.now() };
 }
 function socPublish() { if (soc) soc.publish(UTOPIC(G.uid), JSON.stringify(myProfile()), true); }
 function socStart() {
   if (soc || !NATIVE && !Q.has('social')) return;
-  soc = new MiniMQTT((topic, txt) => {
+  soc = new MultiMQTT((topic, txt) => {
     if (topic.startsWith(GTOPIC(G.uid) + '/')) return onGift(topic, txt);
     if (topic.startsWith('dockhero-mac/v1/chat/') || topic.startsWith('dockhero-mac/v1/voice/')) return onChatMsg(topic, txt);
+    if (topic === CFG_T) return onCfgMsg(txt);
+    if (topic.startsWith('dockhero-mac/v1/raid/')) return onRaidMsg(topic, txt);
     if (topic === MMQ || topic === MMU(G.uid)) { let d; try { d = JSON.parse(txt); } catch (e) { return; } if (d && topic === MMQ) d.from = d.uid; return onMM(topic, d); }
     let d; try { d = JSON.parse(txt); } catch (e) { return; }
     if (d && d.uid) { profiles[d.uid] = d; const f = G.friends.find(x => x.uid === d.uid); if (f && d.name) f.name = d.name; renderRank(); }
   }, st => { socStatus = st; renderRank(); });
   soc.onReady = () => { socPublish(); };
   soc.subscribe(GTOPIC(G.uid) + '/+');
-  soc.subscribe(MMQ); soc.subscribe(MMU(G.uid)); soc.subscribe(CHAT_T('+')); soc.subscribe(VOICE_T('+'));
+  soc.subscribe(MMQ); soc.subscribe(MMU(G.uid)); soc.subscribe(CHAT_T('+')); soc.subscribe(VOICE_T('+')); soc.subscribe(CFG_T);
   soc.subscribe(UTOPIC('+'));   // everyone's retained profile: global ranking + population
   for (const f of G.friends) soc.subscribe(UTOPIC(f.uid));
   soc.connect();
@@ -2815,7 +2836,7 @@ function rankLabel(p, k) {
   if (k === 'power') return fmt(p.power || 0);
   if (k === 'stage') { const b = p.best || 0, R0 = REGIONS.length * 10; return (p.loop ? diffTag(p.loop, true) + ' ' : '') + (Math.floor((b % R0) / 10) + 1) + '-' + (b % 10 + 1); }
   if (k === 'kills') return fmt(p.kills || 0) + '体';
-  return 'Lv' + (p.top || 1);
+  return 'Lv' + lvHtml(p.top || 1);
 }
 function ago(ts) { const m = Math.floor((Date.now() - (ts || 0)) / 60000); return m < 2 ? 'いま' : m < 60 ? m + '分前' : m < 1440 ? Math.floor(m / 60) + '時間前' : Math.floor(m / 1440) + '日前'; }
 function renderRank() {
@@ -2841,6 +2862,7 @@ function renderRank() {
     h += mm.on ? '<button class="btn sub" data-mm="stop" style="width:100%;margin:6px 0 2px">さがすのをやめる（' + Object.keys(mm.seen).length + '人が待機中）</button>' : '<button class="btn" data-mm="go" style="width:100%;margin:6px 0 2px">⚔ 対戦相手をさがす</button>';
     h += '<div class="fhint" style="text-align:left;margin-bottom:6px">同じ時間に対戦をさがしている人と、ポイントの近い順にマッチします。勝つと🏅バトルメダル（ショップで使える）とゴールド。ランクが上がると装備のごほうび。' + (nx && nx.rw ? '<br>次の報酬：<b style="color:' + nx.c + '">' + nx.n + '</b> → ' + RARITY[nx.rw.r].n + '装備＋🏅' + nx.rw.medal : '') + '</div>'; }
   { const own = TITLES.filter(t => (G.titles || {})[t.id]); h += '<div class="lbl">称号（' + own.length + '/' + TITLES.length + '）</div><select class="btn sub" id="titlesel" style="width:100%;text-align:left"><option value="">称号なし</option>' + TITLES.map(t => (G.titles || {})[t.id] ? '<option value="' + t.id + '"' + (G.title === t.id ? ' selected' : '') + '>' + t.n + '</option>' : '<option disabled>🔒 ' + t.d + '</option>').join('') + '</select>'; }
+  h += '<div class="lbl">あなたのプレイ時間</div><div class="fhint" style="text-align:left;font-size:12px;color:#fff">' + fmtPlay(G.playT) + (isAdmin() ? '　<button class="mini-btn" data-r="admin">みんなのプレイ時間</button>' : '') + '</div>';
   h += '<div class="lbl">あなたのフレンドコード</div><div class="gcode"><span class="fcode">' + G.uid + '</span><button class="mini-btn" data-r="copy">コピー</button></div>';
   h += '<div class="lbl">フレンドを追加</div><div class="fld"><input id="fcode" maxlength="8" placeholder="8文字のコード" style="text-transform:uppercase"><button class="btn" data-r="add">追加</button></div>';
   h += '<div class="fhint" style="text-align:left;margin-top:8px">グループで一緒に遊んだ人は自動でフレンドになります。<br>' + ({ on: '<span style="color:#7dffa8">● ランキングにつながっています</span>', wait: '<span style="color:#ffd25e">● 接続中…</span>', err: '<span style="color:#ff8fa8">● つながりません</span>' }[socStatus] || '') + '</div>';
@@ -2851,6 +2873,7 @@ function renderRank() {
 $('prank').addEventListener('change', e => { if (e.target.id === 'titlesel') { G.title = e.target.value || null; save(); socPublish(); renderRank(); } });
 $('rankbtn').addEventListener('click', () => setPanel(!(panelOpen && panelPage === 'rank'), 'rank'));
 $('runebtn').addEventListener('click', () => setPanel(!(panelOpen && panelPage === 'rune'), 'rune'));
+$('adminbtn').addEventListener('click', () => { $('uipop').classList.remove('on'); if (isAdmin()) return setPanel(true, 'admin'); if (NATIVE) native({ t: 'prompt', kind: 'admin', label: '管理者パスワード', value: '' }); else { const v = prompt('管理者パスワード'); if (v != null) adminLogin(v); } });
 $('chatbtn').addEventListener('click', () => setPanel(!(panelOpen && panelPage === 'chat'), 'chat'));
 $('vilbtn').addEventListener('click', () => setPanel(!(panelOpen && panelPage === 'village'), 'village'));
 $('pvillage').addEventListener('click', e => { const b = e.target.closest('[data-vb]'); if (!b) return; const id = b.dataset.vb, lv = vLv(id), c = vCost(id, lv); if (lv >= VMAX || G.gold < c) return; G.gold -= c; G.vil = G.vil || {}; G.vil[id] = lv + 1; toast('🏠 <b>' + VIL.find(v => v.id === id).n + '</b> が Lv' + (lv + 1) + ' になった', VIL.find(v => v.id === id).c); rebuildParty(); updHud(true); save(); renderVillage(); });
@@ -2901,6 +2924,7 @@ $('prank').addEventListener('click', e => {
   if (t.dataset.rt) { rankTab = t.dataset.rt; renderRank(); }
   else if (t.dataset.r === 'copy') { if (!native({ t: 'copy', text: G.uid })) { try { navigator.clipboard.writeText(G.uid); } catch (e2) { } } toast('フレンドコード <b>' + G.uid + '</b> をコピーしました', '#7dffa8'); }
   else if (t.dataset.r === 'add') addFriend($('fcode').value);
+  else if (t.dataset.r === 'admin') setPanel(true, 'admin');
   else if (t.dataset.emo) sendEmote(t.dataset.emo);
 });
 $('prank').addEventListener('mousedown', e => { if (NATIVE && e.target.id === 'fcode') { e.preventDefault(); native({ t: 'prompt', kind: 'friend', label: 'フレンドコード（8文字）', value: '' }); } });
@@ -3108,7 +3132,7 @@ function mmStart() {
 function mmStop(quiet) { mm.on = false; clearInterval(mm.beat); mm.out = mm.lock = null; renderRank(); updMMChip(); if (!quiet) toast('対戦相手さがしをやめました', '#9b8cff'); }
 function mmBeat() {
   if (!mm.on) return;
-  soc.publish(MMQ, JSON.stringify({ uid: G.uid, name: pName(), rate: Math.round(G.pvp.rate), b: GAME_BUILD }), false);
+  soc.publish(MMQ, JSON.stringify({ uid: G.uid, name: pName(), rate: Math.round(G.pvp.rate), b: GAME_BUILD, t: Date.now() }), false);
   const now = Date.now();
   for (const k in mm.seen) if (now - mm.seen[k].at > 5000) delete mm.seen[k];
   if (mm.out && now - mm.out.at > 3500) mm.out = null;
@@ -3247,6 +3271,155 @@ function checkTitles() {
 setInterval(checkTitles, 4000);
 const titleName = id => (TITLES.find(t => t.id === id) || {}).n || '';
 
+/* ===================== shared settings signed by the admin (Ed25519 via tweetnacl) ===================== */
+// Anyone can publish to a public broker, so settings only count when signed with the admin key.
+// The secret key ships encrypted; only the admin password opens it.
+const ADM = { pub: 'fEVw1h90+z6OnSdGfAGhYZgLNJZuWBatJTnGGIuvsfI=', nonce: 'v7dtmIRWvVYAKlPP8qxqWsEIKq//8wEq', box: 'ZNe/AUkbscXrjbH/cgLBu2fbpyyTO6P7u1MQpCgZFgSYNW49GUYTHpDlzvw3em/8FCaEXTsZGZ40w6veCddkYH3reYacWyjcAQIkRW9p41w=' };
+const CFG_T = 'dockhero-mac/v1/admin/cfg';
+const b64d = s => Uint8Array.from(atob(s), c => c.charCodeAt(0)), b64e = u => btoa(String.fromCharCode(...u));
+let CFG = { notice: '', xpM: 1, goldM: 1, dropM: 1, raid: true, ng: [], hide: {}, mute: {}, ts: 0 };
+let adminSK = null;
+const isAdmin = () => !!adminSK;
+function canon(o) { return JSON.stringify(o, Object.keys(o).sort()); }
+function onCfgMsg(txt) {
+  let d; try { d = JSON.parse(txt); } catch (e) { return; }
+  if (!d || !d.cfg || !d.sig || !window.nacl) return;
+  try { if (!nacl.sign.detached.verify(new TextEncoder().encode(canon(d.cfg)), b64d(d.sig), b64d(ADM.pub))) return; } catch (e) { return; }
+  if ((d.cfg.ts || 0) <= (CFG.ts || 0)) return;
+  const old = CFG.notice; CFG = Object.assign({ notice: '', xpM: 1, goldM: 1, dropM: 1, raid: true, ng: [], hide: {}, mute: {} }, d.cfg);
+  try { localStorage.setItem('dh_cfg', txt); } catch (e) { }
+  if (CFG.notice && CFG.notice !== old) toast('📢 <b>お知らせ</b>　' + esc(CFG.notice), '#ffd25e');
+  updNotice(); if (panelOpen) { renderChat(); renderAdmin(); }
+}
+try { const c = localStorage.getItem('dh_cfg'); if (c) setTimeout(() => onCfgMsg(c), 0); } catch (e) { }
+function publishCfg(patch) {
+  if (!adminSK) return;
+  const cfg = Object.assign({}, CFG, patch, { ts: Date.now() });
+  const sig = b64e(nacl.sign.detached(new TextEncoder().encode(canon(cfg)), adminSK));
+  const txt = JSON.stringify({ cfg, sig });
+  if (soc) soc.publish(CFG_T, txt, true);
+  onCfgMsg(txt);
+}
+function adminLogin(pw) {
+  try {
+    const key = nacl.hash(new TextEncoder().encode(String(pw || ''))).slice(0, 32);
+    const sk = nacl.secretbox.open(b64d(ADM.box), b64d(ADM.nonce), key);
+    if (!sk) return toast('パスワードがちがいます', '#ff8fa8');
+    adminSK = sk; toast('🔑 管理者モードになりました', '#ffd25e'); setPanel(true, 'admin');
+  } catch (e) { toast('管理者モードを開けませんでした', '#ff8fa8'); }
+}
+function updNotice() { const n = $('notice'); if (!n) return; n.style.display = CFG.notice ? '' : 'none'; n.innerHTML = '📢 ' + esc(CFG.notice); }
+
+/* ----- NG words ----- */
+const NG_BASE = ['死ね', 'しね', '氏ね', 'タヒね', 'ﾀﾋね', '殺す', 'ころす', 'コロス', '消えろ', 'きえろ', 'ちんこ', 'ちんぽ', 'まんこ', 'セックス', 'せっくす', 'レイプ', 'れいぷ', 'ガイジ', 'がいじ', 'きちがい', 'キチガイ', '基地外', '池沼', 'sex', 'fuck', 'shit', 'bitch', 'nigger', 'nigga', 'kill yourself', 'kys'];
+const ngNorm = s => String(s || '').normalize('NFKC').toLowerCase().replace(/[\s　・._\-~〜ー*＊!！?？、。,]/g, '').replace(/[ァ-ヶ]/g, c => String.fromCharCode(c.charCodeAt(0) - 0x60));
+function ngHit(s) { const n = ngNorm(s); return NG_BASE.concat(CFG.ng || []).map(ngNorm).filter(Boolean).find(w => n.includes(w)) || null; }
+
+/* ===================== hourly raid ===================== */
+const RAID_MIN = 10, RAID_PER = 220;
+const RAID_T = (id, uid) => 'dockhero-mac/v1/raid/' + id + '/' + uid;
+const raid = { on: false, id: 0, pts: 0, all: {}, subbed: {}, done: {}, lastPub: 0, unit: 1, won: false };
+const raidNow = () => Math.floor(Date.now() / 3600000);
+const raidLeft = () => RAID_MIN * 60 - (Date.now() % 3600000) / 1000;
+const raidTotal = () => Object.values(raid.all).reduce((a, p) => a + (p.pts || 0), 0);
+const raidPeople = () => Object.keys(raid.all).length;
+const raidHP = () => RAID_PER * Math.max(1, raidPeople());
+function raidBossDef() { const R = REGIONS[raid.id % REGIONS.length]; return R.boss; }
+function onRaidMsg(topic, txt) {
+  const m = topic.split('/'), id = +m[3], uid = m[4]; if (id !== raid.id || !uid) return;
+  let d; try { d = JSON.parse(txt); } catch (e) { return; } if (!d) return;
+  raid.all[uid] = { name: String(d.name || 'プレイヤー').slice(0, 12), pts: +d.pts || 0 };
+}
+function spawnRaidBoss() {
+  const def = raidBossDef(), t = tier(), ch = G.region + G.loop * REGIONS.length;
+  const chA = Math.pow(1.3, Math.min(ch, 3)) * Math.pow(1.2, Math.max(0, ch - 3));
+  enemies.length = 0; projs.length = 0;
+  enemies.push({ k: def.k, c: def.c, boss: true, raid: true, name: '【レイド】' + def.name, x: camX + IW + 8, y: GROUND, elite: false, slamT: 4, max: 1e300, hp: 1e300,
+    atk: 1.45 * Math.pow(1.122, t) * 2.4 * chA * Math.min(1, .6 + t * .06) * .55, spd: 8, cd: 1, lunge: 0, flash: 0, dying: 0, kb: 0, seed: rnd(10), walk: 0, hopT: 0, hb: 0, el: null });
+}
+function raidStart() {
+  raid.on = true; raid.id = raidNow(); raid.pts = 0; raid.all = {}; raid.won = false; raid.lastPub = 0;
+  const ch = G.region + G.loop * REGIONS.length, chH = Math.pow(1.45, Math.min(ch, 3)) * Math.pow(1.3, Math.max(0, ch - 3));
+  raid.unit = 7 * Math.pow(1.145, tier()) * chH;   // one normal enemy at your current stage = 1 raid point
+  if (soc && !raid.subbed[raid.id]) { soc.subscribe('dockhero-mac/v1/raid/' + raid.id + '/+'); raid.subbed[raid.id] = 1; }
+  raid.all[G.uid] = { name: G.name || 'あなた', pts: 0 };
+  spawnRaidBoss(); wave = waveLeft = 0; spawned = killed = 0;
+  document.body.classList.add('raid'); flashT = .2; shake = .4;
+  toast('⚔ <b style="color:#ff8fa8">レイド開始！</b> みんなで ' + esc(raidBossDef().name) + ' を倒そう（' + RAID_MIN + '分間）', '#ff5c7a');
+}
+function raidHit(dmg) { if (!raid.on || raid.won) return; raid.pts += dmg / raid.unit; raid.all[G.uid] = { name: G.name || 'あなた', pts: raid.pts }; }
+function raidEnd(won) {
+  raid.on = false; raid.done[raid.id] = 1; document.body.classList.remove('raid');
+  enemies = enemies.filter(e => !e.raid); wave = waveLeft = 0; spawned = killed = 0;
+  raidPublish(true);
+  const share = raid.pts / Math.max(1, raidTotal());
+  if (won && raid.pts >= 5) {
+    const core = 8 + Math.round(share * 10), medal = 2, gold = goldOf(tier()) * 150;
+    addInv('core', core); G.medals = (G.medals || 0) + medal; G.gold += gold;
+    const mvp = Object.entries(raid.all).sort((a, b) => b[1].pts - a[1].pts)[0];
+    if (mvp && mvp[0] === G.uid && raidPeople() > 1) addInv('box3', 1);
+    toast('🏆 <b style="color:#ffe08a">レイド成功！</b> 魔石+' + core + '　🏅+' + medal + '　+' + fmtG(gold) + ' G' + (mvp && mvp[0] === G.uid && raidPeople() > 1 ? '　MVP：エピック装備箱' : ''), '#ffd25e');
+    for (let i = 0; i < 3; i++) setTimeout(() => ring(camX + IW / 2, GROUND - 14, 34, '#ffe08a', .6), i * 180);
+  } else if (raid.pts > 0) { addInv('core', 2); toast('レイド終了… ボスは逃げてしまった（参加賞 魔石+2）', '#9b8cff'); }
+  save(); updRaidBar();
+}
+function raidPublish(force) {
+  if (!soc || !raid.id) return;
+  if (!force && Date.now() - raid.lastPub < 4000) return; raid.lastPub = Date.now();
+  soc.publish(RAID_T(raid.id, G.uid), JSON.stringify({ name: G.name || 'プレイヤー', pts: Math.round(raid.pts * 10) / 10 }), true);
+}
+function raidTick() {
+  const inWin = (Date.now() % 3600000) < RAID_MIN * 60000 && CFG.raid !== false;
+  if (!raid.on) { if (inWin && !raid.done[raidNow()] && !arena.on && !hero.dead && G.best >= 5) raidStart(); updRaidBar(); return; }
+  if (raidNow() !== raid.id || !inWin) return raidEnd(false);
+  if (!raid.won && raidTotal() >= raidHP()) { raid.won = true; return raidEnd(true); }
+  if (!hero.dead && !enemies.some(e => e.raid) && !arena.on) spawnRaidBoss();
+  raidPublish(); updRaidBar();
+}
+setInterval(raidTick, 1000);
+function updRaidBar() {
+  const b = $('raidbar'); if (!b) return;
+  if (!raid.on) { b.style.display = 'none'; return; }
+  const left = Math.max(0, raidLeft()), hp = Math.max(0, 1 - raidTotal() / raidHP()), me = raid.pts / Math.max(1, raidTotal());
+  b.style.display = 'flex';
+  b.innerHTML = '<b>⚔ RAID</b><span class="rn">' + esc(raidBossDef().name) + '</span><div class="rhp"><i style="width:' + (hp * 100).toFixed(1) + '%"></i></div><span>' + Math.floor(left / 60) + ':' + String(Math.floor(left % 60)).padStart(2, '0') + '</span><span>参加 ' + raidPeople() + '人</span><span style="color:#ffe08a">あなた ' + Math.round(me * 100) + '%</span>';
+}
+
+/* ===================== admin page ===================== */
+function fmtPlay(s) { s = Math.floor(s || 0); const h = Math.floor(s / 3600), m = Math.floor(s % 3600 / 60); return h + '時間' + String(m).padStart(2, '0') + '分'; }
+function renderAdmin() {
+  if (!panelOpen || panelPage !== 'admin') return;
+  if (!isAdmin()) { $('padmin').innerHTML = '<div class="pcol"><div class="fhint" style="margin-top:40px">管理者モードではありません</div></div>'; return; }
+  const list = Object.values(profiles).filter(p => (p.b || 0) >= MIN_BUILD).concat([myProfile()]).filter((p, i, a) => a.findIndex(q => q.uid === p.uid) === i).sort((a, b) => (b.playT || 0) - (a.playT || 0));
+  let h = '<div class="pcol"><div class="ph"><b>🔑 管理者</b><span>ここでの変更は全プレイヤーに届きます</span></div>';
+  h += '<div class="lbl" style="margin-top:0">みんなのプレイ時間（' + list.length + '人）</div><div class="rlist" style="max-height:none;flex:1">' + list.map(p => '<div class="rrow"><span>' + esc(p.name || '') + '<small>' + p.uid + '</small></span><span class="val">' + fmtPlay(p.playT) + (p.uid === G.uid ? '' : ' <button class="mini-btn" data-mute="' + p.uid + '">' + ((CFG.mute || {})[p.uid] ? 'チャット禁止を解除' : 'チャット禁止') + '</button>') + '</span></div>').join('') + '</div></div>';
+  h += '<div class="pcol" style="padding-left:12px;border-left:1px solid rgba(255,255,255,.07);overflow-y:auto">';
+  h += '<div class="lbl" style="margin-top:0">お知らせ（全員のバーに出る）</div><div class="fld"><input id="adnotice" maxlength="60" value="' + esc(CFG.notice || '') + '"><button class="btn" data-ad="notice">送る</button></div>';
+  h += '<div class="lbl">イベント倍率</div>' + [['xpM', '経験値'], ['goldM', 'ゴールド'], ['dropM', '宝箱']].map(([k, n]) => '<div class="adrow"><span>' + n + '</span>' + [1, 1.5, 2, 3].map(v => '<button class="mini-btn' + ((CFG[k] || 1) === v ? ' on' : '') + '" data-am="' + k + ':' + v + '">×' + v + '</button>').join('') + '</div>').join('');
+  h += '<div class="adrow"><span>レイド</span><button class="mini-btn' + (CFG.raid !== false ? ' on' : '') + '" data-ad="raidon">ON</button><button class="mini-btn' + (CFG.raid === false ? ' on' : '') + '" data-ad="raidoff">OFF</button></div>';
+  h += '<div class="lbl">NGワード（追加分）</div><div class="fld"><input id="adng" maxlength="20" placeholder="追加する言葉"><button class="btn" data-ad="ngadd">追加</button></div><div class="ngl">' + (CFG.ng || []).map(w => '<span>' + esc(w) + '<b data-ngdel="' + esc(w) + '">×</b></span>').join('') + '</div>';
+  h += '<div class="fhint" style="text-align:left;margin-top:6px">チャット・みんなの声の各メッセージには削除ボタン（×）が出ています</div>';
+  h += '<button class="btn sub" data-ad="logout" style="width:100%;margin-top:8px">管理者モードを終える</button></div>';
+  $('padmin').innerHTML = h;
+}
+$('padmin').addEventListener('click', e => {
+  const t = e.target.closest('[data-ad],[data-am],[data-mute],[data-ngdel]'); if (!t || !isAdmin()) return;
+  if (t.dataset.am) { const [k, v] = t.dataset.am.split(':'); return publishCfg({ [k]: +v }); }
+  if (t.dataset.mute) { const m = Object.assign({}, CFG.mute || {}); if (m[t.dataset.mute]) delete m[t.dataset.mute]; else m[t.dataset.mute] = 1; return publishCfg({ mute: m }); }
+  if (t.dataset.ngdel) return publishCfg({ ng: (CFG.ng || []).filter(w => w !== t.dataset.ngdel) });
+  const a = t.dataset.ad;
+  if (a === 'notice') publishCfg({ notice: $('adnotice').value.trim().slice(0, 60) });
+  else if (a === 'raidon') publishCfg({ raid: true }); else if (a === 'raidoff') publishCfg({ raid: false });
+  else if (a === 'ngadd') { const w = $('adng').value.trim(); if (w && !(CFG.ng || []).includes(w)) publishCfg({ ng: (CFG.ng || []).concat([w]) }); }
+  else if (a === 'logout') { adminSK = null; setPanel(false); toast('管理者モードを終えました', '#9b8cff'); }
+});
+$('padmin').addEventListener('mousedown', e => {
+  if (!NATIVE) return;
+  if (e.target.id === 'adnotice') { e.preventDefault(); native({ t: 'prompt', kind: 'adnotice', label: 'お知らせ（60文字まで・空にすると消える）', value: CFG.notice || '' }); }
+  if (e.target.id === 'adng') { e.preventDefault(); native({ t: 'prompt', kind: 'adng', label: '追加するNGワード', value: '' }); }
+});
+function delMsg(key) { if (!isAdmin()) return; const hd = Object.assign({}, CFG.hide || {}); hd[key] = 1; publishCfg({ hide: hd }); }
+
 /* ===================== chat & みんなの声 (retained per-player MQTT topics, no server) ===================== */
 const CHAT_T = id => 'dockhero-mac/v1/chat/' + id, VOICE_T = id => 'dockhero-mac/v1/voice/' + id;
 const VOICE_DAY = 5;
@@ -3266,6 +3439,8 @@ function onChatMsg(topic, txt) {
 function updChatBadge() { const b = $('chatbadge'); if (!b) return; b.style.display = chatUnread ? '' : 'none'; b.textContent = chatUnread > 9 ? '9+' : chatUnread; }
 function sendChat(x) {
   x = String(x || '').replace(/\s+/g, ' ').trim().slice(0, 80); if (!x) return;
+  if ((CFG.mute || {})[G.uid]) return toast('あなたは今チャットできません', '#ff8fa8');
+  if (ngHit(x)) return toast('使えない言葉が入っています', '#ff8fa8');
   if (!soc || socStatus !== 'on') return toast('オンラインにつながっていません', '#ff8fa8');
   if (!G.name) return askName();
   if (Date.now() - lastChatSend < 3000) return toast('少し待ってから送ってください', '#ff8fa8');
@@ -3276,6 +3451,8 @@ function sendChat(x) {
 }
 function sendVoice(x) {
   x = String(x || '').replace(/\s+/g, ' ').trim().slice(0, 200); if (!x) return;
+  if ((CFG.mute || {})[G.uid]) return toast('あなたは今送れません', '#ff8fa8');
+  if (ngHit(x)) return toast('使えない言葉が入っています', '#ff8fa8');
   if (!soc || socStatus !== 'on') return toast('オンラインにつながっていません', '#ff8fa8');
   if (voiceLeft() <= 0) return toast('みんなの声は1日5通までです。また明日！', '#ff8fa8');
   if (G.voiceDay !== todayKey()) { G.voiceDay = todayKey(); G.voiceN = 0; }
@@ -3285,7 +3462,7 @@ function sendVoice(x) {
   save(); toast('みんなの声を送りました（今日あと ' + voiceLeft() + ' 通）', '#7dffa8'); renderChat();
 }
 const hhmm = t => { const d = new Date(t), n = new Date(); return (d.toDateString() === n.toDateString() ? '' : (d.getMonth() + 1) + '/' + d.getDate() + ' ') + d.getHours() + ':' + String(d.getMinutes()).padStart(2, '0'); };
-function flatMsgs(store, n) { const out = []; for (const uid in store) for (const m of store[uid].msgs) out.push({ uid, name: store[uid].name, title: store[uid].title, t: m.t, x: m.x }); return out.sort((a, b) => a.t - b.t).slice(-n); }
+function flatMsgs(store, n, kind) { const out = []; for (const uid in store) { if ((CFG.mute || {})[uid] && uid !== G.uid) continue; for (const m of store[uid].msgs) { const key = kind + ':' + uid + ':' + m.t; if ((CFG.hide || {})[key] || ngHit(m.x)) continue; out.push({ uid, key, name: store[uid].name, title: store[uid].title, t: m.t, x: m.x }); } } return out.sort((a, b) => a.t - b.t).slice(-n); }
 function renderChat() {
   if (!panelOpen || panelPage !== 'chat') return;
   if (chatTab === 'chat' && chatUnread) { chatUnread = 0; updChatBadge(); }
@@ -3293,12 +3470,12 @@ function renderChat() {
   let h = '<div class="pcol"><div class="ph"><b>' + (chatTab === 'chat' ? 'チャット' : 'みんなの声') + '</b><span>' + (chatTab === 'chat' ? 'オンラインのプレイヤー全員と話せます（1回80文字まで）' : 'ゲームへの意見・要望・感想を送れます。送った声はみんなと開発者が読めます') + '</span></div>';
   h += '<div class="tabs" style="margin-right:0"><button data-ct="chat" class="' + (chatTab === 'chat' ? 'on' : '') + '">チャット</button><button data-ct="voice" class="' + (chatTab === 'voice' ? 'on' : '') + '">みんなの声</button></div>';
   if (chatTab === 'chat') {
-    const L = flatMsgs(chatAll, 80);
-    h += '<div class="clog" id="clog">' + (L.length ? L.map(m => '<div class="cmsg' + (m.uid === G.uid ? ' me' : '') + '"><span class="cn">' + (m.title ? '<i class="ttl">' + esc(m.title) + '</i>' : '') + esc(m.name) + '</span><span class="ct">' + esc(m.x) + '</span><small>' + hhmm(m.t) + '</small></div>').join('') : '<div class="fhint" style="margin-top:30px">まだ誰も話していません。最初のひとことをどうぞ！</div>') + '</div>';
+    const L = flatMsgs(chatAll, 80, 'c');
+    h += '<div class="clog" id="clog">' + (L.length ? L.map(m => '<div class="cmsg' + (m.uid === G.uid ? ' me' : '') + '"><span class="cn">' + (m.title ? '<i class="ttl">' + esc(m.title) + '</i>' : '') + esc(m.name) + '</span><span class="ct">' + esc(m.x) + '</span><small>' + hhmm(m.t) + '</small>' + (isAdmin() ? '<b class="mdel" data-del="' + m.key + '">×</b>' : '') + '</div>').join('') : '<div class="fhint" style="margin-top:30px">まだ誰も話していません。最初のひとことをどうぞ！</div>') + '</div>';
     h += '<div class="fld" style="margin-top:6px"><input id="chatin" maxlength="80" placeholder="メッセージ（Enterで送信）"><button class="btn" data-cs="1">送信</button></div>';
   } else {
-    const L = flatMsgs(voiceAll, 120).reverse();
-    h += '<div class="clog">' + (L.length ? L.map(m => '<div class="vmsg"><div><b>' + esc(m.name) + '</b><small>' + hhmm(m.t) + '</small></div><span>' + esc(m.x) + '</span></div>').join('') : '<div class="fhint" style="margin-top:30px">まだ声が届いていません</div>') + '</div>';
+    const L = flatMsgs(voiceAll, 120, 'v').reverse();
+    h += '<div class="clog">' + (L.length ? L.map(m => '<div class="vmsg"><div><b>' + esc(m.name) + '</b><small>' + hhmm(m.t) + '</small>' + (isAdmin() ? '<b class="mdel" data-del="' + m.key + '">×</b>' : '') + '</div><span>' + esc(m.x) + '</span></div>').join('') : '<div class="fhint" style="margin-top:30px">まだ声が届いていません</div>') + '</div>';
   }
   h += '</div><div class="pcol" style="padding-left:12px;border-left:1px solid rgba(255,255,255,.07)">';
   h += '<div class="lbl" style="margin-top:0">みんなの声を送る</div><div class="fhint" style="text-align:left;margin-bottom:6px">「ここが遊びにくい」「こんな機能がほしい」など。1日 ' + VOICE_DAY + ' 通まで（今日あと <b style="color:#fff">' + voiceLeft() + '</b> 通）</div>';
@@ -3309,7 +3486,8 @@ function renderChat() {
   const lg = $('clog'); if (lg) lg.scrollTop = lg.scrollHeight;
 }
 $('pchat').addEventListener('click', e => {
-  const t = e.target.closest('[data-ct],[data-cs],[data-vs]'); if (!t) return;
+  const t = e.target.closest('[data-ct],[data-cs],[data-vs],[data-del]'); if (!t) return;
+  if (t.dataset.del) return delMsg(t.dataset.del);
   if (t.dataset.ct) { chatTab = t.dataset.ct; return renderChat(); }
   if (t.dataset.cs) { const v = $('chatin').value; $('chatin').value = ''; sendChat(v); }
   if (t.dataset.vs) { const v = $('voicein').value; $('voicein').value = ''; sendVoice(v); }
@@ -3436,6 +3614,18 @@ $('pitem').addEventListener('click', e => {
 const BROKERS = Q.get('broker') ? [Q.get('broker')] : ['wss://broker.hivemq.com:8884/mqtt', 'wss://broker.emqx.io:8084/mqtt', 'wss://test.mosquitto.org:8081/mqtt'];
 const TOPIC = c => 'dockhero-mac/v1/' + c;
 function newCode() { const A = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; let o = ''; for (let i = 0; i < 6; i++) o += A[Math.floor(Math.random() * A.length)]; return o; }
+// talk to every broker at once (each one may be blocked on some networks); drop the copies
+class MultiMQTT {
+  constructor(onMsg, onStatus) {
+    this.seen = new Map(); this.st = {};
+    const relay = (t, x) => { const k = t + '|' + x, now = Date.now(); if (this.seen.has(k) && now - this.seen.get(k) < 20000) return; this.seen.set(k, now); if (this.seen.size > 3000) { for (const [kk, tt] of this.seen) if (now - tt > 20000) this.seen.delete(kk); } onMsg(t, x); };
+    this.cs = BROKERS.map((u, i) => { const c = new MiniMQTT(relay, st => { this.st[i] = st; const v = Object.values(this.st); onStatus(v.includes('on') ? 'on' : v.includes('wait') ? 'wait' : 'err'); }); c.only = u; c.onReady = () => this.onReady && this.onReady(); return c; });
+  }
+  connect() { this.cs.forEach(c => c.connect()); }
+  subscribe(t) { this.cs.forEach(c => c.subscribe(t)); }
+  publish(t, m, r) { let ok = false; this.cs.forEach(c => { if (c.publish(t, m, r)) ok = true; }); return ok; }
+  get ok() { return this.cs.some(c => c.ok); }
+}
 class MiniMQTT {
   constructor(onMsg, onStatus) { this.onMsg = onMsg; this.onStatus = onStatus; this.bi = 0; this.buf = new Uint8Array(0); this.subs = []; this.alive = true; this.pid = 1; }
   static str(s) { const b = new TextEncoder().encode(s); return [b.length >> 8, b.length & 255, ...b]; }
@@ -3443,7 +3633,7 @@ class MiniMQTT {
   pkt(h, body) { return new Uint8Array([h, ...MiniMQTT.len(body.length), ...body]); }
   connect() {
     if (!this.alive) return;
-    const url = BROKERS[this.bi % BROKERS.length]; this.onStatus('wait');
+    const url = this.only || BROKERS[this.bi % BROKERS.length]; this.onStatus('wait');
     let ws; try { ws = new WebSocket(url, 'mqtt'); } catch (e) { return this.retry(); }
     this.ws = ws; ws.binaryType = 'arraybuffer'; this.ok = false;
     const to = setTimeout(() => { if (!this.ok) { try { ws.close(); } catch (e) { } } }, 8000);
@@ -3537,13 +3727,13 @@ $('quit').addEventListener('click', () => { save(); native({ t: 'quit' }); toast
 if (!NATIVE) $('quit').style.display = 'none';
 native({ t: 'hello' });
 function askName() { $('nameov').classList.add('on'); $('nmin').value = ''; }
-function nameDone(v) { v = String(v || '').trim().slice(0, 12); if (!v) return toast('名前を入れてください', '#ff8fa8'); setName(v); $('nameov').classList.remove('on'); renderParty(); toast('よろしく、<b>' + esc(v) + '</b>！', '#7dffa8'); }
+function nameDone(v) { v = String(v || '').trim().slice(0, 12); if (!v) return toast('名前を入れてください', '#ff8fa8'); if (ngHit(v)) return toast('その名前は使えません', '#ff8fa8'); setName(v); $('nameov').classList.remove('on'); renderParty(); toast('よろしく、<b>' + esc(v) + '</b>！', '#7dffa8'); }
 $('nmok').addEventListener('click', () => nameDone($('nmin').value));
 $('nmskip').addEventListener('click', () => { G.skipName = true; save(); $('nameov').classList.remove('on'); renderParty(); });
 $('nmin').addEventListener('keydown', e => { if (e.key === 'Enter') nameDone($('nmin').value); });
 $('nmin').addEventListener('mousedown', e => { if (NATIVE) { e.preventDefault(); native({ t: 'prompt', kind: 'name', label: 'プレイヤー名（12文字まで）', value: '' }); } });
 $('mmchip').addEventListener('click', e => { if (e.target.dataset.mm === 'stop') mmStop(); });
-window.DH = { saveNow: save, setMini, layout: f => { document.body.classList.toggle('flip', !!f); setTimeout(resize, 50); }, onPrompt: (k, v) => { if (k === 'chat') return sendChat(v); if (k === 'voice') return sendVoice(v); if (k === 'name') { if ($('nameov').classList.contains('on')) nameDone(v); else { setName(v); renderParty(); } } else if (k === 'friend') { addFriend(v); } else if (k === 'code') { DH.onPaste(v); const b = document.querySelector('[data-g=join]'); if (b && ($('gcode').value || '').length === 6) b.click(); } }, onPaste: t => { const el = $('gcode'); if (el && t) { el.value = String(t).toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 6); } } };
+window.DH = { saveNow: save, setMini, layout: f => { document.body.classList.toggle('flip', !!f); setTimeout(resize, 50); }, onPrompt: (k, v) => { if (k === 'chat') return sendChat(v); if (k === 'voice') return sendVoice(v); if (k === 'admin') return adminLogin(v); if (k === 'adnotice') { if (isAdmin()) publishCfg({ notice: String(v).trim().slice(0, 60) }); return; } if (k === 'adng') { const w = String(v).trim(); if (isAdmin() && w && !(CFG.ng || []).includes(w)) publishCfg({ ng: (CFG.ng || []).concat([w]) }); return; } if (k === 'name') { if ($('nameov').classList.contains('on')) nameDone(v); else { setName(v); renderParty(); } } else if (k === 'friend') { addFriend(v); } else if (k === 'code') { DH.onPaste(v); const b = document.querySelector('[data-g=join]'); if (b && ($('gcode').value || '').length === 6) b.click(); } }, onPaste: t => { const el = $('gcode'); if (el && t) { el.value = String(t).toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 6); } } };
 window.addEventListener('beforeunload', save);
 window.addEventListener('hashchange', () => {
   const q = new URLSearchParams(location.hash.slice(1));
