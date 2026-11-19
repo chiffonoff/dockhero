@@ -480,7 +480,7 @@ function fmt(n) {
 function fmtPix(n) { n = Math.floor(n); if (n < 10000) return '' + n; if (n < 1e6) return Math.floor(n / 1000) + 'K'; if (n < 1e9) return Math.floor(n / 1e6) + 'M'; return Math.floor(n / 1e9) + 'B'; }
 
 /* ---------- bridge to the macOS shell ---------- */
-const GAME_VERSION = '1.12.0', GAME_BUILD = 211;
+const GAME_VERSION = '1.12.1', GAME_BUILD = 212;
 const NATIVE = !!window.__DH_NATIVE || Q.has('nativeTest');
 if (window.__DH_OS === 'win') document.addEventListener('DOMContentLoaded', () => { const g = document.getElementById('grip'); if (g) g.title = 'ドラッグで移動／ダブルクリックでタスクバーの上に戻す'; });
 // page -> mac: the shell polls document.title. Keep the title short: big payloads (saves) are cut into chunks
@@ -2755,6 +2755,7 @@ function renderRank() {
 }
 $('rankbtn').addEventListener('click', () => setPanel(!(panelOpen && panelPage === 'rank'), 'rank'));
 $('runebtn').addEventListener('click', () => setPanel(!(panelOpen && panelPage === 'rune'), 'rune'));
+$('itembtn').title = 'アイテム・ショップ・図鑑';
 $('itembtn').addEventListener('click', () => setPanel(!(panelOpen && panelPage === 'item'), 'item'));
 function runeTxt(r, lv) { const v = lv * r.v; return r.pct ? '+' + (v * 100).toFixed(r.v < .01 ? 1 : r.v < .1 ? 1 : 0).replace(/\.0$/, '') + '%' : '+' + v; }
 function renderRunes() {
@@ -3064,25 +3065,15 @@ const IMAP = {
   box: ['............', '..kkkkkkkk..', '.kMLLLLLLMk.', '.kYYYYYYYYk.', '.kkkkYYkkkk.', '.kMLLYYLLMk.', '.kMLLYYLLMk.', '.kMLLLLLLMk.', '.kDDDDDDDDk.', '.kkkkkkkkkk.', '............', '............'],
   medal: ['...k....k...', '...kR..Rk...', '....kRRk....', '....kkkk....', '...kYYYYk...', '..kYWYYYOk..', '..kYYYYYOk..', '..kYYYYYOk..', '...kOOOOk...', '....kkkk....', '............', '............'] };
 const ITEMS = {
-  potion: { n: '回復ポーション', ic: 'bottle', c: '#ff5c7a', d: '倒れていない仲間のHPを50%回復' },
-  feather: { n: 'ふっかつの羽', ic: 'feather', c: '#fff2b8', d: '倒れた仲間をすぐ復活させる（HP50%）' },
-  pow: { n: '力の秘薬', ic: 'bottle', c: '#ff8a3d', d: '5分間 攻撃力 +30%', buff: 'pow', dur: 300 },
-  guard: { n: '守りの秘薬', ic: 'bottle', c: '#5aa9ff', d: '5分間 受けるダメージ -30%', buff: 'guard', dur: 300 },
   luck: { n: '金運の秘薬', ic: 'bottle', c: '#ffd25e', d: '10分間 獲得ゴールド +50%', buff: 'luck', dur: 600 },
   wise: { n: '知恵の書', ic: 'book', c: '#b46cff', d: '10分間 獲得経験値 +50%', buff: 'wise', dur: 600 },
   box3: { n: 'エピック装備箱', ic: 'box', c: '#b46cff', d: '開けるとエピック装備が1つ出る', box: 3 },
   box4: { n: 'レジェンド装備箱', ic: 'box', c: '#ffc94d', d: '開けるとレジェンド装備が1つ出る', box: 4 },
   box5: { n: 'ミシック装備箱', ic: 'box', c: '#ff5c7a', d: '開けるとミシック装備が1つ出る', box: 5 },
-  fang: { n: '魔物の牙', ic: 'fang', c: '#efe6d2', mat: 1, d: '素材：ふつうの敵がよく落とす' },
-  core: { n: '魔石', ic: 'crystal', c: '#b46cff', mat: 1, d: '素材：強い敵（エリート）が落とす' },
-  scale: { n: '竜のうろこ', ic: 'scale', c: '#4fdc9a', mat: 1, d: '素材：ボスが落とす' },
-  star: { n: '星のかけら', ic: 'star', c: '#ffe066', mat: 1, d: '素材：とてもまれ。ボスからたまに出る' } };
-const SHOP_G = [['potion', 40], ['pow', 150], ['guard', 150], ['luck', 200], ['wise', 200], ['feather', 400]];
-const SHOP_M = [['feather', 5], ['star', 8], ['box3', 15], ['box4', 45], ['box5', 120]];
-const RECIPES = [
-  { out: 'potion', n: 1, need: { fang: 4 } }, { out: 'pow', n: 1, need: { fang: 8, core: 1 } }, { out: 'guard', n: 1, need: { fang: 8, core: 1 } },
-  { out: 'luck', n: 1, need: { fang: 4, core: 2 } }, { out: 'wise', n: 1, need: { fang: 4, core: 2 } }, { out: 'feather', n: 1, need: { core: 3, scale: 1 } },
-  { out: 'box3', n: 1, need: { core: 6, scale: 2 } }, { out: 'box4', n: 1, need: { scale: 5, star: 2 } }, { out: 'box5', n: 1, need: { scale: 10, star: 6 } }];
+  core: { n: '魔石', ic: 'crystal', c: '#b46cff', mat: 1, d: 'ショップで使う通貨。強い敵（エリート）やボスが落とす' } };
+// shop currencies: 魔石 (from adventuring) and バトルメダル (from ranked matches). Gold can't buy anything here.
+const SHOP_C = [['luck', 6], ['wise', 6], ['box3', 40], ['box4', 120]];
+const SHOP_M = [['luck', 3], ['wise', 3], ['box3', 15], ['box4', 45], ['box5', 120]];
 const FOE_JP = { slime: 'スライム', mush: 'キノコ', bat: 'コウモリ', golem: 'ゴーレム', ghost: 'ゴースト', wolf: 'オオカミ', skel: 'スケルトン', imp: 'インプ', eye: 'めだま', crab: 'カニ', scorp: 'サソリ', yeti: 'イエティ', stump: 'きりかぶ', wisp: 'ウィスプ' };
 const IIC = {};
 function itemIcon(id) {
@@ -3097,55 +3088,42 @@ const inv = id => (G.inv && G.inv[id]) || 0;
 function addInv(id, n) { G.inv = G.inv || {}; G.inv[id] = Math.max(0, (G.inv[id] || 0) + n); }
 const buffOn = k => G.buffs && G.buffs[k] > Date.now();
 function dexCount() { const d = G.dex || {}; return Object.keys(d.f || {}).length + Object.keys(d.g || {}).length; }
-const itemAtk = () => (buffOn('pow') ? 1.3 : 1) * (1 + dexCount() * .002);
-const itemDef = () => buffOn('guard') ? .7 : 1;
+const itemAtk = () => 1 + dexCount() * .002;
+const itemDef = () => 1;
 const itemGold = () => buffOn('luck') ? 1.5 : 1;
 const itemXp = () => buffOn('wise') ? 1.5 : 1;
 function dexFoe(e) { G.dex = G.dex || { f: {}, g: {} }; const k = e.boss ? 'B' + G.region : e.k; if (!G.dex.f[k]) { G.dex.f[k] = 0; toast('📖 図鑑に <b>' + (e.boss ? esc(e.name) : FOE_JP[e.k] || e.k) + '</b> が載りました', '#9bd2ff'); } G.dex.f[k]++; }
 function dexGear(it) { G.dex = G.dex || { f: {}, g: {} }; const k = it.s + ':' + it.r; if (!G.dex.g[k]) G.dex.g[k] = 1; }
 function dropMats(e) {
-  const got = [];
-  const roll = (id, p, n = 1) => { if (Math.random() < p) { addInv(id, n); got.push([id, n]); } };
-  if (e.boss) { roll('scale', 1, 2); roll('core', 1, 2); roll('star', .25); }
-  else if (e.elite) { roll('fang', 1); roll('core', .5); roll('star', .004); }
-  else { roll('fang', .25); roll('core', .02); roll('star', .002); }
-  got.forEach(([id, n], i) => pops.push({ x: e.x + i * 3, y: GROUND - 22 - i * 6, t: 0, s: ITEMS[id].n + (n > 1 ? '×' + n : ''), c: ITEMS[id].c }));
-  if (got.some(([id]) => id === 'star')) toast('✨ <b style="color:#ffe066">星のかけら</b> を手に入れた！', '#ffe066');
+  const n = e.boss ? 5 + Math.floor(Math.random() * 3) : e.elite ? (Math.random() < .6 ? 1 : 0) : (Math.random() < .03 ? 1 : 0);
+  if (!n) return; addInv('core', n);
+  pops.push({ x: e.x, y: GROUND - 22, t: 0, s: '魔石' + (n > 1 ? '×' + n : ''), c: '#c99bff' });
 }
 function useItem(id) {
   const I = ITEMS[id]; if (!I || !inv(id) || I.mat) return false;
-  if (id === 'potion') { const alive = party.filter(m => !m.down && m.local !== false); if (!alive.length || alive.every(m => m.hp >= m.st.maxHp)) { toast('いまは回復しなくて大丈夫です', '#9b8cff'); return false; } alive.forEach(m => { const a = m.st.maxHp * .5; m.hp = Math.min(m.st.maxHp, m.hp + a); pops.push({ x: hero.x - m.off, y: GROUND - 28, t: 0, s: '+' + fmtPix(a), c: '#7dffa8' }); ring(hero.x - m.off - camX, GROUND, 12, '#9dffc8', .5, true); }); }
-  else if (id === 'feather') { const dn = party.filter(m => m.down && m.local !== false); if (!dn.length || hero.dead) { toast('倒れている仲間がいません', '#9b8cff'); return false; } dn.forEach(m => { m.down = false; m.downT = 0; m.hp = m.st.maxHp * .5; burst(hero.x - m.off, GROUND - 7, 14, '#fff2b8', 30); }); }
-  else if (I.buff) { G.buffs = G.buffs || {}; G.buffs[I.buff] = Math.max(Date.now(), G.buffs[I.buff] || 0) + I.dur * 1000; hero.aura = Math.max(hero.aura, .6); }
+  if (I.buff) { G.buffs = G.buffs || {}; G.buffs[I.buff] = Math.max(Date.now(), G.buffs[I.buff] || 0) + I.dur * 1000; hero.aura = Math.max(hero.aura, .6); }
   else if (I.box != null) { const it = makeItem(SLOTS[Math.floor(Math.random() * SLOTS.length)], I.box, tier()); addInv(id, -1); toast(ITEMS[id].n + ' から ' + itemHtml(it) + ' が出た！', RARITY[it.r].c); gainItem(it); save(); renderItems(); return true; }
   addInv(id, -1); toast(I.n + ' を使った', I.c); updBuffs(); save(); renderItems(); return true;
 }
-function autoPotion() {
-  if (!G.fl || !G.fl.autopot || !inv('potion') || hero.dead || arena.on) return;
-  if ((T - (autoPotion.t || -99)) < 6) return;
-  if (party.some(m => !m.down && m.local !== false && m.hp < m.st.maxHp * .3)) { autoPotion.t = T; useItem('potion'); }
-}
 function updBuffs() {
   const b = $('buffs'); if (!b) return; let h = '';
-  for (const id of ['pow', 'guard', 'luck', 'wise']) { const k = ITEMS[id].buff; if (buffOn(k)) { const s = Math.ceil((G.buffs[k] - Date.now()) / 1000); h += '<span title="' + ITEMS[id].n + '：' + ITEMS[id].d + '"><img src="' + itemIcon(id) + '">' + Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0') + '</span>'; } }
+  for (const id of ['luck', 'wise']) { const k = ITEMS[id].buff; if (buffOn(k)) { const s = Math.ceil((G.buffs[k] - Date.now()) / 1000); h += '<span title="' + ITEMS[id].n + '：' + ITEMS[id].d + '"><img src="' + itemIcon(id) + '">' + Math.floor(s / 60) + ':' + String(s % 60).padStart(2, '0') + '</span>'; } }
   b.innerHTML = h;
 }
-setInterval(() => { updBuffs(); autoPotion(); }, 1000);
+setInterval(updBuffs, 1000);
 let itab = 'bag', iSel = null;
 function shopPrice(g) { return Math.round(goldOf(tier()) * g); }
 function itemCell(id, n, extra) { const I = ITEMS[id]; return '<div class="icell' + (iSel === id ? ' sel' : '') + '" data-iid="' + id + '" title="' + I.n + '"' + (extra || '') + '><img src="' + itemIcon(id) + '">' + (n != null ? '<b>' + n + '</b>' : '') + '</div>'; }
 function renderItems() {
   if (!panelOpen || panelPage !== 'item') return;
-  let h = '<div class="pcol"><div class="ph"><b>アイテム</b><span><img src="' + itemIcon('medal') + '" style="width:12px;height:12px;image-rendering:pixelated;vertical-align:-2px"> バトルメダル <b style="color:#ffd25e">' + (G.medals || 0) + '</b>　<span class="coin" style="width:9px;height:9px"></span> ' + fmtG(G.gold) + '</span></div>';
-  h += '<div class="tabs" style="margin-right:0">' + [['bag', '持ち物'], ['shop', 'ショップ'], ['craft', 'クラフト'], ['dex', '図鑑']].map(([k, n]) => '<button data-itab="' + k + '" class="' + (itab === k ? 'on' : '') + '">' + n + '</button>').join('') + '</div>';
+  let h = '<div class="pcol"><div class="ph"><b>アイテム</b><span><img src="' + itemIcon('core') + '" class="ii"> 魔石 <b style="color:#d9b8ff">' + inv('core') + '</b>　<img src="' + itemIcon('medal') + '" class="ii"> バトルメダル <b style="color:#ffd25e">' + (G.medals || 0) + '</b></span></div>';
+  h += '<div class="tabs" style="margin-right:0">' + [['bag', '持ち物'], ['shop', 'ショップ'], ['dex', '図鑑']].map(([k, n]) => '<button data-itab="' + k + '" class="' + (itab === k ? 'on' : '') + '">' + n + '</button>').join('') + '</div>';
   if (itab === 'bag') {
     const ids = Object.keys(ITEMS).filter(id => inv(id) > 0);
     h += '<div class="igrid">' + (ids.length ? ids.map(id => itemCell(id, inv(id))).join('') : '<div class="fhint" style="grid-column:1/-1;margin-top:20px">まだアイテムがありません。<br>敵が落とす素材を集めたり、ショップで買ったりできます。</div>') + '</div>';
   } else if (itab === 'shop') {
-    h += '<div class="lbl" style="margin-top:0">ゴールドで買う</div><div class="slist">' + SHOP_G.map(([id, g]) => { const p = shopPrice(g); return '<div class="srow">' + itemCell(id) + '<span><b>' + ITEMS[id].n + '</b><small>' + ITEMS[id].d + '</small></span><button class="btn sub" data-buy="' + id + '" data-cur="g"' + (G.gold >= p ? '' : ' disabled') + '><span class="coin" style="width:9px;height:9px"></span>' + fmtG(p) + '</button></div>'; }).join('') + '</div>';
-    h += '<div class="lbl">バトルメダルで買う</div><div class="slist">' + SHOP_M.map(([id, m]) => '<div class="srow">' + itemCell(id) + '<span><b>' + ITEMS[id].n + '</b><small>' + ITEMS[id].d + '</small></span><button class="btn sub" data-buy="' + id + '" data-cur="m"' + ((G.medals || 0) >= m ? '' : ' disabled') + '>🏅' + m + '</button></div>').join('') + '</div>';
-  } else if (itab === 'craft') {
-    h += '<div class="slist">' + RECIPES.map((r, i) => { const ok = Object.entries(r.need).every(([k, n]) => inv(k) >= n); return '<div class="srow">' + itemCell(r.out) + '<span><b>' + ITEMS[r.out].n + '</b><small>' + Object.entries(r.need).map(([k, n]) => '<img src="' + itemIcon(k) + '" class="ii">' + ITEMS[k].n + ' <b style="color:' + (inv(k) >= n ? '#7dffa8' : '#ff8fa8') + '">' + inv(k) + '/' + n + '</b>').join('　') + '</small></span><button class="btn' + (ok ? '' : ' sub') + '" data-craft="' + i + '"' + (ok ? '' : ' disabled') + '>作る</button></div>'; }).join('') + '</div>';
+    h += '<div class="lbl" style="margin-top:0">魔石で買う（冒険で集まる）</div><div class="slist">' + SHOP_C.map(([id, m]) => '<div class="srow">' + itemCell(id) + '<span><b>' + ITEMS[id].n + '</b><small>' + ITEMS[id].d + '</small></span><button class="btn sub" data-buy="' + id + '" data-cur="c"' + (inv('core') >= m ? '' : ' disabled') + '><img src="' + itemIcon('core') + '" class="ii">' + m + '</button></div>').join('') + '</div>';
+    h += '<div class="lbl">バトルメダルで買う</div><div class="slist">' + SHOP_M.map(([id, m]) => '<div class="srow">' + itemCell(id) + '<span><b>' + ITEMS[id].n + '</b><small>' + ITEMS[id].d + '</small></span><button class="btn sub" data-buy="' + id + '" data-cur="m"' + ((G.medals || 0) >= m ? '' : ' disabled') + '><img src="' + itemIcon('medal') + '" class="ii">' + m + '</button></div>').join('') + '</div>';
   } else {
     const d = G.dex || { f: {}, g: {} }, nf = Object.keys(d.f || {}).length, ng = Object.keys(d.g || {}).length, totF = Object.keys(FOE_MAPS).length + REGIONS.length;
     h += '<div class="fhint" style="text-align:left;margin:0 0 6px">見つけた数 <b style="color:#fff">' + (nf + ng) + ' / ' + (totF + SLOTS.length * RARITY.length) + '</b>　図鑑ボーナス：攻撃力 <b style="color:#7dffa8">+' + (dexCount() * .2).toFixed(1) + '%</b>（1件につき+0.2%）</div>';
@@ -3162,7 +3140,6 @@ function renderItems() {
     h += '<div class="idet"><img src="' + itemIcon(iSel) + '"><div><b style="color:' + I.c + '">' + I.n + '</b><small>持っている数 ' + inv(iSel) + '</small></div></div><div class="fhint" style="text-align:left">' + I.d + '</div>';
     if (!I.mat && inv(iSel)) h += '<button class="btn" data-use="' + iSel + '" style="width:100%;margin-top:6px">' + (I.box != null ? '開ける' : '使う') + '</button>';
   } else h += '<div class="fhint" style="margin-top:30px">アイテムを選ぶと<br>くわしく見られます</div>';
-  h += '<div style="flex:1"></div><div class="toggles"><div class="tg' + (G.fl.autopot ? ' on' : '') + '" data-ifl="autopot"><span>HPが減ったら回復ポーションを自動で使う</span><i></i></div></div>';
   h += '</div>';
   $('pitem').innerHTML = h;
 }
@@ -3175,20 +3152,14 @@ function foeIcon(k, seen, col) {
   return (FIC[key] = cv.toDataURL());
 }
 $('pitem').addEventListener('click', e => {
-  const t = e.target.closest('[data-itab],[data-iid],[data-buy],[data-craft],[data-use],[data-ifl]'); if (!t) return;
+  const t = e.target.closest('[data-itab],[data-iid],[data-buy],[data-use]'); if (!t) return;
   if (t.dataset.itab) { itab = t.dataset.itab; return renderItems(); }
-  if (t.dataset.ifl) { G.fl[t.dataset.ifl] = !G.fl[t.dataset.ifl]; save(); return renderItems(); }
   if (t.dataset.use) { useItem(t.dataset.use); return renderItems(); }
   if (t.dataset.buy) {
     const id = t.dataset.buy;
-    if (t.dataset.cur === 'g') { const p = shopPrice(SHOP_G.find(x => x[0] === id)[1]); if (G.gold < p) return; G.gold -= p; }
+    if (t.dataset.cur === 'c') { const m = SHOP_C.find(x => x[0] === id)[1]; if (inv('core') < m) return; addInv('core', -m); }
     else { const m = SHOP_M.find(x => x[0] === id)[1]; if ((G.medals || 0) < m) return; G.medals -= m; }
     addInv(id, 1); iSel = id; toast(ITEMS[id].n + ' を買いました', ITEMS[id].c); save(); updHud(true); return renderItems();
-  }
-  if (t.dataset.craft) {
-    const r = RECIPES[+t.dataset.craft]; if (!Object.entries(r.need).every(([k, n]) => inv(k) >= n)) return;
-    for (const [k, n] of Object.entries(r.need)) addInv(k, -n); addInv(r.out, r.n); iSel = r.out;
-    toast(ITEMS[r.out].n + ' を作った！', ITEMS[r.out].c); burst(camX + IW / 2, GROUND - 10, 14, ITEMS[r.out].c, 30); save(); return renderItems();
   }
   if (t.dataset.iid) { iSel = t.dataset.iid; renderItems(); }
 });
@@ -3318,7 +3289,7 @@ function frame(now) {
   update(step); render(); updHud();
   saveT += step; if (saveT > 15) { saveT = 0; save(); }
 }
-load(); if (!G.name) askName(); $('itemic').src = itemIcon('potion'); G.dex = G.dex || { f: {}, g: {} }; G.bag.forEach(dexGear); for (const c in G.heroes) for (const k of SLOTS) if (G.heroes[c].gear[k]) dexGear(G.heroes[c].gear[k]); G.ui = Object.assign({ k: 1, w: 1, o: 1 }, G.ui || {}); applyUI(true); resize(); updGear(); updHud(true);
+load(); if (!G.name) askName(); $('itemic').src = itemIcon('luck'); if (G.inv) for (const k in G.inv) if (!ITEMS[k]) delete G.inv[k]; if (G.buffs) { delete G.buffs.pow; delete G.buffs.guard; } G.dex = G.dex || { f: {}, g: {} }; G.bag.forEach(dexGear); for (const c in G.heroes) for (const k of SLOTS) if (G.heroes[c].gear[k]) dexGear(G.heroes[c].gear[k]); G.ui = Object.assign({ k: 1, w: 1, o: 1 }, G.ui || {}); applyUI(true); resize(); updGear(); updHud(true);
 if (!G.name) G.name = window.__DH_USER || '';
 if (G._refund) { const b = G._refund; delete G._refund; setTimeout(() => toast('強化ボタン廃止のため <b style="color:#ffe08a">' + fmtG(b) + ' G</b> を返却しました。ルーン（ᚱ）に使えます', '#ffd25e'), 2500); }
 if (G.grp && G.grp.code) setTimeout(() => grpJoin(G.grp.code, false), 1200);
