@@ -119,7 +119,7 @@ button{font:inherit;color:inherit;border:0;background:none;cursor:pointer}
 .slot{cursor:pointer}
 .slot img{width:14px;height:14px;image-rendering:pixelated}
 .slot img.ghost{opacity:.28;filter:grayscale(1)}
-body.mini #bagbtn,body.mini #quit,body.mini #partybtn,body.mini #grpchip{display:none}
+body.mini #bagbtn,body.mini #quit,body.mini #partybtn,body.mini #grpchip,body.mini #rankbtn,body.mini #vilbtn,body.mini #itembtn,body.mini #uibtn,body.mini #chatbtn,body.mini #buffs,body.mini #uipop{display:none!important}
 
 /* ===== panel ===== */
 #panel{position:absolute;left:var(--mx,12px);right:var(--mx,12px);bottom:170px;height:314px;border-radius:20px;display:none;z-index:9;cursor:default;
@@ -129,13 +129,13 @@ body.mini #bagbtn,body.mini #quit,body.mini #partybtn,body.mini #grpchip{display
 .page{position:absolute;inset:12px 14px;display:none;gap:14px}
 #pgear{grid-template-columns:230px minmax(0,1fr) 270px}
 #pparty{grid-template-columns:minmax(0,1fr) 300px}
-body.pg-gear #pgear,body.pg-party #pparty,body.pg-map #pmap,body.pg-rank #prank,body.pg-rune #prune,body.pg-item #pitem,body.pg-village #pvillage{display:grid}
-#prune,#pitem{grid-template-columns:minmax(0,1fr) 230px}
+body.pg-gear #pgear,body.pg-party #pparty,body.pg-map #pmap,body.pg-rank #prank,body.pg-rune #prune,body.pg-item #pitem,body.pg-village #pvillage,body.pg-chat #pchat{display:grid}
+#pitem,#pchat{grid-template-columns:minmax(0,1fr) 230px}#prune{grid-template-columns:minmax(0,1fr) 190px}
 #runebtn{display:grid;place-items:center;width:34px;padding:0;font-size:17px;font-weight:900;color:#c9a8ff;text-shadow:0 0 8px rgba(180,130,255,.8)}
 #runebtn.on{background:linear-gradient(#e8d8ff,#b48bff);color:#2a1050;text-shadow:none}
 body.mini #runebtn{display:none}
-.rgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:7px;overflow:auto;padding:2px}
-.rune{position:relative;display:grid;grid-template-columns:34px minmax(0,1fr);gap:2px 8px;align-items:center;padding:7px 8px;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);cursor:pointer;transition:transform .12s,background .2s}
+.rgrid{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:5px;overflow:auto;padding:2px}
+.rune{position:relative;display:grid;grid-template-columns:26px minmax(0,1fr);gap:1px 6px;align-items:center;padding:5px 6px;border-radius:12px;background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);cursor:pointer;transition:transform .12s,background .2s}
 .rune:hover{background:rgba(255,255,255,.09);transform:translateY(-1px)}
 .rune .rg{grid-row:1/4;width:34px;height:34px;border-radius:10px;display:grid;place-items:center;font-size:20px;font-weight:900;color:var(--rc);background:radial-gradient(circle,color-mix(in srgb,var(--rc) 30%,transparent),rgba(0,0,0,.25));box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--rc) 50%,transparent),0 0 12px color-mix(in srgb,var(--rc) 35%,transparent)}
 .rune b{font-size:11px;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.rune b i{font-style:normal;color:var(--rc);margin-left:4px}
@@ -376,6 +376,14 @@ body.mini #card{left:12px;right:12px}body.flip{bottom:auto;top:0;transform-origi
 .ttl{display:inline-block;margin-right:4px;padding:0 5px;border-radius:5px;font-size:9px;font-weight:900;color:#ffe08a;background:rgba(255,210,94,.14)}
 #storebtn.on{background:#e0c08a;color:#1b0f33}
 #stagebox,#goldbox,#stagebox *{white-space:nowrap}#mid{min-width:0;flex-shrink:1}#goldbox{flex-shrink:0}
+#prune .rune .rg{width:26px;height:26px;font-size:15px;border-radius:8px}#prune .rune b{font-size:10px}#prune .rune small{font-size:8.5px}#prune .rune .rc{font-size:9px}
+#chatbtn svg{width:14px;height:14px;fill:#e6dcff}#chatbtn{position:relative}#chatbtn.on{background:linear-gradient(#e7d6ff,#b48bff)}#chatbtn.on svg{fill:#1b0f33}
+#chatbadge{position:absolute;top:-4px;right:-4px;min-width:15px;height:15px;padding:0 4px;border-radius:8px;background:#ff5c7a;color:#fff;font-size:9px;font-style:normal;font-weight:900;line-height:15px;box-shadow:0 0 8px #ff5c7a}
+.clog{flex:1;min-height:0;overflow-y:auto;display:flex;flex-direction:column;gap:3px;padding:4px;border-radius:10px;background:rgba(0,0,0,.22)}
+.cmsg{display:flex;align-items:baseline;gap:6px;font-size:10.5px;padding:2px 4px;border-radius:6px}.cmsg.me{background:rgba(180,140,255,.12)}.cmsg .cn{flex:none;font-weight:900;color:#c9b3ff}.cmsg.me .cn{color:#ffe08a}.cmsg .ct{flex:1;min-width:0;color:#fff;word-break:break-all}.cmsg small{flex:none;font-size:8.5px;color:var(--sub)}
+.vmsg{padding:5px 7px;border-radius:8px;background:rgba(255,255,255,.05);font-size:10.5px;color:#fff}.vmsg div{display:flex;gap:6px;align-items:baseline}.vmsg b{color:#c9b3ff;font-size:10px}.vmsg small{font-size:8.5px;color:var(--sub)}.vmsg span{display:block;margin-top:2px;word-break:break-all;white-space:pre-wrap}
+#pchat .fld{display:flex;gap:6px}#pchat input,#voicein{flex:1;height:28px;border-radius:8px;border:1px solid rgba(255,255,255,.16);background:rgba(0,0,0,.3);color:#fff;padding:0 8px;font:inherit;font-size:11px}
+#voicein{width:100%;height:90px;padding:6px 8px;resize:none;box-sizing:border-box}
 </style>
 </head>
 <body>
@@ -411,6 +419,7 @@ body.mini #card{left:12px;right:12px}body.flip{bottom:auto;top:0;transform-origi
   <div id="prune" class="page"></div>
   <div id="pitem" class="page"></div>
   <div id="pvillage" class="page"></div>
+  <div id="pchat" class="page"></div>
 </div>
 <div id="card">
   <div id="uipop" class="glass"><label>大きさ <input id="uik" type="range" min="0.55" max="1" step="0.05"></label><label>横幅 <input id="uiw" type="range" min="0.4" max="1" step="0.05"></label><label>不透明度 <input id="uio" type="range" min="0.25" max="1" step="0.05"></label><small>ダブルクリックで元に戻す</small></div>
@@ -435,6 +444,7 @@ body.mini #card{left:12px;right:12px}body.flip{bottom:auto;top:0;transform-origi
       <button id="rankbtn" class="tbtn glass" title="フレンドランキング"><svg viewBox="0 0 16 16"><path d="M4 1h8v2h3v2.5A3.5 3.5 0 0 1 11.7 9 4 4 0 0 1 9 11.2V13h2.5v2h-7v-2H7v-1.8A4 4 0 0 1 4.3 9 3.5 3.5 0 0 1 1 5.5V3h3zm8 3.5v3a2 2 0 0 0 1.5-2V4.5zM4 4.5H2.5v1a2 2 0 0 0 1.5 2z"/></svg></button>
       <button id="partybtn" class="tbtn glass" title="キャラクター・グループ"><svg viewBox="0 0 16 16"><path d="M5.5 7.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5zm6 .5a2 2 0 1 1 0-4 2 2 0 0 1 0 4zM1 13c0-2.5 2-4 4.5-4S10 10.5 10 13v1H1zm10 1v-1c0-1.3-.4-2.4-1.1-3.2.5-.2 1-.3 1.6-.3 2 0 3.5 1.2 3.5 3.3V14z"/></svg></button>
       <button id="runebtn" class="tbtn glass" title="ルーン（ゴールドで永続強化）"><span>ᚱ</span></button>
+      <button id="chatbtn" class="tbtn glass" title="チャット・みんなの声"><svg viewBox="0 0 16 16"><path d="M2 3h12v8H7l-3 3v-3H2z"/></svg><i id="chatbadge" style="display:none"></i></button>
       <button id="vilbtn" class="tbtn glass" title="村（施設を建てる）"><svg viewBox="0 0 16 16"><path d="M8 1.5 1 7.5h2V14h4v-4h2v4h4V7.5h2z"/></svg></button>
       <button id="itembtn" class="tbtn glass" title="アイテム・ショップ・クラフト・図鑑"><img id="itemic" style="width:14px;height:14px;image-rendering:pixelated"></button>
       <button id="bagbtn" class="tbtn glass" title="装備・合成・強化"><svg viewBox="0 0 16 16"><path d="M5 5V4a3 3 0 0 1 6 0v1h2.2l.8 9.5H2L2.8 5zm1.5 0h3V4a1.5 1.5 0 0 0-3 0z"/></svg><i id="bagbadge"></i></button>
@@ -486,7 +496,7 @@ function fmt(n) { return Math.floor(n).toLocaleString('en-US'); }   // every dig
 function fmtPix(n) { return '' + Math.floor(n); }
 
 /* ---------- bridge to the macOS shell ---------- */
-const GAME_VERSION = '1.13.1', GAME_BUILD = 214;
+const GAME_VERSION = '1.14.0', GAME_BUILD = 215;
 const NATIVE = !!window.__DH_NATIVE || Q.has('nativeTest');
 if (window.__DH_OS === 'win') document.addEventListener('DOMContentLoaded', () => { const g = document.getElementById('grip'); if (g) g.title = 'ドラッグで移動／ダブルクリックでタスクバーの上に戻す'; });
 // page -> mac: the shell polls document.title. Keep the title short: big payloads (saves) are cut into chunks
@@ -2034,7 +2044,7 @@ function projHit(pj, e) {
   else { damageEnemy(e, pj.m, 1); star(e.x - 2, GROUND - 8, '#fff2d0'); }
 }
 function update(dt) {
-  T += dt; villageTick(dt);
+  T += dt; villageTick(dt); G.playT = (G.playT || 0) + dt; if (G.dayKey !== todayKey()) { G.dayKey = todayKey(); G.days = (G.days || 0) + 1; }
   if (arena.on) { arenaUpdate(dt); for (const p of parts) { p.life -= dt; p.vy += (p.g || 0) * dt; p.x += p.vx * dt; p.y += p.vy * dt; } parts = parts.filter(p => p.life > 0); for (const p of pops) p.t += dt; pops = pops.filter(p => p.t < .9); shake = Math.max(0, shake - dt); flashT = Math.max(0, flashT - dt); updAmb(dt); updFx(dt); updBubbles(dt); return; }
   if (fade > 0) { // chapter transition
     fade += dt * 1.6;
@@ -2378,11 +2388,11 @@ function setPanel(on, page) {
   document.body.classList.toggle('pg-party', on && panelPage === 'party');
   document.body.classList.toggle('pg-map', on && panelPage === 'map');
   document.body.classList.toggle('pg-rank', on && panelPage === 'rank');
-  document.body.classList.toggle('pg-rune', on && panelPage === 'rune'); document.body.classList.toggle('pg-item', on && panelPage === 'item'); document.body.classList.toggle('pg-village', on && panelPage === 'village'); $('vilbtn').classList.toggle('on', on && panelPage === 'village'); $('itembtn').classList.toggle('on', on && panelPage === 'item'); $('runebtn').classList.toggle('on', on && panelPage === 'rune');
+  document.body.classList.toggle('pg-rune', on && panelPage === 'rune'); document.body.classList.toggle('pg-item', on && panelPage === 'item'); document.body.classList.toggle('pg-village', on && panelPage === 'village'); $('vilbtn').classList.toggle('on', on && panelPage === 'village'); document.body.classList.toggle('pg-chat', on && panelPage === 'chat'); $('chatbtn').classList.toggle('on', on && panelPage === 'chat'); $('itembtn').classList.toggle('on', on && panelPage === 'item'); $('runebtn').classList.toggle('on', on && panelPage === 'rune');
   $('rankbtn').classList.toggle('on', on && panelPage === 'rank');
   $('bagbtn').classList.toggle('on', on && panelPage === 'gear'); $('partybtn').classList.toggle('on', on && panelPage === 'party');
   if (on !== was) native({ t: 'panel', on });
-  if (on) { renderPanel(); renderParty(); renderMap(); renderRank(); renderRunes(); renderItems(); renderVillage(); } else { G.bag.forEach(i => i.nw = 0); updGear(); save(); }
+  if (on) { renderPanel(); renderParty(); renderMap(); renderRank(); renderRunes(); renderItems(); renderVillage(); renderChat(); } else { G.bag.forEach(i => i.nw = 0); updGear(); save(); }
 }
 function renderPanel() {
   updGear();
@@ -2720,13 +2730,14 @@ function socStart() {
   if (soc || !NATIVE && !Q.has('social')) return;
   soc = new MiniMQTT((topic, txt) => {
     if (topic.startsWith(GTOPIC(G.uid) + '/')) return onGift(topic, txt);
+    if (topic.startsWith('dockhero-mac/v1/chat/') || topic.startsWith('dockhero-mac/v1/voice/')) return onChatMsg(topic, txt);
     if (topic === MMQ || topic === MMU(G.uid)) { let d; try { d = JSON.parse(txt); } catch (e) { return; } if (d && topic === MMQ) d.from = d.uid; return onMM(topic, d); }
     let d; try { d = JSON.parse(txt); } catch (e) { return; }
     if (d && d.uid) { profiles[d.uid] = d; const f = G.friends.find(x => x.uid === d.uid); if (f && d.name) f.name = d.name; renderRank(); }
   }, st => { socStatus = st; renderRank(); });
   soc.onReady = () => { socPublish(); };
   soc.subscribe(GTOPIC(G.uid) + '/+');
-  soc.subscribe(MMQ); soc.subscribe(MMU(G.uid));
+  soc.subscribe(MMQ); soc.subscribe(MMU(G.uid)); soc.subscribe(CHAT_T('+')); soc.subscribe(VOICE_T('+'));
   soc.subscribe(UTOPIC('+'));   // everyone's retained profile: global ranking + population
   for (const f of G.friends) soc.subscribe(UTOPIC(f.uid));
   soc.connect();
@@ -2784,6 +2795,7 @@ function renderRank() {
 $('prank').addEventListener('change', e => { if (e.target.id === 'titlesel') { G.title = e.target.value || null; save(); socPublish(); renderRank(); } });
 $('rankbtn').addEventListener('click', () => setPanel(!(panelOpen && panelPage === 'rank'), 'rank'));
 $('runebtn').addEventListener('click', () => setPanel(!(panelOpen && panelPage === 'rune'), 'rune'));
+$('chatbtn').addEventListener('click', () => setPanel(!(panelOpen && panelPage === 'chat'), 'chat'));
 $('vilbtn').addEventListener('click', () => setPanel(!(panelOpen && panelPage === 'village'), 'village'));
 $('pvillage').addEventListener('click', e => { const b = e.target.closest('[data-vb]'); if (!b) return; const id = b.dataset.vb, lv = vLv(id), c = vCost(id, lv); if (lv >= VMAX || G.gold < c) return; G.gold -= c; G.vil = G.vil || {}; G.vil[id] = lv + 1; toast('🏠 <b>' + VIL.find(v => v.id === id).n + '</b> が Lv' + (lv + 1) + ' になった', VIL.find(v => v.id === id).c); rebuildParty(); updHud(true); save(); renderVillage(); });
 setInterval(() => { if (panelOpen && panelPage === 'village') renderVillage(); }, 2000);
@@ -3164,6 +3176,13 @@ const TITLES = [
   { id: 'primal', n: '原初に触れし者', d: 'プライマル装備を手に入れる', ok: () => Object.keys((G.dex || {}).g || {}).some(k => +k.split(':')[1] >= 9) },
   { id: 'rich', n: '大富豪', d: 'ゴールドを1,000,000 持つ', ok: () => G.gold >= 1e6 },
   { id: 'mayor', n: '村長', d: '村のレベル合計30', ok: () => VIL.reduce((a, v) => a + vLv(v.id), 0) >= 30 },
+  { id: 't1', n: 'ひよっこ冒険者', d: '1時間あそぶ', ok: () => (G.playT || 0) >= 3600 },
+  { id: 't10', n: '一人前の冒険者', d: '10時間あそぶ', ok: () => (G.playT || 0) >= 36000 },
+  { id: 't50', n: 'ベテラン冒険者', d: '50時間あそぶ', ok: () => (G.playT || 0) >= 180000 },
+  { id: 't100', n: '歴戦の勇者', d: '100時間あそぶ', ok: () => (G.playT || 0) >= 360000 },
+  { id: 't300', n: '生ける伝説', d: '300時間あそぶ', ok: () => (G.playT || 0) >= 1080000 },
+  { id: 'day7', n: '常連さん', d: '7日間あそぶ', ok: () => (G.days || 0) >= 7 },
+  { id: 'day30', n: '皆勤賞', d: '30日間あそぶ', ok: () => (G.days || 0) >= 30 },
   { id: 'friends', n: '人気者', d: 'フレンドを5人つくる', ok: () => (G.friends || []).length >= 5 }];
 function checkTitles() {
   G.titles = G.titles || {};
@@ -3171,6 +3190,80 @@ function checkTitles() {
 }
 setInterval(checkTitles, 4000);
 const titleName = id => (TITLES.find(t => t.id === id) || {}).n || '';
+
+/* ===================== chat & みんなの声 (retained per-player MQTT topics, no server) ===================== */
+const CHAT_T = id => 'dockhero-mac/v1/chat/' + id, VOICE_T = id => 'dockhero-mac/v1/voice/' + id;
+const VOICE_DAY = 5;
+const chatAll = {}, voiceAll = {};   // uid -> { name, msgs: [{t, x}] }
+let chatTab = 'chat', chatUnread = 0, lastChatSend = 0;
+const todayKey = () => { const d = new Date(); return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate(); };
+const voiceLeft = () => (G.voiceDay === todayKey() ? VOICE_DAY - (G.voiceN || 0) : VOICE_DAY);
+function onChatMsg(topic, txt) {
+  let d; try { d = JSON.parse(txt); } catch (e) { return; }
+  if (!d || !d.uid || !Array.isArray(d.msgs)) return;
+  const isVoice = topic.startsWith('dockhero-mac/v1/voice/'), store = isVoice ? voiceAll : chatAll;
+  const prev = store[d.uid], prevLast = prev && prev.msgs.length ? prev.msgs[prev.msgs.length - 1].t : 0;
+  store[d.uid] = { name: String(d.name || 'プレイヤー').slice(0, 12), title: String(d.title || '').slice(0, 12), msgs: d.msgs.filter(m => m && m.t && typeof m.x === 'string').slice(-20) };
+  if (!isVoice && d.uid !== G.uid && store[d.uid].msgs.some(m => m.t > prevLast && m.t > Date.now() - 120000) && !(panelOpen && panelPage === 'chat' && chatTab === 'chat')) { chatUnread++; updChatBadge(); }
+  if (panelOpen && panelPage === 'chat') renderChat();
+}
+function updChatBadge() { const b = $('chatbadge'); if (!b) return; b.style.display = chatUnread ? '' : 'none'; b.textContent = chatUnread > 9 ? '9+' : chatUnread; }
+function sendChat(x) {
+  x = String(x || '').replace(/\s+/g, ' ').trim().slice(0, 80); if (!x) return;
+  if (!soc || socStatus !== 'on') return toast('オンラインにつながっていません', '#ff8fa8');
+  if (!G.name) return askName();
+  if (Date.now() - lastChatSend < 3000) return toast('少し待ってから送ってください', '#ff8fa8');
+  lastChatSend = Date.now();
+  const me = chatAll[G.uid] || { name: G.name, msgs: [] }; me.name = G.name; me.title = titleName(G.title); me.msgs = me.msgs.concat([{ t: Date.now(), x }]).slice(-10); chatAll[G.uid] = me;
+  soc.publish(CHAT_T(G.uid), JSON.stringify({ uid: G.uid, name: G.name, title: me.title, msgs: me.msgs }), true);
+  renderChat();
+}
+function sendVoice(x) {
+  x = String(x || '').replace(/\s+/g, ' ').trim().slice(0, 200); if (!x) return;
+  if (!soc || socStatus !== 'on') return toast('オンラインにつながっていません', '#ff8fa8');
+  if (voiceLeft() <= 0) return toast('みんなの声は1日5通までです。また明日！', '#ff8fa8');
+  if (G.voiceDay !== todayKey()) { G.voiceDay = todayKey(); G.voiceN = 0; }
+  G.voiceN++;
+  const me = voiceAll[G.uid] || { name: G.name, msgs: [] }; me.name = G.name; me.msgs = me.msgs.concat([{ t: Date.now(), x }]).slice(-20); voiceAll[G.uid] = me;
+  soc.publish(VOICE_T(G.uid), JSON.stringify({ uid: G.uid, name: G.name, msgs: me.msgs }), true);
+  save(); toast('みんなの声を送りました（今日あと ' + voiceLeft() + ' 通）', '#7dffa8'); renderChat();
+}
+const hhmm = t => { const d = new Date(t), n = new Date(); return (d.toDateString() === n.toDateString() ? '' : (d.getMonth() + 1) + '/' + d.getDate() + ' ') + d.getHours() + ':' + String(d.getMinutes()).padStart(2, '0'); };
+function flatMsgs(store, n) { const out = []; for (const uid in store) for (const m of store[uid].msgs) out.push({ uid, name: store[uid].name, title: store[uid].title, t: m.t, x: m.x }); return out.sort((a, b) => a.t - b.t).slice(-n); }
+function renderChat() {
+  if (!panelOpen || panelPage !== 'chat') return;
+  if (chatTab === 'chat' && chatUnread) { chatUnread = 0; updChatBadge(); }
+  const keep = $('chatin') ? $('chatin').value : '', keepV = $('voicein') ? $('voicein').value : '';
+  let h = '<div class="pcol"><div class="ph"><b>' + (chatTab === 'chat' ? 'チャット' : 'みんなの声') + '</b><span>' + (chatTab === 'chat' ? 'オンラインのプレイヤー全員と話せます（1回80文字まで）' : 'ゲームへの意見・要望・感想を送れます。送った声はみんなと開発者が読めます') + '</span></div>';
+  h += '<div class="tabs" style="margin-right:0"><button data-ct="chat" class="' + (chatTab === 'chat' ? 'on' : '') + '">チャット</button><button data-ct="voice" class="' + (chatTab === 'voice' ? 'on' : '') + '">みんなの声</button></div>';
+  if (chatTab === 'chat') {
+    const L = flatMsgs(chatAll, 80);
+    h += '<div class="clog" id="clog">' + (L.length ? L.map(m => '<div class="cmsg' + (m.uid === G.uid ? ' me' : '') + '"><span class="cn">' + (m.title ? '<i class="ttl">' + esc(m.title) + '</i>' : '') + esc(m.name) + '</span><span class="ct">' + esc(m.x) + '</span><small>' + hhmm(m.t) + '</small></div>').join('') : '<div class="fhint" style="margin-top:30px">まだ誰も話していません。最初のひとことをどうぞ！</div>') + '</div>';
+    h += '<div class="fld" style="margin-top:6px"><input id="chatin" maxlength="80" placeholder="メッセージ（Enterで送信）"><button class="btn" data-cs="1">送信</button></div>';
+  } else {
+    const L = flatMsgs(voiceAll, 120).reverse();
+    h += '<div class="clog">' + (L.length ? L.map(m => '<div class="vmsg"><div><b>' + esc(m.name) + '</b><small>' + hhmm(m.t) + '</small></div><span>' + esc(m.x) + '</span></div>').join('') : '<div class="fhint" style="margin-top:30px">まだ声が届いていません</div>') + '</div>';
+  }
+  h += '</div><div class="pcol" style="padding-left:12px;border-left:1px solid rgba(255,255,255,.07)">';
+  h += '<div class="lbl" style="margin-top:0">みんなの声を送る</div><div class="fhint" style="text-align:left;margin-bottom:6px">「ここが遊びにくい」「こんな機能がほしい」など。1日 ' + VOICE_DAY + ' 通まで（今日あと <b style="color:#fff">' + voiceLeft() + '</b> 通）</div>';
+  h += '<textarea id="voicein" maxlength="200" placeholder="200文字まで"></textarea><button class="btn" data-vs="1" style="width:100%;margin-top:6px"' + (voiceLeft() > 0 ? '' : ' disabled') + '>声を送る</button>';
+  h += '<div class="fhint" style="text-align:left;margin-top:8px">' + ({ on: '<span style="color:#7dffa8">● オンライン</span>', wait: '<span style="color:#ffd25e">● 接続中…</span>' }[socStatus] || '<span style="color:#ff8fa8">● オフライン</span>') + '</div></div>';
+  $('pchat').innerHTML = h;
+  if ($('chatin')) $('chatin').value = keep; if ($('voicein')) $('voicein').value = keepV;
+  const lg = $('clog'); if (lg) lg.scrollTop = lg.scrollHeight;
+}
+$('pchat').addEventListener('click', e => {
+  const t = e.target.closest('[data-ct],[data-cs],[data-vs]'); if (!t) return;
+  if (t.dataset.ct) { chatTab = t.dataset.ct; return renderChat(); }
+  if (t.dataset.cs) { const v = $('chatin').value; $('chatin').value = ''; sendChat(v); }
+  if (t.dataset.vs) { const v = $('voicein').value; $('voicein').value = ''; sendVoice(v); }
+});
+$('pchat').addEventListener('keydown', e => { if (e.target.id === 'chatin' && e.key === 'Enter') { const v = e.target.value; e.target.value = ''; sendChat(v); } });
+$('pchat').addEventListener('mousedown', e => {
+  if (!NATIVE) return;
+  if (e.target.id === 'chatin') { e.preventDefault(); native({ t: 'prompt', kind: 'chat', label: 'チャット（80文字まで）', value: '' }); }
+  if (e.target.id === 'voicein') { e.preventDefault(); native({ t: 'prompt', kind: 'voice', label: 'みんなの声（200文字まで・1日5通）', value: '' }); }
+});
 
 /* ===================== items: consumables, materials, shop, crafting, collection ===================== */
 const IMAP = {
@@ -3388,7 +3481,7 @@ $('nmok').addEventListener('click', () => nameDone($('nmin').value));
 $('nmin').addEventListener('keydown', e => { if (e.key === 'Enter') nameDone($('nmin').value); });
 $('nmin').addEventListener('mousedown', e => { if (NATIVE) { e.preventDefault(); native({ t: 'prompt', kind: 'name', label: 'プレイヤー名（12文字まで）', value: '' }); } });
 $('mmchip').addEventListener('click', e => { if (e.target.dataset.mm === 'stop') mmStop(); });
-window.DH = { saveNow: save, setMini, layout: f => { document.body.classList.toggle('flip', !!f); setTimeout(resize, 50); }, onPrompt: (k, v) => { if (k === 'name') { if ($('nameov').classList.contains('on')) nameDone(v); else { setName(v); renderParty(); } } else if (k === 'friend') { addFriend(v); } else if (k === 'code') { DH.onPaste(v); const b = document.querySelector('[data-g=join]'); if (b && ($('gcode').value || '').length === 6) b.click(); } }, onPaste: t => { const el = $('gcode'); if (el && t) { el.value = String(t).toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 6); } } };
+window.DH = { saveNow: save, setMini, layout: f => { document.body.classList.toggle('flip', !!f); setTimeout(resize, 50); }, onPrompt: (k, v) => { if (k === 'chat') return sendChat(v); if (k === 'voice') return sendVoice(v); if (k === 'name') { if ($('nameov').classList.contains('on')) nameDone(v); else { setName(v); renderParty(); } } else if (k === 'friend') { addFriend(v); } else if (k === 'code') { DH.onPaste(v); const b = document.querySelector('[data-g=join]'); if (b && ($('gcode').value || '').length === 6) b.click(); } }, onPaste: t => { const el = $('gcode'); if (el && t) { el.value = String(t).toUpperCase().replace(/[^A-Z0-9]/g, '').slice(0, 6); } } };
 window.addEventListener('beforeunload', save);
 window.addEventListener('hashchange', () => {
   const q = new URLSearchParams(location.hash.slice(1));
