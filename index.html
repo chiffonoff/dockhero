@@ -496,7 +496,7 @@ function fmt(n) { return Math.floor(n).toLocaleString('en-US'); }   // every dig
 function fmtPix(n) { return '' + Math.floor(n); }
 
 /* ---------- bridge to the macOS shell ---------- */
-const GAME_VERSION = '1.14.1', GAME_BUILD = 216;
+const GAME_VERSION = '1.14.2', GAME_BUILD = 217;
 const NATIVE = !!window.__DH_NATIVE || Q.has('nativeTest');
 if (window.__DH_OS === 'win') document.addEventListener('DOMContentLoaded', () => { const g = document.getElementById('grip'); if (g) g.title = 'ドラッグで移動／ダブルクリックでタスクバーの上に戻す'; });
 // page -> mac: the shell polls document.title. Keep the title short: big payloads (saves) are cut into chunks
@@ -3462,10 +3462,11 @@ function dragStart(e) { if (e.button !== 0 || e.target.closest('button,input,.sl
 card.addEventListener('mousedown', dragStart); $('panel').addEventListener('mousedown', dragStart);
 window.addEventListener('mousemove', e => { if (!drag) return; const dx = e.screenX - drag.x, dy = e.screenY - drag.y; if (dx || dy) { native({ t: 'move', dx, dy }); drag = { x: e.screenX, y: e.screenY }; } });
 window.addEventListener('mouseup', () => { if (drag) { drag = null; document.body.classList.remove('dragging'); native({ t: 'moveEnd' }); } });
-$('grip').addEventListener('dblclick', () => native({ t: 'home' }));
+$('grip').addEventListener('dblclick', () => { G.ui = { k: 1, w: 1, o: 1 }; applyUI(); if (mini) setMini(false); save(); native({ t: 'home' }); toast('表示を元の大きさに戻しました', '#9b8cff'); });
+$('lvbox').addEventListener('dblclick', () => { G.ui = { k: 1, w: 1, o: 1 }; applyUI(); if (mini) setMini(false); save(); });
 let mini = false;
 // the shell remembers a shrunken window across reloads/updates: if we wake up inside one, show the small layout so the + button is reachable
-function syncMini() { if (!mini && innerWidth < 520) setMini(true); }
+function syncMini() { if (!mini && innerWidth < 520) { setMini(true); setTimeout(() => setMini(false), 400); } }   // woke up squeezed: ask the shell for the full-size window back
 window.addEventListener('resize', () => setTimeout(syncMini, 100));
 setTimeout(syncMini, 300);
 function setMini(on) {
