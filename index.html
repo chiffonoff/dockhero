@@ -447,6 +447,12 @@ body.raid #mid{visibility:hidden}body.raid #pips .bossbar{display:none}
 @keyframes skfl{0%{opacity:0}15%{opacity:1}100%{opacity:0}}
 .pnew{font-style:normal;font-size:8px;font-weight:900;color:#1b0f33;background:#7dffa8;border-radius:5px;padding:0 4px;margin-left:3px}
 .vmsg.pn span{color:#e6dcff;line-height:1.55}.vmsg.pn.cur{box-shadow:inset 3px 0 0 #7dffa8}
+.elrows{display:flex;flex-direction:column;gap:3px}.elrow{display:flex;align-items:center;gap:3px;font-size:10px}.elrow span{width:56px;color:var(--sub);font-weight:800}
+.elb{width:22px;height:20px;border-radius:6px;font-size:10px;font-weight:900;color:var(--ec);background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08)}.elb.on{background:var(--ec);color:#1b0f33;box-shadow:0 0 8px var(--ec)}
+.elvs{display:grid;grid-template-columns:repeat(5,1fr);gap:4px}.elv{display:flex;flex-direction:column;align-items:center;gap:1px;padding:4px 2px;border-radius:8px;background:rgba(255,255,255,.04);box-shadow:inset 0 2px 0 var(--ec);font-size:9px}.elv b{color:var(--ec);font-size:12px}.elv small{color:var(--sub);font-size:8px}.elv .mini-btn{font-size:8.5px;padding:2px 4px}
+.trgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-bottom:6px}
+.trc{display:flex;flex-direction:column;gap:3px;padding:7px 8px;border-radius:11px;background:linear-gradient(160deg,color-mix(in srgb,var(--tc) 18%,transparent),rgba(255,255,255,.03));border:1px solid color-mix(in srgb,var(--tc) 40%,transparent);font-size:9.5px;color:#e6dcff}
+.trc>div{display:flex;align-items:baseline;gap:5px;flex-wrap:wrap}.trc b{font-size:12px;color:var(--tc)}.trc i{font-style:normal;font-size:8.5px;color:var(--sub)}.trc em{font-style:normal;color:#7dffa8;font-weight:900;font-size:9px}.trc small{color:#ffe08a;font-size:9px}.trc .btn{margin-top:auto;font-size:10px;padding:4px 6px}
 </style>
 </head>
 <body>
@@ -571,7 +577,7 @@ function fmt(n) { return Math.floor(n).toLocaleString('en-US'); }   // every dig
 function fmtPix(n) { return '' + Math.floor(n); }
 
 /* ---------- bridge to the macOS shell ---------- */
-const GAME_VERSION = '1.18.1', GAME_BUILD = 226;
+const GAME_VERSION = '1.19.0', GAME_BUILD = 227;
 const NATIVE = !!window.__DH_NATIVE || Q.has('nativeTest');
 if (window.__DH_OS === 'win') document.addEventListener('DOMContentLoaded', () => { const g = document.getElementById('grip'); if (g) g.title = 'ドラッグで移動／ダブルクリックでタスクバーの上に戻す'; });
 // page -> mac: the shell polls document.title. Keep the title short: big payloads (saves) are cut into chunks
@@ -697,10 +703,11 @@ function itemName(it, cls) {
 }
 const AFFIX = {
   crit: { n: '会心率', b: .02, pct: 1 }, critd: { n: '会心ダメージ', b: .15, pct: 1 }, aspd: { n: '攻撃速度', b: .04, pct: 1 },
-  gold: { n: '獲得ゴールド', b: .08, pct: 1 }, atkp: { n: '攻撃力', b: .05, pct: 1 },
+  atkp: { n: '攻撃力', b: .05, pct: 1 },
   hpp: { n: '最大HP', b: .06, pct: 1 }, ls: { n: '吸血', b: .02, pct: 1 } };
 const AFFIXKEYS = Object.keys(AFFIX), LS_MIN_R = 5;   // 吸血はミシック以上のみ
-function fixLs(it) { if (!it || it.r >= LS_MIN_R || !it.a) return; for (const x of it.a) if (x.k === 'ls') { const free = AFFIXKEYS.filter(k => k !== 'ls' && !it.a.some(y => y.k === k)); const k = free[Math.floor(Math.random() * free.length)]; x.k = k; x.v = +(AFFIX[k].b * .8 * (1 + .15 * it.r)).toFixed(4); } }
+function fixGold(it) { if (!it || !it.a) return; for (const x of it.a) if (x.k === 'gold' || !AFFIX[x.k]) { const free = AFFIXKEYS.filter(k => k !== 'ls' && !it.a.some(y => y.k === k)); const k = free[Math.floor(Math.random() * free.length)]; x.k = k; x.v = +(AFFIX[k].b * .8 * (1 + .15 * it.r)).toFixed(4); } }
+function fixLs(it) { fixGold(it); if (!it || it.r >= LS_MIN_R || !it.a) return; for (const x of it.a) if (x.k === 'ls') { const free = AFFIXKEYS.filter(k => k !== 'ls' && !it.a.some(y => y.k === k)); const k = free[Math.floor(Math.random() * free.length)]; x.k = k; x.v = +(AFFIX[k].b * .8 * (1 + .15 * it.r)).toFixed(4); } }
 /* ---------- runes: permanent account-wide boosts bought with gold, unlocked along a path ---------- */
 const RUNES = [
   { id: 'atk',   n: '力のルーン',     g: 'ᚠ', col: '#ff7a6a', d: '攻撃力',           v: .012, pct: 1, max: 15, base: 40,  req: null },
@@ -725,7 +732,7 @@ const rkey = (p, id) => p === 1 ? id : p + ':' + id;
 const runeLvP = (p, id) => (G.runes && G.runes[rkey(p, id)]) || 0;
 const runeLv = id => { let t = 0; for (let p = 1; p <= RUNE_PAGES; p++) t += runeLvP(p, id); return t; };
 const runeVal = id => runeLv(id) * RUNE[id].v;
-const runeCost = (p, id) => Math.floor(RUNE[id].base * 2.5 * Math.pow(1.7, runeLvP(p, id)) * Math.pow(12, p - 1));
+const runeCost = (p, id) => Math.floor(RUNE[id].base * 2.5 * Math.pow(1.7, runeLvP(p, id) + (p - 1) * RUNE[id].max) * Math.pow(3, p - 1));   // page II starts above page I's last level, and so on
 const pageOpen = p => p === 1 || RUNES.every(r => runeLvP(p - 1, r.id) >= PAGE_GATE);
 const runeOpen = (p, id) => pageOpen(p) && (!RUNE[id].req || runeLvP(p, RUNE[id].req) >= 2);
 let runePage = 1;
@@ -738,7 +745,6 @@ function makeItem(slot, r, t, name) {
   const pool = AFFIXKEYS.filter(k => k !== 'ls' || r >= LS_MIN_R);
   for (let i = 0; i < Math.min(5, r); i++) { const k = pool.splice(Math.floor(rnd(pool.length)), 1)[0]; it.a.push({ k, v: +(AFFIX[k].b * (.6 + rnd(.4)) * (1 + .15 * r) * (r > 5 ? 1 + .3 * (r - 5) : 1)).toFixed(4) }); }
   it.q = +(rnd(.85, 1.15)).toFixed(3);
-  if (slot === 'weapon' && G.loop >= 1 && Math.random() < .75) it.el = EKEYS[Math.floor(Math.random() * EKEYS.length)];
   return it;
 }
 function mainStat(it) {
@@ -748,14 +754,14 @@ function mainStat(it) {
     case 'helm': return { hp: 4 * sc };
     case 'armor': return { hp: 7 * sc };
     case 'boots': return { aspd: Math.min(.6, (.04 + .015 * it.r) * it.q * e), hp: 1.5 * sc };
-    case 'charm': return { crit: Math.min(.4, (.02 + .01 * it.r) * it.q * e), gold: (.05 + .025 * it.r) * e };
+    case 'charm': return { crit: Math.min(.4, (.02 + .01 * it.r) * it.q * e), critd: (.06 + .03 * it.r) * e };
   }
   return {};
 }
 function mainTxt(it) {
   const m = mainStat(it), o = [];
   if (m.atk) o.push('攻撃 +' + fmt(m.atk)); if (m.hp) o.push('HP +' + fmt(m.hp));
-  if (m.aspd) o.push('攻撃速度 +' + Math.round(m.aspd * 100) + '%'); if (m.crit) o.push('会心率 +' + (m.crit * 100).toFixed(1) + '%'); if (m.gold) o.push('ゴールド +' + Math.round(m.gold * 100) + '%');
+  if (m.aspd) o.push('攻撃速度 +' + Math.round(m.aspd * 100) + '%'); if (m.crit) o.push('会心率 +' + (m.crit * 100).toFixed(1) + '%'); if (m.critd) o.push('会心ダメージ +' + Math.round(m.critd * 100) + '%');
   return o.join(' / ');
 }
 const affTxt = a => AFFIX[a.k].n + ' +' + (a.v * 100).toFixed(1) + '%';
@@ -797,7 +803,7 @@ function statsFor(cls, gear) {
   let wAtk = 0, gHp = 0, bAs = 0, cCr = 0, cG = 0;
   for (const k of SLOTS) {
     const it = g[k]; if (!it) continue;
-    const m = mainStat(it); wAtk += m.atk || 0; gHp += m.hp || 0; bAs += m.aspd || 0; cCr += m.crit || 0; cG += m.gold || 0;
+    const m = mainStat(it); wAtk += m.atk || 0; gHp += m.hp || 0; bAs += m.aspd || 0; cCr += m.crit || 0; cG += m.gold || 0; A.critd = (A.critd || 0) + (m.critd || 0);
     for (const a of it.a) A[a.k] = (A[a.k] || 0) + a.v;
   }
   if (!gear || gear !== FAIR) for (const k of ['atkp', 'hpp', 'aspd', 'crit', 'critd', 'gold']) { const id = k === 'atkp' ? 'atk' : k === 'hpp' ? 'hp' : k; A[k] = (A[k] || 0) + runeVal(id); }
@@ -817,12 +823,12 @@ const groupSize = () => grp.active ? 1 + Object.keys(grp.peers).length : 1;
 const perPlayer = () => Math.max(1, Math.min(3, Math.floor(6 / groupSize())));
 function localClasses() { return G.party.slice(0, Math.min(slotsUnlocked(), perPlayer())); }
 function gearRar(g) { const o = {}; for (const k of SLOTS) o[k] = g[k] ? g[k].r : -1; return o; }
-const groupBonus = () => grp.active ? 1 + .15 * Object.keys(grp.peers).length : 1;
+const groupBonus = () => grp.active ? 1 + .05 * Object.keys(grp.peers).length : 1;
 const hpMem = {};   // HP left on heroes who were swapped out
 function rebuildParty() {
   const prev = {}; party.forEach(m => { prev[m.key] = m; if (m.local && m.st) hpMem[m.cls] = m.down ? 0 : m.hp / m.st.maxHp; });
   const list = [];
-  for (const cls of localClasses()) list.push({ key: 'L:' + cls, cls, st: statsFor(cls), gr: gearRar(heroData(cls).gear), name: pName(), local: true, el: (heroData(cls).gear.weapon || {}).el || null });
+  for (const cls of localClasses()) list.push({ key: 'L:' + cls, cls, st: statsFor(cls), gr: gearRar(heroData(cls).gear), name: pName(), local: true, el: heroData(cls).el || null });
   if (grp.active) for (const pr of Object.values(grp.peers)) (pr.heroes || []).slice(0, perPlayer()).forEach((h, j) => { if (h && CLASSES[h.cls] && h.st) list.push({ key: 'R:' + pr.pid + ':' + j, cls: h.cls, st: h.st, gr: h.gr || {}, name: pr.name || 'なかま', remote: true, lv: pr.lv }); });
   list.sort((a, b) => (MELEE[CLASSES[a.cls].type] ? 0 : 1) - (MELEE[CLASSES[b.cls].type] ? 0 : 1));
   party = list.map((d, i) => {
@@ -831,7 +837,8 @@ function rebuildParty() {
     const fr = d.local && hpMem[d.cls] !== undefined ? hpMem[d.cls] : 1;
     if (!o && d.local && fr <= 0) { m.down = true; m.downT = 9; }
     const hp = o ? (o.down ? 0 : Math.min(d.st.maxHp, o.hp / o.st.maxHp * d.st.maxHp)) : d.st.maxHp * fr;
-    return Object.assign(m, d, { off: i * (list.length > 4 ? 22 : 30), hp });
+    const mc = list.filter(x => MELEE[CLASSES[x.cls].type]).length, gap = mc && i >= mc ? 26 : 0;   // a clear gap between the front line and the back line
+    return Object.assign(m, d, { off: i * (list.length > 4 ? 22 : 30) + gap, hp });
   });
   ST = partyStats();
 }
@@ -861,15 +868,15 @@ function migrate() {
   if ((G.v || 1) < 4) { for (const c in G.heroes) { const h = G.heroes[c]; h.lv = Math.max(1, G.lv || 1); h.xp = 0; } }
   G.v = 4;
 }
-const tier = () => G.loop * REGIONS.length * 10 + G.region * 10 + (G.stage - 1);
-const isBoss = () => G.stage === 10;
+const tier = () => G.trial && typeof trialTier === 'function' ? trialTier() : G.loop * REGIONS.length * 10 + G.region * 10 + (G.stage - 1);
+const isBoss = () => !G.trial && G.stage === 10;
 const idxOf = (lp, r, st) => (lp * REGIONS.length + r) * 10 + st - 1;
 const curIdx = () => idxOf(G.loop, G.region, G.stage);
 const unlockedAt = (r, st, lp = G.loop) => idxOf(lp, r, st) <= (G.best || 0);
 // stages are fought in waves: later stages (and later chapters) bring more of them
 let wave = 0, waveT = 0, waveLeft = 0, waveFx = 0;
-const waveCount = () => isBoss() ? 1 : Math.min(8, 2 + Math.floor(G.stage / 3) + Math.min(2, Math.floor((G.region + G.loop * REGIONS.length) / 2)));
-const waveSize = w => isBoss() ? 1 : Math.min(6, 2 + Math.floor(G.stage / 4) + (w === waveCount() ? 1 : 0));
+const waveCount = () => G.trial ? 5 : isBoss() ? 1 : Math.min(8, 2 + Math.floor(G.stage / 3) + Math.min(2, Math.floor((G.region + G.loop * REGIONS.length) / 2)));
+const waveSize = w => G.trial ? (w >= 5 ? 1 : 4) : isBoss() ? 1 : Math.min(6, 2 + Math.floor(G.stage / 4) + (w === waveCount() ? 1 : 0));
 const stageCount = () => isBoss() ? 1 : 5 + Math.min(5, Math.floor(G.stage / 2));
 const xpNeed = l => Math.floor(30 * Math.pow(1.23, Math.min(l, 60) - 1) * Math.pow(1.05, Math.max(0, l - 60)));   // gentler after Lv60 so the 5 laps (Lv500) stay reachable
 const upCost = k => Math.floor(5 * Math.pow(1.17, G.upg[k]) * (k === 'spd' ? 1.6 : 1));
@@ -899,7 +906,7 @@ function load() {
   const away = (Date.now() - (G.ts || Date.now())) / 1000;
   if (s && !reset && away > 90) {
     const sec = Math.min(away, 8 * 3600), t = Math.max(0, tier() - 1);
-    const kills = sec * 0.22, gold = kills * goldOf(t) * ST.gm * 0.3, xp = kills * xpOf(t) * 0.5;
+    const kills = sec * 0.22, gold = kills * goldOf(t) * ST.gm * 0.15, xp = kills * xpOf(t) * 0.25;
     addXp(xp, true); const vo = villageOffline(sec);
     const pa = G.pendAway || { g: 0, sec: 0 }; G.pendAway = { g: pa.g + gold, sec: pa.sec + sec, cap: away > 8 * 3600, vg: vo.g, vn: vo.n };
   }
@@ -1912,19 +1919,20 @@ function drawGlows() {
 
 /* ---------- game logic ---------- */
 function spawnEnemy() {
-  const t = tier(), boss = isBoss();
-  const def = boss ? REG.boss : REG.foes[Math.floor(rnd(REG.foes.length))];
+  const T0 = trialDef(), t = tier(), boss = T0 ? wave >= 5 : isBoss();
+  const def = T0 ? (boss ? T0.boss : T0.foes[Math.floor(rnd(T0.foes.length))]) : boss ? REG.boss : REG.foes[Math.floor(rnd(REG.foes.length))];
   const elite = !boss && Math.random() < .15, nP = Math.max(1, party.length);
   // each new chapter is a wall: enemies jump well above the previous chapter's boss, so you level up before pushing on
   const ch = G.region + G.loop * REGIONS.length, chH = Math.pow(1.45, Math.min(ch, 3)) * Math.pow(1.3, Math.max(0, ch - 3)), chA = Math.pow(1.3, Math.min(ch, 3)) * Math.pow(1.2, Math.max(0, ch - 3));
-  const hpM = (boss ? 14 : elite ? 2.6 : 1) * (1 + .45 * (nP - 1)) * chH, atkM = (boss ? 2.4 : elite ? 1.5 : 1) * (1 + .1 * (nP - 1)) * chA;
+  const hpM = (boss ? 14 : elite ? 2.6 : 1) * (1 + (grp.active ? .7 : .45) * (nP - 1)) * chH, atkM = (boss ? 2.4 : elite ? 1.5 : 1) * (1 + .1 * (nP - 1)) * chA;
   const last = enemies.length ? enemies[enemies.length - 1].x : 0;
   enemies.push({
     k: def.k, c: def.c, boss, name: def.name, x: Math.max(camX + IW + 8, last + 16 + rnd(12)), y: GROUND,
     elite, slamT: 3.5, max: 7 * Math.pow(1.145, t) * hpM * (FOE[def.k] || [1])[0], hp: 0,
     atk: 1.45 * Math.pow(1.122, t) * atkM * Math.min(1, .6 + t * .06), spd: (FOE[def.k] || [1, 9])[1],
-    cd: 1, lunge: 0, flash: 0, dying: 0, kb: 0, seed: rnd(10), walk: 0, hopT: 0, hb: 0, el: regionElem()
+    cd: 1, lunge: 0, flash: 0, dying: 0, kb: 0, seed: rnd(10), walk: 0, hopT: 0, hb: 0, el: T0 ? (T0.el || null) : regionElem()
   });
+  if (T0) { const e0 = enemies[enemies.length - 1]; e0.max *= .6; e0.hp = e0.max; if (T0.atkMul) e0.atk *= T0.atkMul; }
   const e = enemies[enemies.length - 1]; e.hp = e.max; spawned++;
   if (!boss && !arena.on) { G.gpity = (G.gpity || 0) + 1; if (G.gpity > 350 || Math.random() < GOLD_P) makeGolden(e); }
   if (boss) { toast('<b style="color:#ff7a95">BOSS</b> ' + def.name + ' があらわれた！', '#ff5c7f'); }
@@ -1934,7 +1942,7 @@ function damageEnemy(e, m, mult, opt = {}) {
   if (!e || e.dying) return;
   const owner = m.remote ? m.key.split(':')[1] : 'me';
   if (grp.active && Object.keys(grp.peers).length) { if (T - chain.t < 1.3) { if (owner !== chain.o) chain.n++; } else chain.n = 0; chain.t = T; chain.o = owner; }
-  const st = m.st, crit = Math.random() < st.crit; let dmg = st.atk * atkBuff() * itemAtk() * elemMult(m.el, e.el) * mult * rnd(.9, 1.1) * (crit ? st.critMul : 1) * (1 + Math.min(.5, chain.n * .025));
+  const st = m.st, crit = Math.random() < st.crit; let dmg = st.atk * atkBuff() * itemAtk() * elemMult(m.el, e.el) * (G.trial ? trialDef().mult(m) : 1) * mult * rnd(.9, 1.1) * (crit ? st.critMul : 1) * (1 + Math.min(.2, chain.n * .01));
   if (st.ls && !m.down) m.hp = Math.min(st.maxHp, m.hp + dmg * st.ls);
   if (e.boss) dmg *= 1 + runeVal('boss');
   if (e.raid) raidHit(dmg); else e.hp -= dmg; e.flash = 1; e.kb = opt.kb !== undefined ? opt.kb : (crit ? 4 : 2);
@@ -1977,6 +1985,7 @@ function respawn() {
   hero.dead = false; for (const k in hpMem) delete hpMem[k]; party.forEach(m => { m.down = false; m.hp = m.st.maxHp; m.swing = -1; });
   enemies.length = 0; projs.length = 0; chests = chests.filter(c => !c.opened);
   spawned = killed = 0; wave = waveLeft = 0;
+  if (G.trial) return trialEnd(false);
   if (G.stage > 1) { G.stage--; }
   toast('撤退… <b>' + (G.region + 1) + '-' + G.stage + '</b> で鍛え直します', '#9b8cff');
   save(); updHud(true);
@@ -2005,7 +2014,7 @@ function useStone() { const k = bsKey(); G.bstone = G.bstone || {}; if (!(G.bsto
 let noStoneToast = 0;
 function needStone() { G.stage = 9; if (Date.now() - noStoneToast > 60000) { noStoneToast = Date.now(); toast('ボスに挑むには <b>' + stoneName(G.region) + '</b> が必要です。このコースの敵がまれに落とします（9ステージ目で集め中）', '#9b8cff'); } }
 function dropStone(e) {
-  if (e.boss || e.raid || arena.on) return;
+  if (e.boss || e.raid || arena.on || G.trial) return;
   G.bsp = G.bsp || {}; const k = bsKey(); G.bsp[k] = (G.bsp[k] || 0) + 1;
   if (G.bsp[k] < 260 && Math.random() > (e.elite ? .025 : .005)) return;   // rare, with a pity counter so nobody waits forever
   G.bsp[k] = 0; G.bstone = G.bstone || {}; G.bstone[k] = (G.bstone[k] || 0) + 1;
@@ -2015,6 +2024,7 @@ function dropStone(e) {
 }
 function reviveDowned() { for (const m of party) if (m.down && m.local !== false) { m.down = false; m.downT = 0; m.hp = m.st.maxHp * .5; burst(hero.x - m.off, GROUND - 7, 10, '#fff2b8', 30); } }
 function stageClear() {
+  if (G.trial) return trialEnd(true);
   const wasBoss = isBoss(); reviveDowned();
   { const cs = [...new Set(localClasses())]; G.cnt = G.cnt || {}; G.cnt.pair = G.cnt.pair || {}; const order = Object.keys(CLASSES); for (let i = 0; i < cs.length; i++) for (let j = i + 1; j < cs.length; j++) { const [a, b] = [cs[i], cs[j]].sort((x, y) => order.indexOf(x) - order.indexOf(y)); const k = a + '+' + b; G.cnt.pair[k] = (G.cnt.pair[k] || 0) + 1; } }
   spawned = killed = 0; wave = waveLeft = 0;
@@ -2167,7 +2177,7 @@ function projHit(pj, e) {
   else { damageEnemy(e, pj.m, 1); star(e.x - 2, GROUND - 8, '#fff2d0'); }
 }
 function update(dt) {
-  T += dt; villageTick(dt); skillTick(dt); if (!arena.on) bardSong(dt); G.playT = (G.playT || 0) + dt; if (G.dayKey !== todayKey()) { G.dayKey = todayKey(); G.days = (G.days || 0) + 1; setTimeout(loginCheck, 1500); }
+  T += dt; villageTick(dt); skillTick(dt); trialTick(dt); if (!arena.on) bardSong(dt); G.playT = (G.playT || 0) + dt; if (G.dayKey !== todayKey()) { G.dayKey = todayKey(); G.days = (G.days || 0) + 1; setTimeout(loginCheck, 1500); }
   if (arena.on) { arenaUpdate(dt); for (const p of parts) { p.life -= dt; p.vy += (p.g || 0) * dt; p.x += p.vx * dt; p.y += p.vy * dt; } parts = parts.filter(p => p.life > 0); for (const p of pops) p.t += dt; pops = pops.filter(p => p.t < .9); shake = Math.max(0, shake - dt); flashT = Math.max(0, flashT - dt); updAmb(dt); updFx(dt); updBubbles(dt); return; }
   if (fade > 0) { // chapter transition
     fade += dt * 1.6;
@@ -2409,7 +2419,7 @@ function updHud(force) {
   const gc = $('grpchip'); if (gc) { gc.style.display = grp.active ? '' : 'none'; gc.innerHTML = grp.active ? '<i class="gdot ' + grp.status + '"></i>' + (Object.keys(grp.peers).length + 1) + '人' : ''; }
   $('xpb').style.width = (lh.xp / xpNeed(lh.lv) * 100).toFixed(1) + '%';
   $('region').textContent = REG.name;
-  $('stage').innerHTML = (G.loop ? diffTag(G.loop, true) + ' ' : '') + (G.region + 1) + '-' + G.stage + (regionElem() ? ' <span style="color:' + ELEM[regionElem()].c + '">' + ELEM[regionElem()].n + '</span>' : '');
+  $('stage').innerHTML = G.trial ? '<b style="color:' + trialDef().c + '">試練</b> ' + trialDef().n : (G.loop ? diffTag(G.loop, true) + ' ' : '') + (G.region + 1) + '-' + G.stage + (regionElem() ? ' <span style="color:' + ELEM[regionElem()].c + '">' + ELEM[regionElem()].n + '</span>' : '');
   const pips = $('pips'); let h = '';
   const bz = enemies.find(e => e.boss && !e.dying);
   if (isBoss()) h = bz ? '<i class="bossbar"><i style="width:' + (Math.max(0, bz.hp / bz.max) * 100).toFixed(1) + '%"></i></i>' : '<b class="boss' + (killed ? ' on' : '') + '"></b>'; else { const wc = waveCount(); h += '<small class="wv">WAVE ' + Math.max(1, wave) + '/' + wc + '</small>'; for (let i = 0; i < wc; i++) h += '<b class="' + (i < wave - 1 || (i === wave - 1 && !enemies.some(e => !e.dying) && waveLeft <= 0) ? 'on' : i === wave - 1 ? 'cur' : '') + '"></b>'; }
@@ -2712,13 +2722,14 @@ $('partybtn').addEventListener('click', () => setPanel(!(panelOpen && panelPage 
 $('gear').addEventListener('click', e => { const c = e.target.closest('.slot'); if (!c) return; panelHero = localClasses()[0]; const it = heroData(panelHero).gear[c.dataset.s]; if (it) sel = it.u; setPanel(true, 'gear'); });
 // portrait animation
 // hero on the main canvas: (x, y) = feet; dir 1 = facing right, -1 = left; downT >= 0 → knocked over
+const HSC = .72;   // heroes are drawn at 72% of the sheet size
 const TINT = {};
 function tintSheet(h, col) { const k = h.src.length + col; if (TINT[k]) return TINT[k]; const c = document.createElement('canvas'); c.width = h.img.width; c.height = h.img.height; const t = c.getContext('2d'); t.drawImage(h.img, 0, 0); t.globalCompositeOperation = 'source-atop'; t.fillStyle = col; t.fillRect(0, 0, c.width, c.height); return (TINT[k] = c); }
 function drawHiHero(h, m, x, y, dir, downT, lunge) {
   const f = h.idx[heroPose(m)] || 0, X = (x + lunge + shX) * S, Y = (y + shY) * S;
   let alpha = 1, flash = m.hurt > 0 ? Math.min(1, m.hurt * 3) * .7 : 0, fcol = '#ff4d6d', rot = 0;
   if (downT >= 0) { rot = -Math.min(1, downT * 3) * Math.PI / 2 * .9 * dir; alpha = m.down ? Math.max(0, 1 - Math.max(0, downT - .6) / .5) : Math.max(0, 1 - Math.max(0, downT - 1.4)); flash = .45; fcol = '#5a4a8a'; if (alpha <= 0) return; }
-  hctx.save(); hctx.setTransform(HR, 0, 0, HR, 0, 0); hctx.translate(X, Y); if (rot) hctx.rotate(rot); if (dir < 0) hctx.scale(-1, 1);
+  hctx.save(); hctx.setTransform(HR, 0, 0, HR, 0, 0); hctx.translate(X, Y); if (rot) hctx.rotate(rot); hctx.scale(dir < 0 ? -HSC : HSC, HSC); hctx.imageSmoothingEnabled = true; hctx.imageSmoothingQuality = 'high';
   hctx.globalAlpha = alpha;
   hctx.drawImage(h.img, f * h.fw, 0, h.fw, h.fh, -h.cx, -h.fh + 1, h.fw, h.fh);
   if (flash > 0) { hctx.globalAlpha = alpha * flash; hctx.drawImage(tintSheet(h, fcol), f * h.fw, 0, h.fw, h.fh, -h.cx, -h.fh + 1, h.fw, h.fh); }
@@ -2780,7 +2791,9 @@ function renderParty() {
       else if (c) h += '<div class="pslot f" style="--cc:' + CLASSES[c].col + '">' + CLASSES[c].n + ' Lv' + lvHtml(heroLv(c)) + '<small>' + CLASSES[c].role + '</small></div>';
       else h += '<div class="pslot">空き<small>左から選ぶ</small></div>';
     }
-    h += '</div><div class="fhint" style="text-align:left">・キャラを押すと出し入れできます<br>・近接職（騎士・双剣士・鉄槌士）が自動で前に出ます<br>・装備はキャラごとに別々です（バッグ画面で切り替え）</div>';
+    h += '</div><div class="fhint" style="text-align:left">・キャラを押すと出し入れできます<br>・近接職（騎士・双剣士・鉄槌士）が前、遠距離職は後ろに下がります<br>・装備はキャラごとに別々です（バッグ画面で切り替え）</div>';
+    h += '<div class="lbl">属性（キャラごとに1つ）</div><div class="elrows">' + localClasses().map(c => '<div class="elrow"><span>' + CLASSES[c].n + '</span>' + ['none'].concat(EKEYS).map(k => '<button class="elb' + ((heroData(c).el || 'none') === k ? ' on' : '') + '" data-el="' + c + ':' + k + '" style="--ec:' + (k === 'none' ? '#888' : ELEM[k].c) + '" title="' + (k === 'none' ? '属性なし' : ELEM[k].n + '属性') + '">' + (k === 'none' ? '−' : ELEM[k].n) + '</button>').join('') + '</div>').join('') + '</div>';
+    h += '<div class="lbl">属性レベル（魔石 ' + inv('core') + '）</div><div class="elvs">' + EKEYS.map(k => { const lv = elv(k), mx = lv >= ELV_MAX; return '<div class="elv" style="--ec:' + ELEM[k].c + '"><b>' + ELEM[k].n + '</b><span>Lv' + lv + '</span><small>有利 ×' + (1.4 + .06 * lv).toFixed(2) + '</small>' + (mx ? '<button class="mini-btn" disabled>MAX</button>' : '<button class="mini-btn" data-elv="' + k + '"' + (inv('core') >= elvCost(lv) ? '' : ' disabled') + '>強化 🔮' + elvCost(lv) + '</button>') + '</div>'; }).join('') + '</div><div class="fhint" style="text-align:left">水→火→風→水 の順に有利、光と闇はおたがいに有利。ハードから敵に属性がつきます。</div>';
 
   } else {
     const nm = G.name || '';
@@ -2788,7 +2801,7 @@ function renderParty() {
     if (!grp.active) {
       h += '<div class="fld" style="margin-top:10px"><button class="btn" data-g="create" style="flex:1">グループを作る</button></div>';
       h += '<div class="lbl">友達のグループに入る</div><div class="fld"><input id="gcode" maxlength="6" placeholder="6文字のコード" style="text-transform:uppercase"><button class="btn sub" data-g="paste">貼付</button><button class="btn" data-g="join">参加</button></div>';
-      h += '<div class="fhint" style="text-align:left;margin-top:8px">グループは全員で合計6キャラ。2人なら1人3キャラ、3人なら1人2キャラ、4人以上なら1人1キャラで戦います。仲間が多いほどゴールドと経験値が増えます（1人につき+15%）。</div>';
+      h += '<div class="fhint" style="text-align:left;margin-top:8px">グループは全員で合計6キャラ。2人なら1人3キャラ、3人なら1人2キャラ、4人以上なら1人1キャラで戦います。仲間が多いほどゴールドと経験値が少し増えます（1人につき+5%）。敵もそのぶん強くなります。</div>';
     } else {
       const st = { on: '<span style="color:#7dffa8">● つながっています</span>', wait: '<span style="color:#ffd25e">● 接続中…</span>', err: '<span style="color:#ff8fa8">● つながりません（再接続中）</span>' }[grp.status] || '';
       h += '<div class="lbl">グループコード　' + st + '</div><div class="gcode"><b>' + grp.code + '</b><button class="mini-btn" data-g="copy">コピー</button></div>';
@@ -2809,6 +2822,9 @@ $('panel').addEventListener('change', e => { if (e.target.id === 'giftsel' && e.
 $('pparty').addEventListener('mousedown', e => { if (NATIVE && e.target.tagName === 'INPUT') { e.preventDefault(); const k = e.target.id === 'gname' ? 'name' : 'code'; native({ t: 'prompt', kind: k, label: k === 'name' ? 'あなたの名前（12文字まで）' : '友達のグループコード（6文字）', value: e.target.value }); } });
 $('pparty').addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.id === 'gcode') { const b = document.querySelector('[data-g=join]'); if (b) b.click(); } });
 $('pparty').addEventListener('click', e => {
+  { const b = e.target.closest('[data-el],[data-elv]');
+    if (b && b.dataset.el) { const [c, k] = b.dataset.el.split(':'); heroData(c).el = k === 'none' ? null : k; rebuildParty(); save(); renderParty(); toast(CLASSES[c].n + ' の属性を ' + (k === 'none' ? 'なし' : elemTag(k)) + ' にしました', k === 'none' ? '#9b8cff' : ELEM[k].c); return; }
+    if (b && b.dataset.elv) { const k = b.dataset.elv, lv = elv(k), c = elvCost(lv); if (lv >= ELV_MAX || inv('core') < c) return; addInv('core', -c); G.elv = G.elv || {}; G.elv[k] = lv + 1; save(); renderParty(); toast(elemTag(k) + '属性が Lv' + (lv + 1) + ' になった', ELEM[k].c); return; } }
   const t = e.target.closest('[data-cls].ccard,[data-mode],[data-g]'); if (!t) return;
   if (t.dataset.mode) { partyMode = t.dataset.mode; return renderParty(); }
   const mode = partyMode || (grp.active ? 'group' : 'solo');
@@ -2836,7 +2852,8 @@ let mapDiff = null;
 function renderMap() {
   if (!panelOpen || panelPage !== 'map') return;
   if (mapSel === null) mapSel = G.region; if (mapDiff == null) mapDiff = G.loop; const LP = mapDiff;
-  let h = '<div class="ph"><b>ステージ選択</b><div class="dtabs">' + DIFFS.map((D, i) => { const op = unlockedAt(0, 1, i); return '<button data-df="' + i + '" class="' + (i === LP ? 'on' : '') + '"' + (op ? '' : ' disabled') + ' style="--dc:' + D.c + '">' + (op ? '' : '🔒') + D.n + '</button>'; }).join('') + '</div><span>いちばん先：' + diffTag(Math.floor((G.best || 0) / (REGIONS.length * 10)), true) + ' ' + (Math.floor((G.best % (REGIONS.length * 10)) / 10) + 1) + '-' + ((G.best % 10) + 1) + '</span></div><div class="chgrid">';
+  if (LP === 'trial') { const hd = '<div class="ph"><b>ステージ選択</b><div class="dtabs">' + DIFFS.map((D, i) => { const op = unlockedAt(0, 1, i); return '<button data-df="' + i + '"' + (op ? '' : ' disabled') + ' style="--dc:' + D.c + '">' + (op ? '' : '🔒') + D.n + '</button>'; }).join('') + '<button data-df="trial" class="on" style="--dc:#ffd25e">⚔試練</button></div><span>属性や職業の組み合わせを試される特別なコース</span></div>'; $('pmap').innerHTML = hd + renderTrials(); return; }
+  let h = '<div class="ph"><b>ステージ選択</b><div class="dtabs">' + DIFFS.map((D, i) => { const op = unlockedAt(0, 1, i); return '<button data-df="' + i + '" class="' + (i === LP ? 'on' : '') + '"' + (op ? '' : ' disabled') + ' style="--dc:' + D.c + '">' + (op ? '' : '🔒') + D.n + '</button>'; }).join('') + '<button data-df="trial" class="' + (LP === 'trial' ? 'on' : '') + '" style="--dc:#ffd25e">⚔試練</button></div><span>いちばん先：' + diffTag(Math.floor((G.best || 0) / (REGIONS.length * 10)), true) + ' ' + (Math.floor((G.best % (REGIONS.length * 10)) / 10) + 1) + '-' + ((G.best % 10) + 1) + '</span></div><div class="chgrid">';
   REGIONS.forEach((R0, r) => {
     const open = unlockedAt(r, 1, LP), cleared = []; let cnt = 0; for (let st = 1; st <= 10; st++) if (unlockedAt(r, st, LP)) cnt++;
     const sun = R0.cel.kind !== 'none' ? '<i class="sun" style="left:' + Math.max(58, Math.round(R0.cel.x * 100)) + '%;top:30px;background:' + R0.cel.col + ';color:' + R0.cel.col + '"></i>' : '';
@@ -2852,7 +2869,8 @@ function renderMap() {
   h += '</div><span class="sp" style="flex:1"></span><div class="tg' + (G.fl.stay ? ' on' : '') + '" data-stay="1" style="width:auto;gap:8px"><span>このステージで稼ぐ（先に進まない）</span><i></i></div></div>';
   $('pmap').innerHTML = h;
 }
-function travel(r, st, lp = mapDiff == null ? G.loop : mapDiff) {
+function travel(r, st, lp = mapDiff == null || mapDiff === 'trial' ? G.loop : mapDiff) {
+  if (G.trial) { G.trial = null; G.trialRet = null; }
   if (!unlockedAt(r, st, lp)) return;
   if (st === 10) { if (!stones(lp, r)) return toast('ボスに挑むには <b>' + stoneName(r) + '</b> が必要です', '#ff8fa8'); G.bstone[bsKey(lp, r)]--; toast('💎 ' + stoneName(r) + ' を使った', '#ffe08a'); }
   G.loop = lp; G.region = r; G.stage = st; spawned = killed = 0; wave = waveLeft = 0; enemies.length = 0; projs.length = 0; chests = chests.filter(c => !c.opened && c.land);
@@ -2860,7 +2878,9 @@ function travel(r, st, lp = mapDiff == null ? G.loop : mapDiff) {
   toast(diffTag(lp) + ' <b>' + REGIONS[r].name + ' ' + (r + 1) + '-' + st + '</b> へ移動', '#b48bff');
 }
 $('pmap').addEventListener('click', e => {
-  const t = e.target.closest('[data-ch],[data-st],[data-stay],[data-df]'); if (!t) return;
+  const t = e.target.closest('[data-ch],[data-st],[data-stay],[data-df],[data-trial]'); if (!t) return;
+  if (t.dataset.trial) return trialStart(t.dataset.trial);
+  if (t.dataset.df === 'trial') { mapDiff = 'trial'; renderMap(); return; }
   if (t.dataset.df !== undefined) { const d = +t.dataset.df; if (unlockedAt(0, 1, d)) { mapDiff = d; mapSel = 0; renderMap(); } return; }
   if (t.dataset.ch !== undefined) { const r = +t.dataset.ch; if (unlockedAt(r, 1, mapDiff)) { mapSel = r; renderMap(); } }
   else if (t.dataset.st) travel(mapSel, +t.dataset.st);
@@ -3052,7 +3072,7 @@ function updBubbles(dt) {
   }
   for (let i = bubbles.length - 1; i >= 0; i--) if (bubbles[i].t > 2.6) bubbles.splice(i, 1);
   const c = $('chain');
-  if (grp.active && chain.n >= 3 && T - chain.t < 1.3) { c.style.display = 'block'; c.innerHTML = '連携 <b>×' + chain.n + '</b>  +' + Math.round(Math.min(.5, chain.n * .025) * 100) + '%'; }
+  if (grp.active && chain.n >= 3 && T - chain.t < 1.3) { c.style.display = 'block'; c.innerHTML = '連携 <b>×' + chain.n + '</b>  +' + Math.round(Math.min(.2, chain.n * .01) * 100) + '%'; }
   else c.style.display = 'none';
 }
 
@@ -3262,15 +3282,17 @@ const DMAX = DIFFS.length - 1;
 const diffTag = (lp, short) => { const D = DIFFS[Math.min(DMAX, lp || 0)]; return '<b style="color:' + D.c + '">' + (short ? D.s : D.n) + '</b>'; };
 const ELEM = {
   fire: { n: '火', c: '#ff6a3d' }, water: { n: '水', c: '#4fb3ff' }, wind: { n: '風', c: '#6fe08a' },
-  earth: { n: '土', c: '#d4a35a' }, light: { n: '光', c: '#fff2a0' }, dark: { n: '闇', c: '#b46cff' } };
-const EKEYS = Object.keys(ELEM);
-const REG_ELEM = ['wind', 'earth', 'light', 'fire', 'earth', 'water', 'dark', 'wind'];
-const BEATS = { water: 'fire', fire: 'wind', wind: 'earth', earth: 'water', light: 'dark', dark: 'light' };
+  light: { n: '光', c: '#fff2a0' }, dark: { n: '闇', c: '#b46cff' }, earth: { n: '土', c: '#d4a35a' } };
+const EKEYS = ['fire', 'water', 'wind', 'light', 'dark'];   // the five elements a character can carry
+const REG_ELEM = ['wind', 'water', 'light', 'fire', 'fire', 'water', 'dark', 'wind'];
+const BEATS = { water: 'fire', fire: 'wind', wind: 'water', light: 'dark', dark: 'light' };
+const ELV_MAX = 10, elv = k => ((G.elv || {})[k] || 0);
+const elvCost = lv => 4 + lv * 4;   // 魔石
 const regionElem = () => G.loop >= 1 ? REG_ELEM[G.region % REG_ELEM.length] : null;   // elements appear from ハード on
 function elemMult(atkEl, defEl) {
   if (!defEl) return 1;
   if (!atkEl) return .85;                                 // plain weapons are a little weak against elemental foes
-  if (BEATS[atkEl] === defEl) return 1.6;
+  if (BEATS[atkEl] === defEl) return 1.4 + .06 * elv(atkEl);
   if (BEATS[defEl] === atkEl) return .6;
   return 1;
 }
@@ -3385,6 +3407,9 @@ const TITLES = [
   { id: 'win200', n: '闘技場の王', d: 'ランクマッチで200勝', ok: () => (G.pvp.w || 0) >= 200 },
   { id: 'allcls', n: 'オールラウンダー', d: '7職業すべてをLv50以上にする', ok: () => Object.keys(CLASSES).every(c => G.heroes[c] && G.heroes[c].lv >= 50) },
   { id: 'friends15', n: '人気者・極', d: 'フレンドを15人つくる', ok: () => (G.friends || []).length >= 15 },
+  { id: 'trialel', n: '属性使い', d: '属性の試練を3つすべて突破', ok: () => ['flame', 'gale', 'abyss'].every(k => (G.trials || {})[k]) },
+  { id: 'trialall', n: '試練の踏破者', d: '試練を7つすべて突破', ok: () => TRIALS.every(t => (G.trials || {})[t.id]) },
+  { id: 'trial50', n: '試練の常連', d: '試練を合計50回突破', ok: () => Object.values(G.trials || {}).reduce((a, n) => a + n, 0) >= 50 },
   { id: 'friends', n: '人気者', d: 'フレンドを5人つくる', ok: () => (G.friends || []).length >= 5 }];
 const bossKills = () => Object.entries((G.dex || {}).f || {}).filter(([k]) => k[0] === 'B').reduce((a, [, n]) => a + n, 0);
 const bump = (k, n = 1) => { G.cnt = G.cnt || {}; G.cnt[k] = (G.cnt[k] || 0) + n; };
@@ -3546,12 +3571,19 @@ $('padmin').addEventListener('mousedown', e => {
 function delMsg(key) { if (!isAdmin()) return; const hd = Object.assign({}, CFG.hide || {}); hd[key] = 1; publishCfg({ hide: hd }); }
 
 /* ===================== chat & みんなの声 (retained per-player MQTT topics, no server) ===================== */
-const PATCH_NOTES = [["1.18.1", 226, "キャラのドット絵を高精細に（元の絵の細かさのまま表示）"],["1.18.0", 225, "キャラの見た目を新しいドット絵に／総合力の数字をインフレしにくい表示に／パッチノートを追加（みんなの声のとなり）／職業ペアの称号21種と称号を大幅追加／Windowsでチャットやアイテム画面を開くときのガタつきを修正"], ["1.17.0", 224, "職業ごとの必殺技／ボスに挑む石／新しい敵4種と色違い図鑑／レイド3分／魔石・オフライン報酬・韋駄天・蔵・幸運ルーンを下方修正"], ["1.16.2", 223, "長時間つけっぱなしで固まる問題の対策（保存のやりとりを軽く）"], ["1.16.1", 222, "チャットやほかの画面がはみ出さずスクロールできるように／ヒーラーの回復を控えめに／吟遊詩人に攻撃速度アップと回復の歌／ルーンのレベル表示を見やすく／図鑑を色分け"], ["1.16.0", 221, "MacとWindowsで同じサーバーにつながるように／NGワード／管理者モード／1時間ごとのレイド／プレイ時間／Lv100ごとに色が変わる5周レベル"], ["1.15.0", 220, "ドパ要素6つを追加"], ["1.14.4", 219, "金運の秘薬・知恵の書を値上げ／Macのユーザー名を使わないように"], ["1.14.3", 218, "横幅を小さくしすぎてボタンが隠れる不具合を修正"], ["1.14.2", 217, "小さいウィンドウで起動したら自動で元の大きさに戻す／つまみのダブルクリックで表示サイズもリセット"], ["1.14.1", 216, "小さいウィンドウのまま更新された人も元に戻せるように"], ["1.14.0", 215, "チャットとみんなの声（1日5通）／小さくしたときの表示崩れを修正／ルーン画面に全部収まるように／プレイ時間の称号"], ["1.13.1", 214, "長い数字でバーの表示が崩れないように"], ["1.13.0", 213, "難易度5段階追加と属性／村づくり／称号／倉庫（蔵のルーン）／移動速度ルーン／数字を全桁表示"], ["1.12.1", 212, "回復・力・守りの薬とふっかつの羽／クラフトを削除／ショップは魔石とバトルメダルで買う形に"], ["1.12.0", 211, "ランクマッチ（リアルタイム対戦・ランク報酬）／アイテム・ショップ・クラフト・図鑑／最初に名前を決める／不透明度の調整／下の装備欄と公平バトルを削除"], ["1.11.7", 210, "倒れたキャラが戦闘中でもすぐ消えるように（復活はステージクリア時）"], ["1.11.6", 209, "倒れたキャラはステージクリアまで復活しない／倒れたキャラは消える"], ["1.11.5", 208, "弓・魔導士の射程3倍／倒れたキャラは消える／経験値バー削除／⚙でバーの大きさと横幅を調整"], ["1.11.4", 207, "弓の射程アップ／武器がキャラごとの見た目と名前に／HPはキャラの下に常時表示"], ["1.11.3", 206, "吸血はミシック以上の装備だけに付くように"], ["1.11.2", 205, "宝箱のドロップ率を下げた（敵の攻撃とボスHPを少し調整）"], ["1.11.1", 204, "力・守り・富のルーンを下方修正"], ["1.11.0", 203, "装備ランクが10段階に（アンコモン〜プライマル）。エンシェント以上は合成限定"], ["1.10.2", 202, "レア装備を出にくく／ルーンを高く・控えめに／キャラ交代でHPが回復しないように／敵が並ばず群がるように"], ["1.10.1", 201, "全員Lv1からリスタート／遊んでいる人数の表示を削除"]];
+const PATCH_NOTES = [["1.19.0", 227, "属性を5種類に。キャラごとに選んで付け、魔石で属性レベルを上げられる（キャラ画面）／試練のコース7つ（属性や職業を生かさないと突破できない）／グループだけのチャット／キャラを少し小さく、近接は前・遠距離は後ろに／ルーンのページが進むほど高く／おかえりボーナス・オフライン報酬・グループの強さを下方修正／ショップを値上げ／装備のゴールド効果を削除（会心ダメージに）"],["1.18.1", 226, "キャラのドット絵を高精細に（元の絵の細かさのまま表示）"],["1.18.0", 225, "キャラの見た目を新しいドット絵に／総合力の数字をインフレしにくい表示に／パッチノートを追加（みんなの声のとなり）／職業ペアの称号21種と称号を大幅追加／Windowsでチャットやアイテム画面を開くときのガタつきを修正"], ["1.17.0", 224, "職業ごとの必殺技／ボスに挑む石／新しい敵4種と色違い図鑑／レイド3分／魔石・オフライン報酬・韋駄天・蔵・幸運ルーンを下方修正"], ["1.16.2", 223, "長時間つけっぱなしで固まる問題の対策（保存のやりとりを軽く）"], ["1.16.1", 222, "チャットやほかの画面がはみ出さずスクロールできるように／ヒーラーの回復を控えめに／吟遊詩人に攻撃速度アップと回復の歌／ルーンのレベル表示を見やすく／図鑑を色分け"], ["1.16.0", 221, "MacとWindowsで同じサーバーにつながるように／NGワード／管理者モード／1時間ごとのレイド／プレイ時間／Lv100ごとに色が変わる5周レベル"], ["1.15.0", 220, "ドパ要素6つを追加"], ["1.14.4", 219, "金運の秘薬・知恵の書を値上げ／Macのユーザー名を使わないように"], ["1.14.3", 218, "横幅を小さくしすぎてボタンが隠れる不具合を修正"], ["1.14.2", 217, "小さいウィンドウで起動したら自動で元の大きさに戻す／つまみのダブルクリックで表示サイズもリセット"], ["1.14.1", 216, "小さいウィンドウのまま更新された人も元に戻せるように"], ["1.14.0", 215, "チャットとみんなの声（1日5通）／小さくしたときの表示崩れを修正／ルーン画面に全部収まるように／プレイ時間の称号"], ["1.13.1", 214, "長い数字でバーの表示が崩れないように"], ["1.13.0", 213, "難易度5段階追加と属性／村づくり／称号／倉庫（蔵のルーン）／移動速度ルーン／数字を全桁表示"], ["1.12.1", 212, "回復・力・守りの薬とふっかつの羽／クラフトを削除／ショップは魔石とバトルメダルで買う形に"], ["1.12.0", 211, "ランクマッチ（リアルタイム対戦・ランク報酬）／アイテム・ショップ・クラフト・図鑑／最初に名前を決める／不透明度の調整／下の装備欄と公平バトルを削除"], ["1.11.7", 210, "倒れたキャラが戦闘中でもすぐ消えるように（復活はステージクリア時）"], ["1.11.6", 209, "倒れたキャラはステージクリアまで復活しない／倒れたキャラは消える"], ["1.11.5", 208, "弓・魔導士の射程3倍／倒れたキャラは消える／経験値バー削除／⚙でバーの大きさと横幅を調整"], ["1.11.4", 207, "弓の射程アップ／武器がキャラごとの見た目と名前に／HPはキャラの下に常時表示"], ["1.11.3", 206, "吸血はミシック以上の装備だけに付くように"], ["1.11.2", 205, "宝箱のドロップ率を下げた（敵の攻撃とボスHPを少し調整）"], ["1.11.1", 204, "力・守り・富のルーンを下方修正"], ["1.11.0", 203, "装備ランクが10段階に（アンコモン〜プライマル）。エンシェント以上は合成限定"], ["1.10.2", 202, "レア装備を出にくく／ルーンを高く・控えめに／キャラ交代でHPが回復しないように／敵が並ばず群がるように"], ["1.10.1", 201, "全員Lv1からリスタート／遊んでいる人数の表示を削除"]];
 const patchText = n => ((CFG.patch || {})[n[0]] != null ? CFG.patch[n[0]] : n[2]);
 const CHAT_T = id => 'dockhero-mac/v1/chat/' + id, VOICE_T = id => 'dockhero-mac/v1/voice/' + id;
 const VOICE_DAY = 5;
 const chatAll = {}, voiceAll = {};   // uid -> { name, msgs: [{t, x}] }
-let chatTab = 'chat', chatUnread = 0, lastChatSend = 0;
+let chatTab = 'chat', chatUnread = 0, lastChatSend = 0, grpChat = [];
+function sendGrpChat(x) {
+  x = String(x || '').replace(/\s+/g, ' ').trim().slice(0, 80); if (!x) return;
+  if (!grp.active || !mq) return toast('グループに入っていません', '#ff8fa8');
+  if (ngHit(x)) return toast('使えない言葉が入っています', '#ff8fa8');
+  if (Date.now() - lastChatSend < 1500) return; lastChatSend = Date.now();
+  const m = { pid: grp.pid, name: pName(), x, t: Date.now() }; mq.publish(TOPIC(grp.code) + '/c', JSON.stringify(m)); grpChat.push(Object.assign({ me: 1 }, m)); grpChat = grpChat.slice(-60); renderChat();
+}
 const todayKey = () => { const d = new Date(); return d.getFullYear() + '-' + (d.getMonth() + 1) + '-' + d.getDate(); };
 const voiceLeft = () => (G.voiceDay === todayKey() ? VOICE_DAY - (G.voiceN || 0) : VOICE_DAY);
 function onChatMsg(topic, txt) {
@@ -3568,6 +3600,7 @@ function editPatch(ver, v) { if (!isAdmin()) return; const pt = Object.assign({}
 function showPatchNotes() { chatTab = 'patch'; setPanel(true, 'chat'); }
 function sendChat(x) {
   x = String(x || '').replace(/\s+/g, ' ').trim().slice(0, 80); if (!x) return;
+  if (chatTab === 'group') return sendGrpChat(x);
   if ((CFG.mute || {})[G.uid]) return toast('あなたは今チャットできません', '#ff8fa8');
   if (ngHit(x)) return toast('使えない言葉が入っています', '#ff8fa8');
   if (!soc || socStatus !== 'on') return toast('オンラインにつながっていません', '#ff8fa8');
@@ -3594,11 +3627,15 @@ const hhmm = t => { const d = new Date(t), n = new Date(); return (d.toDateStrin
 function flatMsgs(store, n, kind) { const out = []; for (const uid in store) { if ((CFG.mute || {})[uid] && uid !== G.uid) continue; for (const m of store[uid].msgs) { const key = kind + ':' + uid + ':' + m.t; if ((CFG.hide || {})[key] || ngHit(m.x)) continue; out.push({ uid, key, name: store[uid].name, title: store[uid].title, t: m.t, x: m.x }); } } return out.sort((a, b) => a.t - b.t).slice(-n); }
 function renderChat() {
   if (!panelOpen || panelPage !== 'chat') return;
-  if (chatTab === 'chat' && chatUnread) { chatUnread = 0; updChatBadge(); }
+  if ((chatTab === 'chat' || chatTab === 'group') && chatUnread) { chatUnread = 0; updChatBadge(); }
+  if (chatTab === 'group' && !grp.active) chatTab = 'chat';
   const keep = $('chatin') ? $('chatin').value : '', keepV = $('voicein') ? $('voicein').value : '';
   let h = '<div class="pcol"><div class="ph"><b>' + (chatTab === 'chat' ? 'チャット' : chatTab === 'patch' ? 'パッチノート' : 'みんなの声') + '</b><span>' + (chatTab === 'chat' ? 'オンラインのプレイヤー全員と話せます（1回80文字まで）' : chatTab === 'patch' ? 'アップデートの内容（いまは v' + GAME_VERSION + '）' : 'ゲームへの意見・要望・感想を送れます。送った声はみんなと開発者が読めます') + '</span></div>';
-  h += '<div class="tabs" style="margin-right:0"><button data-ct="chat" class="' + (chatTab === 'chat' ? 'on' : '') + '">チャット</button><button data-ct="voice" class="' + (chatTab === 'voice' ? 'on' : '') + '">みんなの声</button><button data-ct="patch" class="' + (chatTab === 'patch' ? 'on' : '') + '">パッチノート' + (G.seenPatch !== GAME_VERSION ? ' <i class="pnew">NEW</i>' : '') + '</button></div>';
-  if (chatTab === 'chat') {
+  h += '<div class="tabs" style="margin-right:0"><button data-ct="chat" class="' + (chatTab === 'chat' ? 'on' : '') + '">チャット</button>' + (grp.active ? '<button data-ct="group" class="' + (chatTab === 'group' ? 'on' : '') + '">グループ</button>' : '') + '<button data-ct="voice" class="' + (chatTab === 'voice' ? 'on' : '') + '">みんなの声</button><button data-ct="patch" class="' + (chatTab === 'patch' ? 'on' : '') + '">パッチノート' + (G.seenPatch !== GAME_VERSION ? ' <i class="pnew">NEW</i>' : '') + '</button></div>';
+  if (chatTab === 'group') {
+    h += '<div class="clog" id="clog">' + (grpChat.length ? grpChat.map(m => '<div class="cmsg' + (m.me ? ' me' : '') + '"><span class="cn">' + esc(m.name) + '</span><span class="ct">' + esc(m.x) + '</span><small>' + hhmm(m.t) + '</small></div>').join('') : '<div class="fhint" style="margin-top:30px">グループの仲間だけに届くチャットです</div>') + '</div>';
+    h += '<div class="fld" style="margin-top:6px"><input id="chatin" maxlength="80" placeholder="グループへのメッセージ（Enterで送信）"><button class="btn" data-cs="1">送信</button></div>';
+  } else if (chatTab === 'chat') {
     const L = flatMsgs(chatAll, 80, 'c');
     h += '<div class="clog" id="clog">' + (L.length ? L.map(m => '<div class="cmsg' + (m.uid === G.uid ? ' me' : '') + '"><span class="cn">' + (m.title ? '<i class="ttl">' + esc(m.title) + '</i>' : '') + esc(m.name) + '</span><span class="ct">' + esc(m.x) + '</span><small>' + hhmm(m.t) + '</small>' + (isAdmin() ? '<b class="mdel" data-del="' + m.key + '">×</b>' : '') + '</div>').join('') : '<div class="fhint" style="margin-top:30px">まだ誰も話していません。最初のひとことをどうぞ！</div>') + '</div>';
     h += '<div class="fld" style="margin-top:6px"><input id="chatin" maxlength="80" placeholder="メッセージ（Enterで送信）"><button class="btn" data-cs="1">送信</button></div>';
@@ -3727,6 +3764,58 @@ function drawMeteors() {
 
 for (const c in SKILLS) if (CLASSES[c]) CLASSES[c].desc += '　必殺技「' + SKILLS[c].n + '」：' + SKILLS[c].d;
 
+/* ===================== trials: courses you can only beat with the right element or the right classes ===================== */
+const TRIALS = [
+  { id: 'flame', kind: '属性', n: '紅蓮の砦', c: '#ff6a3d', el: 'fire', foes: [{ k: 'imp', c: '#ff5a3a' }, { k: 'golem', c: '#c8502e' }, { k: 'wisp', c: '#ff8a3d' }], boss: { k: 'golem', c: '#ff3d1e', name: '紅蓮の番兵' },
+    rule: '炎の結界：水属性の攻撃しか通らない', need: '水属性のキャラ', mult: m => m.el === 'water' ? 1 : .08 },
+  { id: 'gale', kind: '属性', n: '疾風の谷', c: '#6fe08a', el: 'wind', foes: [{ k: 'crow', c: '#3a8a5a' }, { k: 'wolf', c: '#7ac88a' }, { k: 'bat', c: '#4aa86a' }], boss: { k: 'wolf', c: '#2a7a4a', name: '嵐狼ゲイル' },
+    rule: '風の結界：火属性の攻撃しか通らない', need: '火属性のキャラ', mult: m => m.el === 'fire' ? 1 : .08 },
+  { id: 'abyss', kind: '属性', n: '闇の帳', c: '#b46cff', el: 'dark', foes: [{ k: 'ghost', c: '#6a4aa2' }, { k: 'eye', c: '#8a3ad8' }, { k: 'skel', c: '#5a4a8a' }], boss: { k: 'ghost', c: '#4a2a8a', name: '闇の帳の主' },
+    rule: '闇の結界：光属性の攻撃しか通らない', need: '光属性のキャラ', mult: m => m.el === 'light' ? 1 : .08 },
+  { id: 'iron', kind: '職業', n: '鋼鉄の巨兵', c: '#9fb0c8', foes: [{ k: 'golem', c: '#8a9ab0' }, { k: 'crab', c: '#7a8aa0' }, { k: 'snail', c: '#9aa8b8' }], boss: { k: 'golem', c: '#c0d0e0', name: '鋼鉄の巨兵' },
+    rule: '鋼の装甲：鉄槌士の打撃と魔導士の魔法しか通らない', need: '鉄槌士・魔導士', mult: m => (m.cls === 'smith' || m.cls === 'mage') ? 1 : .1 },
+  { id: 'sky', kind: '職業', n: '天空の群れ', c: '#8fc4ff', foes: [{ k: 'bat', c: '#5a7ad8' }, { k: 'crow', c: '#3a4a8a' }, { k: 'imp', c: '#7a8aff' }, { k: 'eye', c: '#8fc4ff' }], boss: { k: 'bat', c: '#2a3aa8', name: '空の女王' },
+    rule: '空の敵：近接攻撃（騎士・双剣士・鉄槌士）が届かない', need: '弓使い・魔導士・吟遊詩人・ヒーラー', mult: m => MELEE[CLASSES[m.cls].type] ? 0 : 1 },
+  { id: 'curse', kind: '職業', n: '呪われた墓所', c: '#7dffa8', foes: [{ k: 'skel', c: '#8ab08a' }, { k: 'ghost', c: '#9ad8a8' }, { k: 'spider', c: '#4a6a4a' }], boss: { k: 'skel', c: '#5aff9a', name: '墓所の王' },
+    rule: '呪い：毎秒HPが減り続ける（回復しないと持たない）', need: 'ヒーラー・吟遊詩人', poison: .035, mult: () => 1 },
+  { id: 'fury', kind: '職業', n: '猛攻の闘技場', c: '#ffd25e', foes: [{ k: 'goblin', c: '#c8783a' }, { k: 'wolf', c: '#b8604a' }, { k: 'scorp', c: '#d8903a' }], boss: { k: 'goblin', c: '#ffb03a', name: '闘技場の覇者' },
+    rule: '猛攻：敵の攻撃が4倍（騎士の盾がないと持たない）', need: '騎士', atkMul: 4, mult: () => 1 }];
+const trialDef = () => G.trial ? TRIALS.find(t => t.id === G.trial) : null;
+const trialTier = () => Math.max(0, (G.best || 0) - 5);
+function trialStart(id) {
+  const T0 = TRIALS.find(t => t.id === id); if (!T0 || arena.on || raid.on) return;
+  if ((G.best || 0) < 15) return toast('試練は 2-6 まで進むと挑戦できます', '#ff8fa8');
+  if (!G.trial) G.trialRet = { loop: G.loop, region: G.region, stage: G.stage };
+  G.trial = id; spawned = killed = 0; wave = waveLeft = 0; enemies.length = 0; projs.length = 0;
+  setPanel(false); fade = .001; save(); updHud(true);
+  toast('⚔ 試練 <b style="color:' + T0.c + '">' + T0.n + '</b> に挑戦！ ' + T0.rule, T0.c);
+}
+function trialEnd(won) {
+  const T0 = trialDef(); const ret = G.trialRet || { loop: G.loop, region: G.region, stage: G.stage };
+  G.trial = null; G.loop = ret.loop; G.region = ret.region; G.stage = ret.stage; REG = REGIONS[G.region];
+  spawned = killed = 0; wave = waveLeft = 0; enemies.length = 0; projs.length = 0; fadeTo = G.region; fade = .001;
+  if (T0 && won) {
+    G.trials = G.trials || {}; const first = !G.trials[T0.id]; G.trials[T0.id] = (G.trials[T0.id] || 0) + 1;
+    const core = first ? 25 : 6, medal = first ? 8 : 2; addInv('core', core); G.medals = (G.medals || 0) + medal;
+    if (first) addInv('box4', 1);
+    toast('🏆 試練 <b style="color:' + T0.c + '">' + T0.n + '</b> 突破！ 魔石+' + core + '　🏅+' + medal + (first ? '　レジェンド装備箱' : ''), T0.c);
+    for (let i = 0; i < 3; i++) setTimeout(() => ring(camX + IW / 2, GROUND - 14, 34, T0.c, .6), i * 180);
+  } else if (T0) toast('試練 <b>' + T0.n + '</b> に失敗… 必要なもの：' + T0.need, '#9b8cff');
+  save(); updHud(true);
+}
+function trialTick(dt) {
+  const T0 = trialDef(); if (!T0 || !T0.poison || hero.dead) return;
+  for (const m of party) if (!m.down && m.local !== false) { m.hp -= m.st.maxHp * T0.poison * dt; if (m.hp <= 0) hurtMember(m, 1); }
+}
+function renderTrials() {
+  let h = '<div class="trgrid">';
+  for (const T0 of TRIALS) {
+    const n = (G.trials || {})[T0.id] || 0;
+    h += '<div class="trc" style="--tc:' + T0.c + '"><div><b>' + T0.n + '</b><i>' + T0.kind + 'の試練</i>' + (n ? '<em>✓ ' + n + '回</em>' : '') + '</div><span>' + T0.rule + '</span><small>必要：' + T0.need + '</small><button class="btn sub" data-trial="' + T0.id + '"' + (G.trial === T0.id ? ' disabled' : '') + '>' + (G.trial === T0.id ? '挑戦中' : '挑戦する') + '</button></div>';
+  }
+  return h + '</div><div class="fhint" style="text-align:left">強さはいちばん先のステージに合わせて変わります。初クリアで魔石25・メダル8・レジェンド装備箱。全滅すると元のステージに戻ります。</div>';
+}
+
 /* ===================== items: consumables, materials, shop, crafting, collection ===================== */
 const IMAP = {
   bottle: ['....kkkk....', '....kWGk....', '....kGGk....', '...kkGGkk...', '..kGWGGGGk..', '.kMLLLLLLMk.', '.kMLWLLLLDk.', '.kMLLLLLLDk.', '.kMLLLLLLDk.', '..kDMMMMDk..', '...kkkkkk...', '............'],
@@ -3746,8 +3835,8 @@ const ITEMS = {
   box5: { n: 'ミシック装備箱', ic: 'box', c: '#ff5c7a', d: '開けるとミシック装備が1つ出る', box: 5 },
   core: { n: '魔石', ic: 'crystal', c: '#b46cff', mat: 1, d: 'ショップで使う通貨。強い敵（エリート）やボスが落とす' } };
 // shop currencies: 魔石 (from adventuring) and バトルメダル (from ranked matches). Gold can't buy anything here.
-const SHOP_C = [['luck', 20], ['wise', 20], ['box3', 40], ['box4', 120]];
-const SHOP_M = [['luck', 8], ['wise', 8], ['box3', 15], ['box4', 45], ['box5', 120]];
+const SHOP_C = [['luck', 30], ['wise', 30], ['box3', 60], ['box4', 180]];
+const SHOP_M = [['luck', 12], ['wise', 12], ['box3', 22], ['box4', 70], ['box5', 180]];
 const FOE_JP = { goblin: 'ゴブリン', snail: 'カタツムリ', crow: 'カラス', spider: 'クモ', slime: 'スライム', mush: 'キノコ', bat: 'コウモリ', golem: 'ゴーレム', ghost: 'ゴースト', wolf: 'オオカミ', skel: 'スケルトン', imp: 'インプ', eye: 'めだま', crab: 'カニ', scorp: 'サソリ', yeti: 'イエティ', stump: 'きりかぶ', wisp: 'ウィスプ' };
 const IIC = {};
 function itemIcon(id) {
@@ -3905,6 +3994,7 @@ function grpJoin(code, created) {
     let d; try { d = JSON.parse(txt); } catch (e) { return; }
     if (!d || d.pid === grp.pid) return;
     if (topic.endsWith('/e')) { if (grp.peers[d.pid]) showBubble(d.pid, d.e, d.name); return; }
+    if (topic.endsWith('/c')) { if (typeof d.x === 'string' && !ngHit(d.x)) { grpChat.push({ name: String(d.name || 'なかま').slice(0, 12), x: d.x.slice(0, 80), t: d.t || Date.now() }); grpChat = grpChat.slice(-60); if (!(panelOpen && panelPage === 'chat' && chatTab === 'group')) { chatUnread++; updChatBadge(); toast('💬 <b>' + esc(d.name) + '</b>：' + esc(d.x.slice(0, 40)), '#9bd2ff'); } else renderChat(); } return; }
     if (d.leave) { if (grp.peers[d.pid]) { toast((grp.peers[d.pid].name || 'なかま') + ' が抜けました', '#9b8cff'); delete grp.peers[d.pid]; rebuildParty(); renderParty(); } return; }
     if (!d.heroes || !d.heroes.length) return;
     const isNew = !grp.peers[d.pid];
@@ -3915,7 +4005,7 @@ function grpJoin(code, created) {
     rebuildParty(); renderParty();
   }, st => { grp.status = st; renderParty(); updHud(true); });
   mq.onReady = () => { grpPublish(); };
-  mq.subscribe(TOPIC(code) + '/p/+'); mq.subscribe(TOPIC(code) + '/e');
+  mq.subscribe(TOPIC(code) + '/p/+'); mq.subscribe(TOPIC(code) + '/e'); mq.subscribe(TOPIC(code) + '/c');
   mq.connect();
   rebuildParty(); save(); renderParty(); updHud(true);
   toast(created ? 'グループ <b>' + code + '</b> を作りました。コードを友達に送ってね' : 'グループ <b>' + code + '</b> に参加中…', '#7dffa8');
@@ -4040,7 +4130,7 @@ function dqPump() {
 function dqShow(html) { const o = $('dhov'); o.innerHTML = '<div class="glass">' + html + '</div>'; o.classList.add('on'); }
 function dqClose() { $('dhov').classList.remove('on'); dqOn = false; setTimeout(dqPump, 500); }
 /* homecoming slot */
-const SLOT_M = [[1, 40], [1.5, 26], [2, 18], [3, 9], [5, 5], [10, 2]];
+const SLOT_M = [[1, 58], [1.2, 24], [1.5, 12], [2, 5], [3, 1]];
 function slotRoll() { let r = Math.random() * SLOT_M.reduce((a, m) => a + m[1], 0); for (const [m, w] of SLOT_M) { if ((r -= w) < 0) return m; } return 1; }
 function showAway() {
   const pa = G.pendAway; if (!pa) return dqClose();
