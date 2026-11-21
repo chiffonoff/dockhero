@@ -130,7 +130,7 @@ body.mini #bagbtn,body.mini #quit,body.mini #partybtn,body.mini #grpchip,body.mi
 .page{position:absolute;inset:12px 14px;display:none;gap:14px}
 #pgear{grid-template-columns:230px minmax(0,1fr) 270px}
 #pparty{grid-template-columns:minmax(0,1fr) 300px}
-body.pg-gear #pgear,body.pg-party #pparty,body.pg-map #pmap,body.pg-rank #prank,body.pg-rune #prune,body.pg-item #pitem,body.pg-village #pvillage,body.pg-chat #pchat,body.pg-admin #padmin{display:grid}
+body.pg-gear #pgear,body.pg-party #pparty,body.pg-map #pmap,body.pg-rank #prank,body.pg-rune #prune,body.pg-item #pitem,body.pg-village #pvillage,body.pg-chat #pchat,body.pg-admin #padmin,body.pg-elem #pelem{display:grid}
 #pitem,#pchat,#padmin{grid-template-columns:minmax(0,1fr) 230px}#prune{grid-template-columns:minmax(0,1fr) 190px}
 #runebtn{display:grid;place-items:center;width:34px;padding:0;font-size:17px;font-weight:900;color:#c9a8ff;text-shadow:0 0 8px rgba(180,130,255,.8)}
 #runebtn.on{background:linear-gradient(#e8d8ff,#b48bff);color:#2a1050;text-shadow:none}
@@ -453,6 +453,10 @@ body.raid #mid{visibility:hidden}body.raid #pips .bossbar{display:none}
 .trgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-bottom:6px}
 .trc{display:flex;flex-direction:column;gap:3px;padding:7px 8px;border-radius:11px;background:linear-gradient(160deg,color-mix(in srgb,var(--tc) 18%,transparent),rgba(255,255,255,.03));border:1px solid color-mix(in srgb,var(--tc) 40%,transparent);font-size:9.5px;color:#e6dcff}
 .trc>div{display:flex;align-items:baseline;gap:5px;flex-wrap:wrap}.trc b{font-size:12px;color:var(--tc)}.trc i{font-style:normal;font-size:8.5px;color:var(--sub)}.trc em{font-style:normal;color:#7dffa8;font-weight:900;font-size:9px}.trc small{color:#ffe08a;font-size:9px}.trc .btn{margin-top:auto;font-size:10px;padding:4px 6px}
+#elbtn{display:grid;place-items:center;width:34px;padding:0;font-size:16px;font-weight:900;color:#7ff4ff;text-shadow:0 0 8px rgba(127,244,255,.8)}#elbtn.on{background:linear-gradient(#e0fbff,#7ff4ff);color:#103040;text-shadow:none}body.mini #elbtn{display:none!important}
+#pelem{grid-template-columns:minmax(0,1fr) 250px}.ecards{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:6px}
+.ecard{position:relative;display:flex;flex-direction:column;gap:2px;padding:8px 7px;border-radius:12px;cursor:pointer;background:linear-gradient(170deg,color-mix(in srgb,var(--ec) 20%,transparent),rgba(255,255,255,.03));border:1px solid color-mix(in srgb,var(--ec) 45%,transparent);font-size:9px;color:#e6dcff}
+.ecard:hover{transform:translateY(-1px)}.ecard.no{opacity:.6}.ecard .eg{font-size:22px;font-weight:900;color:var(--ec);text-shadow:0 0 10px var(--ec)}.ecard b{font-size:11px;color:#fff}.ecard small{color:var(--sub);font-size:8.5px;line-height:1.3}.ecard .rc{font-weight:900;color:#7ff4ff;font-size:10px}.ecard em{font-style:normal;font-size:8px;color:var(--sub);margin-top:2px}.ecard .rlv{position:absolute;right:6px;top:6px;font-style:normal;font-size:9px;font-weight:900;color:var(--ec)}.ecard.max .rc{color:#7dffa8}
 </style>
 </head>
 <body>
@@ -490,6 +494,7 @@ body.raid #mid{visibility:hidden}body.raid #pips .bossbar{display:none}
   <div id="pvillage" class="page"></div>
   <div id="pchat" class="page"></div>
   <div id="padmin" class="page"></div>
+  <div id="pelem" class="page"></div>
 </div>
 <div id="card">
   <div id="uipop" class="glass"><label>大きさ <input id="uik" type="range" min="0.55" max="1" step="0.05"></label><label>横幅 <input id="uiw" type="range" min="0.6" max="1" step="0.05"></label><label>不透明度 <input id="uio" type="range" min="0.25" max="1" step="0.05"></label><small>ダブルクリックで元に戻す</small><button class="mini-btn" id="adminbtn" style="margin-top:6px;width:100%">🔑 管理者</button></div>
@@ -517,6 +522,7 @@ body.raid #mid{visibility:hidden}body.raid #pips .bossbar{display:none}
       <div id="goldbox" class="glass"><span class="coin"></span><b id="gold">0</b></div>
       <button id="rankbtn" class="tbtn glass" title="フレンドランキング"><svg viewBox="0 0 16 16"><path d="M4 1h8v2h3v2.5A3.5 3.5 0 0 1 11.7 9 4 4 0 0 1 9 11.2V13h2.5v2h-7v-2H7v-1.8A4 4 0 0 1 4.3 9 3.5 3.5 0 0 1 1 5.5V3h3zm8 3.5v3a2 2 0 0 0 1.5-2V4.5zM4 4.5H2.5v1a2 2 0 0 0 1.5 2z"/></svg></button>
       <button id="partybtn" class="tbtn glass" title="キャラクター・グループ"><svg viewBox="0 0 16 16"><path d="M5.5 7.5a2.5 2.5 0 1 1 0-5 2.5 2.5 0 0 1 0 5zm6 .5a2 2 0 1 1 0-4 2 2 0 0 1 0 4zM1 13c0-2.5 2-4 4.5-4S10 10.5 10 13v1H1zm10 1v-1c0-1.3-.4-2.4-1.1-3.2.5-.2 1-.3 1.6-.3 2 0 3.5 1.2 3.5 3.3V14z"/></svg></button>
+      <button id="elbtn" class="tbtn glass" title="属性（キャラに付ける・強化する）"><span>✦</span></button>
       <button id="runebtn" class="tbtn glass" title="ルーン（ゴールドで永続強化）"><span>ᚱ</span></button>
       <button id="chatbtn" class="tbtn glass" title="チャット・みんなの声"><svg viewBox="0 0 16 16"><path d="M2 3h12v8H7l-3 3v-3H2z"/></svg><i id="chatbadge" style="display:none"></i></button>
       <button id="vilbtn" class="tbtn glass" title="村（施設を建てる）"><svg viewBox="0 0 16 16"><path d="M8 1.5 1 7.5h2V14h4v-4h2v4h4V7.5h2z"/></svg></button>
@@ -577,7 +583,7 @@ function fmt(n) { return Math.floor(n).toLocaleString('en-US'); }   // every dig
 function fmtPix(n) { return '' + Math.floor(n); }
 
 /* ---------- bridge to the macOS shell ---------- */
-const GAME_VERSION = '1.19.0', GAME_BUILD = 227;
+const GAME_VERSION = '1.20.0', GAME_BUILD = 228;
 const NATIVE = !!window.__DH_NATIVE || Q.has('nativeTest');
 if (window.__DH_OS === 'win') document.addEventListener('DOMContentLoaded', () => { const g = document.getElementById('grip'); if (g) g.title = 'ドラッグで移動／ダブルクリックでタスクバーの上に戻す'; });
 // page -> mac: the shell polls document.title. Keep the title short: big payloads (saves) are cut into chunks
@@ -838,7 +844,8 @@ function rebuildParty() {
     if (!o && d.local && fr <= 0) { m.down = true; m.downT = 9; }
     const hp = o ? (o.down ? 0 : Math.min(d.st.maxHp, o.hp / o.st.maxHp * d.st.maxHp)) : d.st.maxHp * fr;
     const mc = list.filter(x => MELEE[CLASSES[x.cls].type]).length, gap = mc && i >= mc ? 26 : 0;   // a clear gap between the front line and the back line
-    return Object.assign(m, d, { off: i * (list.length > 4 ? 22 : 30) + gap, hp });
+    const o0 = i * (list.length > 4 ? 22 : 30) + gap;
+    return Object.assign(m, d, { off: o0 - (m.adv || 0), off0: o0, hp });
   });
   ST = partyStats();
 }
@@ -1954,7 +1961,7 @@ function damageEnemy(e, m, mult, opt = {}) {
 }
 function killEnemy(e) {
   e.dying = .001; killed++; G.kills++;
-  const t = tier(), gold = goldOf(t) * (e.boss ? 12 : e.elite ? 3 : e.golden ? GOLD_G : 1) * ST.gm * itemGold() * fevGold() * (CFG.goldM || 1) * rnd(.85, 1.15), xp = xpOf(t) * (e.boss ? 8 : e.elite ? 2.5 : e.golden ? 6 : 1) * ST.xm * itemXp() * (1 + .04 * vLv('tavern')) * (CFG.xpM || 1);
+  const t = tier(), gold = goldOf(t) * (e.boss ? 12 : e.elite ? 3 : e.golden ? GOLD_G : 1) * ST.gm * itemGold() * fevGold() * (CFG.goldM || 1) * .6 * rnd(.85, 1.15), xp = xpOf(t) * (e.boss ? 8 : e.elite ? 2.5 : e.golden ? 6 : 1) * ST.xm * itemXp() * (1 + .04 * vLv('tavern')) * (CFG.xpM || 1);
   dexFoe(e); dropMats(e); dropStone(e); fevKill(e); if (e.golden) goldenKill(e, gold);
   const n = e.boss ? 14 : e.golden ? 40 : 3 + Math.floor(rnd(3));
   for (let i = 0; i < n; i++) coins.push({ x: e.x, y: GROUND - 6, vx: rnd(-18, 22), vy: rnd(-45, -25), t: 0, v: gold / n, phase: 0 });
@@ -1966,8 +1973,10 @@ function killEnemy(e) {
   if (e.boss) { shake = .5; flashT = .25; }
 }
 function rollRarity(boss) { const rb = runeVal('rare'); if (boss) { const x = Math.random() + rb * 3; return x > .95 ? 5 : x > .5 ? 4 : 3; } const r = Math.random() + Math.min(.08, G.loop * .03 + G.region * .01) + rb; return r > .997 ? 3 : r > .965 ? 2 : r > .8 ? 1 : 0; }
-function hurtMember(m, d) {
-  if (m.down) return; d *= itemDef() * (hero.guardT > 0 ? .5 : 1);
+function elemRes(m, el) { return el ? 1.5 * (1 - .05 * elv(el)) * (m.el === el ? .7 : 1) : 1; }   // elemental hits: 1.5x, less with that element's level, less again if you carry it
+function hurtMember(m, d, el) {
+  if (m.down) return; d *= itemDef() * (hero.guardT > 0 ? .5 : 1) * elemRes(m, el);
+  if (el && ELEM[el]) burst(hero.x - m.off, GROUND - 9, 7, ELEM[el].c, 30);
   m.hp -= d; m.hurt = .25;
   pops.push({ x: hero.x - m.off + 1, y: GROUND - 28, t: 0, s: '-' + fmtPix(d), c: '#ff7a95' });
   burst(hero.x - m.off, GROUND - 7, 5, '#ff7a95', 25);
@@ -2189,11 +2198,18 @@ function update(dt) {
   const front = alive.reduce((m, e) => !m || e.x < m.x ? e : m, null);
   const ch = chests.find(c => !c.opened && c.land);
   const lead = party.find(m => !m.down);
+  // melee classes charge in: when a foe is near they leave the line and close the distance; ranged ones keep theirs
+  for (const m of party) {
+    if (m.off0 == null) m.off0 = m.off;
+    let want = 0;
+    if (MELEE[CLASSES[m.cls].type] && front && !m.down && !arena.on && !hero.dead) { const gapE = front.x - (hero.x - m.off0), rk = party.filter(x => MELEE[CLASSES[x.cls].type] && !x.down && x.off0 < m.off0).length; if (gapE < 200) want = Math.max(0, Math.min(45 + m.off0, gapE - (front.boss ? 24 : 12) - rk * 5)); }
+    m.adv = (m.adv || 0) + (want - (m.adv || 0)) * Math.min(1, dt * 6); m.off = m.off0 - m.adv;
+  }
   for (const m of party) if (m.down) m.downT += dt;
   hero.walking = false;
   if (hero.dead) { hero.deadT += dt; if (hero.deadT > 2.4) respawn(); }
   else {
-    const block = front && lead && front.x - (hero.x - lead.off) < (front.boss ? 28 : 17);
+    const block = front && lead && front.x - (hero.x - (lead.off0 ?? lead.off)) < (front.boss ? 28 : 17) + (MELEE[CLASSES[lead.cls].type] ? 40 : 0);
     if (!block && ch && ch.x - hero.x < 7) { if (ch.rar >= 4 && !(ch.tease > 1.3)) { if (!ch.tease) { ch.tease = .001; toast('……！？ 宝箱のようすがおかしい', RARITY[ch.rar].c); } } else openChest(ch); }
     else if (!block && (fade === 0 || fade > 1.2)) {
       hero.walking = true; hero.x += 34 * (1 + runeVal('move')) * fevSpd() * dt; hero.phase += dt * 19;
@@ -2210,7 +2226,7 @@ function update(dt) {
       if (C.type === 'heal') {
         const hurt = party.filter(x => !x.down && x.hp < x.st.maxHp * .75).sort((a, b) => a.hp / a.st.maxHp - b.hp / b.st.maxHp)[0];
         if (hurt) target = { heal: hurt }; else if (front && front.x - mx < C.range && front.x - camX < IW + 4) target = front;
-      } else if (front && front.x - mx < C.range + (MELEE[C.type] ? m.off + (front.boss ? 16 : 5) : 0) && front.x - camX < IW + 4) target = front;
+      } else if (front && front.x - mx < C.range + (MELEE[C.type] ? Math.max(0, m.off) + (front.boss ? 16 : 5) : 0) && front.x - camX < IW + 4) target = front;
       if (target && m.swing < 0 && m.cd <= 0) { m.swing = 0; m.hit = false; m.tgt = target; m.swingDur = Math.max(.14, .36 / Math.max(1, m.st.aps * fevSpd() / 1.1)); m.cd = 1 / (m.st.aps * fevSpd() * bardSpd()); }
       if (m.swing >= 0) {
         m.swing += dt / m.swingDur;
@@ -2218,7 +2234,7 @@ function update(dt) {
           m.hit = true;
           // the original target may have died or been knocked back mid-swing: hit whoever is in front instead, or retry right away
           let tg = m.tgt && m.tgt.heal ? m.tgt : (m.tgt && !m.tgt.dying ? m.tgt : front);
-          if (tg && !tg.heal && MELEE[C.type] && tg.x - mx > C.range + m.off + 6 + (tg.boss ? 16 : 5)) tg = front && front.x - mx <= C.range + m.off + 6 + (front.boss ? 16 : 5) ? front : null;
+          if (tg && !tg.heal && MELEE[C.type] && tg.x - mx > C.range + Math.max(0, m.off) + 6 + (tg.boss ? 16 : 5)) tg = front && front.x - mx <= C.range + Math.max(0, m.off) + 6 + (front.boss ? 16 : 5) ? front : null;
           if (tg) { memberAct(m, tg); m.hits = (m.hits || 0) + 1; } else m.cd = Math.min(m.cd, .05);
         }
         if (m.swing >= 1) m.swing = -1;
@@ -2275,12 +2291,12 @@ function update(dt) {
       e.slamT -= dt;
       if (e.slamT <= 0) {
         e.slamT = 4.5; shake = .45; flashT = .15;
-        for (const m of party) if (!m.down) hurtMember(m, e.atk * .55);
+        for (const m of party) if (!m.down) hurtMember(m, e.atk * .55, e.el);
         for (let i = 0; i < 26; i++) parts.push({ x: e.x - rnd(60), y: GROUND - 1, vx: rnd(-30, 10), vy: -rnd(15, 45), life: .6, max: .6, col: e.c, g: 90 });
         toast('<b style="color:#ff7a95">' + e.name + '</b> の全体攻撃！', '#ff5c7f');
       }
     }
-    if (e.lunge > 0) { e.lunge -= dt; if (!e.hb && e.lunge < .15) { e.hb = 1; const t2 = party.find(m => !m.down); if (t2 && e.x - (hero.x - t2.off) < (e.boss ? 30 : 19) + (e.stop || 0)) hurtMember(t2, e.atk * rnd(.85, 1.15)); } }
+    if (e.lunge > 0) { e.lunge -= dt; if (!e.hb && e.lunge < .15) { e.hb = 1; const t2 = party.find(m => !m.down); if (t2 && e.x - (hero.x - t2.off) < (e.boss ? 30 : 19) + (e.stop || 0)) hurtMember(t2, e.atk * rnd(.85, 1.15), e.el); } }
   }
   enemies = enemies.filter(e => !(e.dying > .45) && !e.gone);
   // chests
@@ -2534,11 +2550,11 @@ function setPanel(on, page) {
   document.body.classList.toggle('pg-party', on && panelPage === 'party');
   document.body.classList.toggle('pg-map', on && panelPage === 'map');
   document.body.classList.toggle('pg-rank', on && panelPage === 'rank');
-  document.body.classList.toggle('pg-rune', on && panelPage === 'rune'); document.body.classList.toggle('pg-item', on && panelPage === 'item'); document.body.classList.toggle('pg-village', on && panelPage === 'village'); $('vilbtn').classList.toggle('on', on && panelPage === 'village'); document.body.classList.toggle('pg-chat', on && panelPage === 'chat'); document.body.classList.toggle('pg-admin', on && panelPage === 'admin'); $('chatbtn').classList.toggle('on', on && panelPage === 'chat'); $('itembtn').classList.toggle('on', on && panelPage === 'item'); $('runebtn').classList.toggle('on', on && panelPage === 'rune');
+  document.body.classList.toggle('pg-rune', on && panelPage === 'rune'); document.body.classList.toggle('pg-item', on && panelPage === 'item'); document.body.classList.toggle('pg-village', on && panelPage === 'village'); $('vilbtn').classList.toggle('on', on && panelPage === 'village'); document.body.classList.toggle('pg-chat', on && panelPage === 'chat'); document.body.classList.toggle('pg-admin', on && panelPage === 'admin'); document.body.classList.toggle('pg-elem', on && panelPage === 'elem'); $('elbtn').classList.toggle('on', on && panelPage === 'elem'); $('chatbtn').classList.toggle('on', on && panelPage === 'chat'); $('itembtn').classList.toggle('on', on && panelPage === 'item'); $('runebtn').classList.toggle('on', on && panelPage === 'rune');
   $('rankbtn').classList.toggle('on', on && panelPage === 'rank');
   $('bagbtn').classList.toggle('on', on && panelPage === 'gear'); $('partybtn').classList.toggle('on', on && panelPage === 'party');
   if (on !== was) native({ t: 'panel', on });
-  if (on) { renderPanel(); renderParty(); renderMap(); renderRank(); renderRunes(); renderItems(); renderVillage(); renderChat(); renderAdmin(); } else { G.bag.forEach(i => i.nw = 0); updGear(); save(); }
+  if (on) { renderPanel(); renderParty(); renderMap(); renderRank(); renderRunes(); renderItems(); renderVillage(); renderChat(); renderAdmin(); renderElem(); } else { G.bag.forEach(i => i.nw = 0); updGear(); save(); }
 }
 function renderPanel() {
   updGear();
@@ -2792,8 +2808,7 @@ function renderParty() {
       else h += '<div class="pslot">空き<small>左から選ぶ</small></div>';
     }
     h += '</div><div class="fhint" style="text-align:left">・キャラを押すと出し入れできます<br>・近接職（騎士・双剣士・鉄槌士）が前、遠距離職は後ろに下がります<br>・装備はキャラごとに別々です（バッグ画面で切り替え）</div>';
-    h += '<div class="lbl">属性（キャラごとに1つ）</div><div class="elrows">' + localClasses().map(c => '<div class="elrow"><span>' + CLASSES[c].n + '</span>' + ['none'].concat(EKEYS).map(k => '<button class="elb' + ((heroData(c).el || 'none') === k ? ' on' : '') + '" data-el="' + c + ':' + k + '" style="--ec:' + (k === 'none' ? '#888' : ELEM[k].c) + '" title="' + (k === 'none' ? '属性なし' : ELEM[k].n + '属性') + '">' + (k === 'none' ? '−' : ELEM[k].n) + '</button>').join('') + '</div>').join('') + '</div>';
-    h += '<div class="lbl">属性レベル（魔石 ' + inv('core') + '）</div><div class="elvs">' + EKEYS.map(k => { const lv = elv(k), mx = lv >= ELV_MAX; return '<div class="elv" style="--ec:' + ELEM[k].c + '"><b>' + ELEM[k].n + '</b><span>Lv' + lv + '</span><small>有利 ×' + (1.4 + .06 * lv).toFixed(2) + '</small>' + (mx ? '<button class="mini-btn" disabled>MAX</button>' : '<button class="mini-btn" data-elv="' + k + '"' + (inv('core') >= elvCost(lv) ? '' : ' disabled') + '>強化 🔮' + elvCost(lv) + '</button>') + '</div>'; }).join('') + '</div><div class="fhint" style="text-align:left">水→火→風→水 の順に有利、光と闇はおたがいに有利。ハードから敵に属性がつきます。</div>';
+    h += '<div class="fhint" style="text-align:left;margin-top:6px">属性はバーの <b style="color:#7ff4ff">✦</b> ボタンから選べます</div>';
 
   } else {
     const nm = G.name || '';
@@ -2824,7 +2839,7 @@ $('pparty').addEventListener('keydown', e => { if (e.key === 'Enter' && e.target
 $('pparty').addEventListener('click', e => {
   { const b = e.target.closest('[data-el],[data-elv]');
     if (b && b.dataset.el) { const [c, k] = b.dataset.el.split(':'); heroData(c).el = k === 'none' ? null : k; rebuildParty(); save(); renderParty(); toast(CLASSES[c].n + ' の属性を ' + (k === 'none' ? 'なし' : elemTag(k)) + ' にしました', k === 'none' ? '#9b8cff' : ELEM[k].c); return; }
-    if (b && b.dataset.elv) { const k = b.dataset.elv, lv = elv(k), c = elvCost(lv); if (lv >= ELV_MAX || inv('core') < c) return; addInv('core', -c); G.elv = G.elv || {}; G.elv[k] = lv + 1; save(); renderParty(); toast(elemTag(k) + '属性が Lv' + (lv + 1) + ' になった', ELEM[k].c); return; } }
+    if (b && b.dataset.elv) { const k = b.dataset.elv, lv = elv(k), c = elvCost(lv); if (lv >= ELV_MAX || inv('spirit') < c) return; addInv('spirit', -c); G.elv = G.elv || {}; G.elv[k] = lv + 1; save(); renderParty(); toast(elemTag(k) + '属性が Lv' + (lv + 1) + ' になった', ELEM[k].c); return; } }
   const t = e.target.closest('[data-cls].ccard,[data-mode],[data-g]'); if (!t) return;
   if (t.dataset.mode) { partyMode = t.dataset.mode; return renderParty(); }
   const mode = partyMode || (grp.active ? 'group' : 'solo');
@@ -2971,6 +2986,28 @@ $('prank').addEventListener('change', e => { if (e.target.id === 'titlesel') { G
 $('rankbtn').addEventListener('click', () => setPanel(!(panelOpen && panelPage === 'rank'), 'rank'));
 $('runebtn').addEventListener('click', () => setPanel(!(panelOpen && panelPage === 'rune'), 'rune'));
 $('adminbtn').addEventListener('click', () => { $('uipop').classList.remove('on'); if (isAdmin()) return setPanel(true, 'admin'); if (NATIVE) native({ t: 'prompt', kind: 'admin', label: '管理者パスワード', value: '' }); else { const v = prompt('管理者パスワード'); if (v != null) adminLogin(v); } });
+$('elbtn').addEventListener('click', () => setPanel(!(panelOpen && panelPage === 'elem'), 'elem'));
+const EGLY = { fire: '炎', water: '水', wind: '風', light: '光', dark: '闇' };
+function renderElem() {
+  if (!panelOpen || panelPage !== 'elem') return;
+  let h = '<div class="pcol"><div class="ph"><b>属性</b><span>精霊の欠片で強化。強化すると有利な敵へのダメージと、その属性の攻撃への耐性が上がる</span></div><div class="ecards">';
+  for (const k of EKEYS) {
+    const lv = elv(k), mx = lv >= ELV_MAX, c = elvCost(lv), can = !mx && inv('spirit') >= c, E = ELEM[k];
+    h += '<div class="ecard' + (mx ? ' max' : can ? '' : ' no') + '" style="--ec:' + E.c + '"' + (mx ? '' : ' data-elv="' + k + '"') + '><span class="eg">' + E.n + '</span><i class="rlv">Lv' + lv + '/' + ELV_MAX + '</i><b>' + E.n + '属性</b>' +
+      '<small>有利な敵に ×' + (1.4 + .06 * lv).toFixed(2) + (mx ? '' : ' → ×' + (1.4 + .06 * (lv + 1)).toFixed(2)) + '</small><small>' + E.n + 'の攻撃 被ダメ ×' + (1.5 * (1 - .05 * lv)).toFixed(2) + (mx ? '' : ' → ×' + (1.5 * (1 - .05 * (lv + 1))).toFixed(2)) + '</small>' +
+      '<span class="rc">' + (mx ? 'MAX' : '<img src="' + itemIcon('spirit') + '" class="ii">' + c) + '</span><em>' + E.n + 'に強い：' + (Object.keys(BEATS).filter(x => BEATS[x] === k).map(x => ELEM[x].n).join('') || '−') + '　' + E.n + 'が強い：' + ELEM[BEATS[k]].n + '</em></div>';
+  }
+  h += '</div></div><div class="pcol" style="padding-left:12px;border-left:1px solid rgba(255,255,255,.07)">';
+  h += '<div class="ph"><b style="font-size:12px">キャラに付ける</b><span><img src="' + itemIcon('spirit') + '" class="ii">精霊の欠片 <b style="color:#7ff4ff">' + inv('spirit') + '</b></span></div><div class="elrows">' + localClasses().map(c => '<div class="elrow"><span>' + CLASSES[c].n + '</span>' + ['none'].concat(EKEYS).map(k => '<button class="elb' + ((heroData(c).el || 'none') === k ? ' on' : '') + '" data-el="' + c + ':' + k + '" style="--ec:' + (k === 'none' ? '#888' : ELEM[k].c) + '" title="' + (k === 'none' ? '属性なし' : ELEM[k].n + '属性') + '">' + (k === 'none' ? '−' : ELEM[k].n) + '</button>').join('') + '</div>').join('') + '</div>';
+  h += '<div class="fhint" style="text-align:left;margin-top:8px">・相性：<b style="color:#4fb3ff">水</b>→<b style="color:#ff6a3d">火</b>→<b style="color:#6fe08a">風</b>→<b style="color:#4fb3ff">水</b>、<b style="color:#fff2a0">光</b>⇔<b style="color:#b46cff">闇</b><br>・ハードから敵が属性を持ち、属性の攻撃をしてくる（耐性がないと1.5倍のダメージ）<br>・敵と同じ属性を付けたキャラは、その攻撃を少し軽減<br>・精霊の欠片は敵がまれに落とす（属性持ち・ボスほど多い）</div></div>';
+  $('pelem').innerHTML = h;
+}
+$('pelem').addEventListener('click', e => {
+  const b = e.target.closest('[data-el],[data-elv]'); if (!b) return;
+  if (b.dataset.el) { const [c, k] = b.dataset.el.split(':'); heroData(c).el = k === 'none' ? null : k; rebuildParty(); save(); renderElem(); return; }
+  const k = b.dataset.elv, lv = elv(k), c = elvCost(lv); if (lv >= ELV_MAX || inv('spirit') < c) return toast('精霊の欠片が足りません（' + inv('spirit') + '/' + c + '）', '#ff8fa8');
+  addInv('spirit', -c); G.elv = G.elv || {}; G.elv[k] = lv + 1; save(); renderElem(); toast(elemTag(k) + '属性が Lv' + (lv + 1) + ' になった', ELEM[k].c);
+});
 $('chatbtn').addEventListener('click', () => setPanel(!(panelOpen && panelPage === 'chat'), 'chat'));
 $('vilbtn').addEventListener('click', () => setPanel(!(panelOpen && panelPage === 'village'), 'village'));
 $('pvillage').addEventListener('click', e => { const b = e.target.closest('[data-vb]'); if (!b) return; const id = b.dataset.vb, lv = vLv(id), c = vCost(id, lv); if (lv >= VMAX || G.gold < c) return; G.gold -= c; G.vil = G.vil || {}; G.vil[id] = lv + 1; toast('🏠 <b>' + VIL.find(v => v.id === id).n + '</b> が Lv' + (lv + 1) + ' になった', VIL.find(v => v.id === id).c); rebuildParty(); updHud(true); save(); renderVillage(); });
@@ -3287,7 +3324,7 @@ const EKEYS = ['fire', 'water', 'wind', 'light', 'dark'];   // the five elements
 const REG_ELEM = ['wind', 'water', 'light', 'fire', 'fire', 'water', 'dark', 'wind'];
 const BEATS = { water: 'fire', fire: 'wind', wind: 'water', light: 'dark', dark: 'light' };
 const ELV_MAX = 10, elv = k => ((G.elv || {})[k] || 0);
-const elvCost = lv => 4 + lv * 4;   // 魔石
+const elvCost = lv => 3 + lv * 3;   // 精霊の欠片
 const regionElem = () => G.loop >= 1 ? REG_ELEM[G.region % REG_ELEM.length] : null;   // elements appear from ハード on
 function elemMult(atkEl, defEl) {
   if (!defEl) return 1;
@@ -3571,7 +3608,7 @@ $('padmin').addEventListener('mousedown', e => {
 function delMsg(key) { if (!isAdmin()) return; const hd = Object.assign({}, CFG.hide || {}); hd[key] = 1; publishCfg({ hide: hd }); }
 
 /* ===================== chat & みんなの声 (retained per-player MQTT topics, no server) ===================== */
-const PATCH_NOTES = [["1.19.0", 227, "属性を5種類に。キャラごとに選んで付け、魔石で属性レベルを上げられる（キャラ画面）／試練のコース7つ（属性や職業を生かさないと突破できない）／グループだけのチャット／キャラを少し小さく、近接は前・遠距離は後ろに／ルーンのページが進むほど高く／おかえりボーナス・オフライン報酬・グループの強さを下方修正／ショップを値上げ／装備のゴールド効果を削除（会心ダメージに）"],["1.18.1", 226, "キャラのドット絵を高精細に（元の絵の細かさのまま表示）"],["1.18.0", 225, "キャラの見た目を新しいドット絵に／総合力の数字をインフレしにくい表示に／パッチノートを追加（みんなの声のとなり）／職業ペアの称号21種と称号を大幅追加／Windowsでチャットやアイテム画面を開くときのガタつきを修正"], ["1.17.0", 224, "職業ごとの必殺技／ボスに挑む石／新しい敵4種と色違い図鑑／レイド3分／魔石・オフライン報酬・韋駄天・蔵・幸運ルーンを下方修正"], ["1.16.2", 223, "長時間つけっぱなしで固まる問題の対策（保存のやりとりを軽く）"], ["1.16.1", 222, "チャットやほかの画面がはみ出さずスクロールできるように／ヒーラーの回復を控えめに／吟遊詩人に攻撃速度アップと回復の歌／ルーンのレベル表示を見やすく／図鑑を色分け"], ["1.16.0", 221, "MacとWindowsで同じサーバーにつながるように／NGワード／管理者モード／1時間ごとのレイド／プレイ時間／Lv100ごとに色が変わる5周レベル"], ["1.15.0", 220, "ドパ要素6つを追加"], ["1.14.4", 219, "金運の秘薬・知恵の書を値上げ／Macのユーザー名を使わないように"], ["1.14.3", 218, "横幅を小さくしすぎてボタンが隠れる不具合を修正"], ["1.14.2", 217, "小さいウィンドウで起動したら自動で元の大きさに戻す／つまみのダブルクリックで表示サイズもリセット"], ["1.14.1", 216, "小さいウィンドウのまま更新された人も元に戻せるように"], ["1.14.0", 215, "チャットとみんなの声（1日5通）／小さくしたときの表示崩れを修正／ルーン画面に全部収まるように／プレイ時間の称号"], ["1.13.1", 214, "長い数字でバーの表示が崩れないように"], ["1.13.0", 213, "難易度5段階追加と属性／村づくり／称号／倉庫（蔵のルーン）／移動速度ルーン／数字を全桁表示"], ["1.12.1", 212, "回復・力・守りの薬とふっかつの羽／クラフトを削除／ショップは魔石とバトルメダルで買う形に"], ["1.12.0", 211, "ランクマッチ（リアルタイム対戦・ランク報酬）／アイテム・ショップ・クラフト・図鑑／最初に名前を決める／不透明度の調整／下の装備欄と公平バトルを削除"], ["1.11.7", 210, "倒れたキャラが戦闘中でもすぐ消えるように（復活はステージクリア時）"], ["1.11.6", 209, "倒れたキャラはステージクリアまで復活しない／倒れたキャラは消える"], ["1.11.5", 208, "弓・魔導士の射程3倍／倒れたキャラは消える／経験値バー削除／⚙でバーの大きさと横幅を調整"], ["1.11.4", 207, "弓の射程アップ／武器がキャラごとの見た目と名前に／HPはキャラの下に常時表示"], ["1.11.3", 206, "吸血はミシック以上の装備だけに付くように"], ["1.11.2", 205, "宝箱のドロップ率を下げた（敵の攻撃とボスHPを少し調整）"], ["1.11.1", 204, "力・守り・富のルーンを下方修正"], ["1.11.0", 203, "装備ランクが10段階に（アンコモン〜プライマル）。エンシェント以上は合成限定"], ["1.10.2", 202, "レア装備を出にくく／ルーンを高く・控えめに／キャラ交代でHPが回復しないように／敵が並ばず群がるように"], ["1.10.1", 201, "全員Lv1からリスタート／遊んでいる人数の表示を削除"]];
+const PATCH_NOTES = [["1.20.0", 228, "属性に専用ページ（バーの✦ボタン）。強化は新素材「精霊の欠片」で行う（敵がまれに落とす・属性持ちやボスほど多い）／ハードから敵が属性攻撃をしてくる。その属性のレベルが低いと被ダメ1.5倍、上げるほど軽減、同じ属性を付けたキャラはさらに軽減／騎士・双剣士・鉄槌士などの近接キャラは自分から敵に突っ込んでいくように／ショップの値段を2倍に／敵を倒したときのゴールドを4割減"],["1.19.0", 227, "属性を5種類に。キャラごとに選んで付け、魔石で属性レベルを上げられる（キャラ画面）／試練のコース7つ（属性や職業を生かさないと突破できない）／グループだけのチャット／キャラを少し小さく、近接は前・遠距離は後ろに／ルーンのページが進むほど高く／おかえりボーナス・オフライン報酬・グループの強さを下方修正／ショップを値上げ／装備のゴールド効果を削除（会心ダメージに）"],["1.18.1", 226, "キャラのドット絵を高精細に（元の絵の細かさのまま表示）"],["1.18.0", 225, "キャラの見た目を新しいドット絵に／総合力の数字をインフレしにくい表示に／パッチノートを追加（みんなの声のとなり）／職業ペアの称号21種と称号を大幅追加／Windowsでチャットやアイテム画面を開くときのガタつきを修正"], ["1.17.0", 224, "職業ごとの必殺技／ボスに挑む石／新しい敵4種と色違い図鑑／レイド3分／魔石・オフライン報酬・韋駄天・蔵・幸運ルーンを下方修正"], ["1.16.2", 223, "長時間つけっぱなしで固まる問題の対策（保存のやりとりを軽く）"], ["1.16.1", 222, "チャットやほかの画面がはみ出さずスクロールできるように／ヒーラーの回復を控えめに／吟遊詩人に攻撃速度アップと回復の歌／ルーンのレベル表示を見やすく／図鑑を色分け"], ["1.16.0", 221, "MacとWindowsで同じサーバーにつながるように／NGワード／管理者モード／1時間ごとのレイド／プレイ時間／Lv100ごとに色が変わる5周レベル"], ["1.15.0", 220, "ドパ要素6つを追加"], ["1.14.4", 219, "金運の秘薬・知恵の書を値上げ／Macのユーザー名を使わないように"], ["1.14.3", 218, "横幅を小さくしすぎてボタンが隠れる不具合を修正"], ["1.14.2", 217, "小さいウィンドウで起動したら自動で元の大きさに戻す／つまみのダブルクリックで表示サイズもリセット"], ["1.14.1", 216, "小さいウィンドウのまま更新された人も元に戻せるように"], ["1.14.0", 215, "チャットとみんなの声（1日5通）／小さくしたときの表示崩れを修正／ルーン画面に全部収まるように／プレイ時間の称号"], ["1.13.1", 214, "長い数字でバーの表示が崩れないように"], ["1.13.0", 213, "難易度5段階追加と属性／村づくり／称号／倉庫（蔵のルーン）／移動速度ルーン／数字を全桁表示"], ["1.12.1", 212, "回復・力・守りの薬とふっかつの羽／クラフトを削除／ショップは魔石とバトルメダルで買う形に"], ["1.12.0", 211, "ランクマッチ（リアルタイム対戦・ランク報酬）／アイテム・ショップ・クラフト・図鑑／最初に名前を決める／不透明度の調整／下の装備欄と公平バトルを削除"], ["1.11.7", 210, "倒れたキャラが戦闘中でもすぐ消えるように（復活はステージクリア時）"], ["1.11.6", 209, "倒れたキャラはステージクリアまで復活しない／倒れたキャラは消える"], ["1.11.5", 208, "弓・魔導士の射程3倍／倒れたキャラは消える／経験値バー削除／⚙でバーの大きさと横幅を調整"], ["1.11.4", 207, "弓の射程アップ／武器がキャラごとの見た目と名前に／HPはキャラの下に常時表示"], ["1.11.3", 206, "吸血はミシック以上の装備だけに付くように"], ["1.11.2", 205, "宝箱のドロップ率を下げた（敵の攻撃とボスHPを少し調整）"], ["1.11.1", 204, "力・守り・富のルーンを下方修正"], ["1.11.0", 203, "装備ランクが10段階に（アンコモン〜プライマル）。エンシェント以上は合成限定"], ["1.10.2", 202, "レア装備を出にくく／ルーンを高く・控えめに／キャラ交代でHPが回復しないように／敵が並ばず群がるように"], ["1.10.1", 201, "全員Lv1からリスタート／遊んでいる人数の表示を削除"]];
 const patchText = n => ((CFG.patch || {})[n[0]] != null ? CFG.patch[n[0]] : n[2]);
 const CHAT_T = id => 'dockhero-mac/v1/chat/' + id, VOICE_T = id => 'dockhero-mac/v1/voice/' + id;
 const VOICE_DAY = 5;
@@ -3833,10 +3870,11 @@ const ITEMS = {
   box3: { n: 'エピック装備箱', ic: 'box', c: '#b46cff', d: '開けるとエピック装備が1つ出る', box: 3 },
   box4: { n: 'レジェンド装備箱', ic: 'box', c: '#ffc94d', d: '開けるとレジェンド装備が1つ出る', box: 4 },
   box5: { n: 'ミシック装備箱', ic: 'box', c: '#ff5c7a', d: '開けるとミシック装備が1つ出る', box: 5 },
+  spirit: { n: '精霊の欠片', ic: 'star', c: '#7ff4ff', mat: 1, d: '属性の強化に使う素材。敵がまれに落とす（属性を持つ敵やボスほどよく落とす）' },
   core: { n: '魔石', ic: 'crystal', c: '#b46cff', mat: 1, d: 'ショップで使う通貨。強い敵（エリート）やボスが落とす' } };
 // shop currencies: 魔石 (from adventuring) and バトルメダル (from ranked matches). Gold can't buy anything here.
-const SHOP_C = [['luck', 30], ['wise', 30], ['box3', 60], ['box4', 180]];
-const SHOP_M = [['luck', 12], ['wise', 12], ['box3', 22], ['box4', 70], ['box5', 180]];
+const SHOP_C = [['luck', 60], ['wise', 60], ['box3', 120], ['box4', 360]];
+const SHOP_M = [['luck', 24], ['wise', 24], ['box3', 45], ['box4', 140], ['box5', 360]];
 const FOE_JP = { goblin: 'ゴブリン', snail: 'カタツムリ', crow: 'カラス', spider: 'クモ', slime: 'スライム', mush: 'キノコ', bat: 'コウモリ', golem: 'ゴーレム', ghost: 'ゴースト', wolf: 'オオカミ', skel: 'スケルトン', imp: 'インプ', eye: 'めだま', crab: 'カニ', scorp: 'サソリ', yeti: 'イエティ', stump: 'きりかぶ', wisp: 'ウィスプ' };
 const IIC = {};
 function itemIcon(id) {
@@ -3863,6 +3901,7 @@ function dexFoe(e) { G.dex = G.dex || { f: {}, g: {} }; if (!e.boss) G.dex.f[e.k
 function dexMigrate() { const f = (G.dex || {}).f; if (!f || G.dex.v2) return; for (const V of FOE_VARS) if (f[V.k] && !Object.keys(f).some(x => x.startsWith(V.k + '@'))) f[V.v] = 1; G.dex.v2 = 1; }
 function dexGear(it) { G.dex = G.dex || { f: {}, g: {} }; const k = it.s + ':' + it.r; if (!G.dex.g[k]) G.dex.g[k] = 1; }
 function dropMats(e) {
+  { const sp = e.boss ? 2 + Math.floor(Math.random() * 3) : Math.random() < (e.elite ? .18 : .02) * (e.el ? 2.5 : 1) ? 1 : 0; if (sp) { addInv('spirit', sp); pops.push({ x: e.x, y: GROUND - 30, t: 0, s: '精霊' + (sp > 1 ? '×' + sp : ''), c: '#7ff4ff' }); } }
   const n = e.boss ? 2 + Math.floor(Math.random() * 2) : e.elite ? (Math.random() < .3 ? 1 : 0) : (Math.random() < .012 ? 1 : 0);
   if (!n) return; addInv('core', n);
   pops.push({ x: e.x, y: GROUND - 22, t: 0, s: '魔石' + (n > 1 ? '×' + n : ''), c: '#c99bff' });
